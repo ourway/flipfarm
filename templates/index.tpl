@@ -43,7 +43,7 @@
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
           </button>
-          <a class="navbar-brand" href="/"><em class="fa fa-skyatlas"></em> <b class="text-danger">Flip/Farm</b> <small>RenderFarm Management for Humans</small>
+          <a class="navbar-brand" href="/"><em class="fa fa-skyatlas"></em> <b class="text-danger">Flip/Farm</b> <small>RenderFarm Management for Humans</small> <small class="text-danger">${version}</small>
           </a>
 
         </div>
@@ -59,7 +59,9 @@
 
       <footer>
 			<address>
-				 <strong>Pooyamehr Studio</strong> | Farsheed Ashouri<br /> &copy; 2015			</address>
+				 <strong>Pooyamehr Studio</strong> | Farsheed Ashouri<br /> &copy; 2015			
+            </address>
+
       </footer>
     </div> <!-- /container -->       
         <!-- <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script> -->

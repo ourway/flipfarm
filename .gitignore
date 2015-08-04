@@ -5,3 +5,4 @@ databases/
 *.log
 logs/
 .pyenv
+config.json

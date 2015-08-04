@@ -132,7 +132,7 @@ ngApp.controller('clientCtrl', function($scope, $http, $interval) {
         $interval(function(){
                 $scope.ping();
                 $scope.getJobs();
-        }, 5000);
+        }, 1000);
         $scope.uploadFilesChanged = function(e){
                 if (!e.files.length){
                         return null;}
