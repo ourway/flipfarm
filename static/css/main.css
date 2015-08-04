@@ -1,0 +1,56 @@
+
+
+/* ==========================================================================
+   Author's custom styles
+   ========================================================================== */
+
+code {
+    padding: 2px 4px;
+    font-size: 90%;
+    color: #31708F;
+    background-color: #fff;
+    border-radius: 4px;
+}
+
+.progress {
+    height: 17px;
+    /* font-size: 5px; */
+    margin-bottom: 1px;
+    overflow: hidden;
+    /* background-color: #D5EBF6; */
+    /* border-radius: 4px; */
+    /* -webkit-box-shadow: inset 0 1px 2px rgba(0,0,0,.1); */
+    box-shadow: inset 0 1px 2px rgba(0,0,0,.2);
+}
+
+
+
+#square.ng-hide-add, #square.ng-hide-remove
+{
+  display: block !important; 
+}
+
+#square.ng-hide-remove, #square.ng-hide-add.ng-hide-add-active{
+  margin-left: -80px;
+    opacity: 0;
+}
+
+#square.ng-hide-remove.ng-hide-remove-active, #square.ng-hide-add{
+  margin-left: 0;
+    opacity: 1;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

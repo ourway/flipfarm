@@ -1,0 +1,169 @@
+/*global angular*/
+/*global console*/
+/*global moment*/
+/*global humane*/
+/*global Math*/
+/*global _*/
+
+humane.timeout = 5000; // default: 2500
+humane.waitForMove = true; // default: false
+
+console.log('Pooyamehr Studio');
+
+var prettyDate = function (time) {
+  if (parseInt(time)!==NaN)
+        {
+                var _d = moment.unix(time);
+        }
+  else
+        {
+                var _d = moment(time);
+        }
+  return moment.duration(_d - moment()).humanize();
+};
+var isASCII = function (str, extended) {
+  var data = (extended ? /^[\x00-\xFF]*$/ : /^[\x00-\x7F]*$/).test(str);
+  return data;
+};
+var getReadableFileSizeString = function (fileSizeInBytes) {
+  var i = -1;
+  var byteUnits = [
+    ' \u06A9\u064A\u0644\u0648\u0628\u0627\u06CC\u062A',
+    ' \u0645\u06AF\u0627\u0628\u0627\u06CC\u062A',
+    ' GB',
+    ' TB',
+    'PB',
+    'EB',
+    'ZB',
+    'YB'
+  ];
+  do {
+    fileSizeInBytes = fileSizeInBytes / 1024;
+    i++;
+  } while (fileSizeInBytes > 1024);
+  return Math.max(fileSizeInBytes, 0.1).toFixed(1) + byteUnits[i];
+};
+function pad(num, size) {
+  var s = num + '';
+  while (s.length < size)
+  {
+        s = '0' + s;
+  }
+  return s;
+
+}
+
+
+
+
+
+
+var ngApp = angular.module('myapp', ['ngRoute']);
+
+
+ngApp.controller('mainCtrl', function($scope) {
+	$scope.message = "bottle.py boilerplate";
+});
+
+
+ngApp.controller('clientCtrl', function($scope, $http, $interval) {
+        $scope.prettyDate = prettyDate;
+        $scope.moment = moment;
+        $scope.parseInt = parseInt;
+        $scope.pad = pad;
+        $scope._ = _;
+        $scope.round = Math.round;
+        $scope.getReadableFileSizeString = getReadableFileSizeString;
+        $scope.isASCII = isASCII;
+        $scope.server_status = 'warning';
+        $scope.options = {};
+        $scope.options.domain = 'client';
+        $scope.options.identity = localStorage.getItem('identity');
+        $scope.options.email = localStorage.getItem('email');
+        $scope.options.queue = [];
+        $scope.options.disabledRow=function(_status){
+                if (_status==='Cancelled'){
+                        return {'opacity':0.5}
+                };
+
+        };
+
+        $scope.getJobs = function(){
+                var jr = $http.get('/api/getQueue');
+                jr.success(function(queueData){
+                        $scope.options.queue = queueData;
+                });
+        };
+        $scope.updateBenchmark = function(reload){
+                $scope.options.qmark = localStorage.getItem('qmark');
+                if (!$scope.options.qmark || reload){
+                $scope.options.qmark = null;
+                var br = $http.get('/api/benchmark');
+                br.success(function(data){
+                        $scope.options.qmark = data.qmark;
+                        localStorage.setItem('qmark', data.qmark);
+                });
+        }
+        };
+
+        $scope.updateBenchmark();
+        $scope.options.newJob = {'category':'Alfred'};
+        $scope.ping = function(){
+                var pr = $http.post('/api/pingServer', {qmark:$scope.options.qmark,
+                                                        identity:$scope.options.identity,
+                                                        email:$scope.options.email,
+                                                        });
+                pr.success(function(result){
+                        $scope.clientInfo = result.clientInfo;
+                        if (result.message==='PONG'){
+                                $scope.server_status = 'success';
+                        }
+                        else{
+                                $scope.server_status = 'danger';
+
+                        }
+                });
+                pr.error(function(){
+                        $scope.server_status = 'danger';
+                });
+        };
+        $scope.ping();
+        $scope.getJobs();
+        $interval(function(){
+                $scope.ping();
+                $scope.getJobs();
+        }, 5000);
+        $scope.uploadFilesChanged = function(e){
+                if (!e.files.length){
+                        return null;}
+                var file = e.files[0];
+                var fd = new FormData();
+                            fd.append("upload", file);
+                            fd.append("category", $scope.options.newJob.category);
+                            $http.post('/api/upload', fd, {
+                                withCredentials: true,
+                                headers: {'Content-Type': undefined },
+                                transformRequest: angular.identity
+                            }).success(function(data){
+                                var framesCount = _.size(data.tasks);
+                                humane.log('<span class="text-success"><i class="fa fa-check"></i> '+$scope.options.newJob.category + ' job including <b>' + framesCount + ' render tasks</b> added to queue.</span>');
+                            }).error(function(){
+                                humane.log('An error cccured! Please try again.');
+                            });//.success().error();
+
+
+        };
+
+        $scope.showJobDetails = function(jid){
+                console.log(jid);
+        };
+
+        $scope.updateIdentity = function(){
+                localStorage.setItem('identity', $scope.options.identity);
+        };
+        $scope.updateEmail = function(){
+                console.log('ok');
+                localStorage.setItem('email', $scope.options.email);
+        };
+
+});

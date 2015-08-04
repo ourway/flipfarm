@@ -1,0 +1,17 @@
+pyopenssl
+ndg-httpsclient
+pyasn1
+flask
+flask-mako
+flask-assets
+flask-cache
+flask-celery
+flask-login
+flask-mail
+flask-misaka
+flask-uploads
+ujson
+pymongo
+gevent
+gunicorn
+redis
