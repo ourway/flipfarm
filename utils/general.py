@@ -28,6 +28,7 @@ import ujson
 import psutil
 import uuid
 import getpass
+from datetime import datetime, timedelta
 from utils.opensource.qmark import qmark
 
 USER = getpass.getuser()
@@ -48,11 +49,17 @@ def readConfig():
 
 def pack(data):
     """Packs data using msgpack.packb"""
-    return msgpack.packb(data)
+    if data:
+        return msgpack.packb(data)
+    else:
+        return msgpack.packb({})
 
 def unpack(data):
     """Unpacks data using msgpack.unpackb"""
-    return msgpack.unpackb(data)
+    if data:
+        return msgpack.unpackb(data)
+    else:
+        return '{}'
 
 
 def getMemoryInfo():
@@ -111,3 +118,16 @@ def getUUID():
 def getBenchmark():
     """benchmarks system based on qmark opensource module"""
     return qmark()
+
+
+def now():
+    """ get current time in unix time """
+    return int(datetime.now().strftime('%s'))
+
+def chunks(l, n):
+    """Yield successive n-sized chunks from l.
+    http://stackoverflow.com/questions/312443/how-do-you-split-a-list-into-evenly-sized-chunks-in-python
+    """
+    for i in xrange(0, len(l), n):
+        yield l[i:i+n]
+

@@ -23,6 +23,7 @@ Clean code is much better than Cleaner comments!
 import os
 from utils.decorators import Memoized
 from utils.general import readConfig, pack, unpack
+from flask import abort
 import requests
 from requests import ConnectionError
 import msgpack
@@ -42,7 +43,10 @@ def get(url):
     '''Simple get using requests'''
     try:
         r = requests.get(url)
-        return unpack(r.content)
+        if r.status_code <300:
+            return unpack(r.content)
+        else:
+            abort(r.status_code)
     except ConnectionError:
         return
 
@@ -52,7 +56,10 @@ def post(url, data):
     data = pack(data)
     try:
         r = requests.post(url, data)
-        return unpack(r.content)
+        if r.status_code <300:
+            return unpack(r.content)
+        else:
+            abort(r.status_code)
     except ConnectionError:
         return
 

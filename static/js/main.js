@@ -89,7 +89,7 @@ ngApp.controller('clientCtrl', function($scope, $http, $interval) {
         };
 
         $scope.getJobs = function(){
-                var jr = $http.get('/api/getQueue');
+                var jr = $http.get('/api/getJobsInfo');
                 jr.success(function(queueData){
                         $scope.options.queue = queueData;
                 });
@@ -109,7 +109,7 @@ ngApp.controller('clientCtrl', function($scope, $http, $interval) {
         $scope.updateBenchmark();
         $scope.options.newJob = {'category':'Alfred'};
         $scope.ping = function(){
-                var pr = $http.post('/api/pingServer', {qmark:$scope.options.qmark,
+                var pr = $http.post('/api/pingServer', {qmark:parseInt($scope.options.qmark),
                                                         identity:$scope.options.identity,
                                                         email:$scope.options.email,
                                                         });
@@ -132,7 +132,7 @@ ngApp.controller('clientCtrl', function($scope, $http, $interval) {
         $interval(function(){
                 $scope.ping();
                 $scope.getJobs();
-        }, 1000);
+        }, 5000);
         $scope.uploadFilesChanged = function(e){
                 if (!e.files.length){
                         return null;}
@@ -144,8 +144,8 @@ ngApp.controller('clientCtrl', function($scope, $http, $interval) {
                                 withCredentials: true,
                                 headers: {'Content-Type': undefined },
                                 transformRequest: angular.identity
-                            }).success(function(data){
-                                var framesCount = _.size(data.tasks);
+                            }).success(function(result){
+                                var framesCount = _.size(result.data.tasks);
                                 humane.log('<span class="text-success"><i class="fa fa-check"></i> '+$scope.options.newJob.category + ' job including <b>' + framesCount + ' render tasks</b> added to queue.</span>');
                             }).error(function(){
                                 humane.log('An error cccured! Please try again.');

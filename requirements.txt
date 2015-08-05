@@ -6,12 +6,11 @@ flask-mako
 flask-assets
 flask-pymongo
 flask-cache
-flask-celery
 flask-login
 flask-mail
 flask-misaka
-flask-uploads
 requests
+celery
 psutil
 ujson
 gevent
