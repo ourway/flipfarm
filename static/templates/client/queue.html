@@ -21,7 +21,7 @@
 
 </form>
         </div>
-        <div class="panel-body">
+        <div class="panel-body" style="padding:0px;">
 
                 <table ng-if="options.queue.length!==0" class="table table-hover table-stripped table-responsive">
                         <tr class="active">
@@ -43,9 +43,9 @@
 
                                 }">
                                 <td>{{$index+1}}</td>
-                                <td>
+                                <td title="{{job.name}}">
                                         <em class="fa fa-battery-{{parseInt(job.progress/25)}}" ></em>
-                                        <a href="#" ng-click="showJobDetails(job.id)">{{job.name.slice(0, 4)}}</a>
+                                        <a href="#" ng-click="showJobDetails(job.id)">{{job.name.slice(0, 15)}}</a>
 
                                 </td>
                                 <td title="{{moment.unix(job.datetime)}}"><em class="fa fa-clock-o"></em> {{prettyDate(job.datetime)}} ago</td>
@@ -90,7 +90,7 @@
                                         ng-if="job.status==='On Progress'"><em class="fa fa-pause fa-stack"></em></a>
                                     <a href="#" title="Resume Job"
                                         ng-if="job.status==='Paused'"><em class="fa fa-play-circle fa-stack"></em></a>
-                                    <a href="#" title="Cancel Job"
+                                    <a href="#" title="Cancel Job" ng-click="cancelJob(job.id)"
                                         ng-hide="job.status=='Completed' || job.status=='Cancelled'"><em class="fa fa-stop fa-stack"></em></a>
                                     <a href="#" title="Move to Archive"
                                         ng-if="job.status==='Completed'"><em class="fa fa-archive fa-stack"></em></a>

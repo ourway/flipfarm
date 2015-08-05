@@ -23,9 +23,10 @@ Clean code is much better than Cleaner comments!
 from gevent import monkey
 monkey.patch_all()
 
-from flask import Flask, request, flash, abort
+from flask import Flask, request, flash, abort, redirect
 from flask.ext.mako import render_template
 from flask.ext.mako import MakoTemplates
+
 import ujson
 from utils import general, client_tools
 from copy import copy
@@ -37,6 +38,8 @@ __version__ = general.getVersion()
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'please dont kill my cat bro!'
 mako = MakoTemplates(app)
+
+
 
 
 
@@ -95,6 +98,49 @@ def getJobsInfo():
     return ujson.dumps(result)
 
 
+@app.route('/server')
+def server():
+    return redirect(client_tools.getServerUrl(), code=302)
+
+
+@app.route('/api/cancelJob', methods=['POST'])
+def cancelJob():
+    payload = ujson.loads(request.data)
+    result = client_tools.connectToServer('/api/cancelJob', payload)
+    return ujson.dumps(result)
+
+
+
+@app.route('/api/pauseJob', methods=['POST'])
+def pauseJob():
+    payload = ujson.loads(request.data)
+    result = client_tools.connectToServer('/api/pauseJob', payload)
+    return ujson.dumps(result)
+
+@app.route('/api/resumeJob', methods=['POST'])
+def resumeJob():
+    payload = ujson.loads(request.data)
+    result = client_tools.connectToServer('/api/resumeJob', payload)
+    return ujson.dumps(result)
+
+
+@app.route('/api/discardNow', methods=['POST'])
+def discardNow():
+    cn = client_tools.cancelAllFromMyCeleryQueue()
+    return ujson.dumps({'message':'All queued discarded. Also %s active tasks terminated'%(cn or 'no')})
+
+
+@app.route('/api/workerPing', methods=['GET'])
+def workerPing():
+    result = {'down':'ok'}
+    p = client_tools.getWorkerPing()
+    return ujson.dumps(p or result)
+
+@app.route('/api/workerStats', methods=['GET'])
+def workerStats():
+    result = {'down':'ok'}
+    p = client_tools.getWorkerStats()
+    return ujson.dumps(p or result)
 
 
 
@@ -122,6 +168,6 @@ if __name__ == "__main__":
         http_server.serve_forever()
 
     #run_tornado()
-    #run_debug()
-    run_gevent()
+    run_debug()
+    #run_gevent()
 

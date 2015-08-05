@@ -3,13 +3,12 @@ ndg-httpsclient
 pyasn1
 flask
 flask-mako
-flask-assets
-flask-pymongo
 flask-cache
-flask-login
+flask-basicauth
 flask-mail
 flask-misaka
 requests
+pymongo
 celery
 psutil
 ujson

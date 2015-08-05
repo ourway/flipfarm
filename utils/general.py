@@ -49,17 +49,17 @@ def readConfig():
 
 def pack(data):
     """Packs data using msgpack.packb"""
-    if data:
+    if data!=None:
         return msgpack.packb(data)
     else:
-        return msgpack.packb({})
+        return msgpack.packb([])
 
 def unpack(data):
     """Unpacks data using msgpack.unpackb"""
-    if data:
+    if data!=None:
         return msgpack.unpackb(data)
     else:
-        return '{}'
+        return '[]'
 
 
 def getMemoryInfo():

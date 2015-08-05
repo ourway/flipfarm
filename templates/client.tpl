@@ -55,6 +55,13 @@
 <label>
 CPU Usage
 </label>
+<small class="text-primary" ng-show="options.cores==clientInfo.cpu_count">All cores are available</small>
+<small class="text-info" ng-hide="options.cores==clientInfo.cpu_count || options.cores==0">Just <b>{{options.cores}}</b> 
+        core<span ng-show="options.cores>1">s</span> 
+        <span ng-show="options.cores>1">are</span>
+        <span ng-show="options.cores<2">is</span>
+        available</small>
+<small class="text-warning" ng-show="options.cores==0">Not a slave for rendering</small>
 <div ng-repeat="cpu in clientInfo.cpu.percpu track by $index">
 <div class="progress" style="opacity:0.75">
 <div class="progress-bar"
@@ -194,11 +201,16 @@ CPU Usage
 
                         </div>
                         <div class="panel-footer">
+
                 <span ng-show="clientInfo.qmark && clientInfo.render_tools.length>0" 
-                class="text-success"><i class="fa fa-check"></i> Client is ready for recieving render jobs</span>
+                class="text-success"><i class="fa fa-check"></i> Client has needed tools.</span>
                 <span ng-hide="clientInfo.qmark && clientInfo.render_tools.length>0" 
                 class="text-warning"><i class="fa fa-info"></i> Client not ready yet!</span>
-
+                <br/>
+                <span ng-show="options.workerPing==true" 
+                class="text-success"><i class="fa fa-circle"></i> Worker is up and running</span>
+                <span ng-show="options.workerPing==false" 
+                class="text-danger"><i class="fa fa-circle"></i> Worker is DOWN!</span>
 
                         </div>
                 </div>

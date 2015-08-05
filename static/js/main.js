@@ -10,6 +10,31 @@ humane.waitForMove = true; // default: false
 
 console.log('Pooyamehr Studio');
 
+function syntaxHighlight(json) {
+        if (!json){
+                return;
+        }
+    if (typeof json != 'string') {
+         json = JSON.stringify(json, undefined, 2);
+    }
+    json = json.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+    return json.replace(/("(\\u[a-zA-Z0-9]{4}|\\[^u]|[^\\"])*"(\s*:)?|\b(true|false|null)\b|-?\d+(?:\.\d*)?(?:[eE][+\-]?\d+)?)/g, function (match) {
+        var cls = 'number';
+        if (/^"/.test(match)) {
+            if (/:$/.test(match)) {
+                cls = 'key';
+            } else {
+                cls = 'string';
+            }
+        } else if (/true|false/.test(match)) {
+            cls = 'boolean';
+        } else if (/null/.test(match)) {
+            cls = 'null';
+        }
+        return '<span class="' + cls + '">' + match + '</span>';
+    });
+}
+
 var prettyDate = function (time) {
   if (parseInt(time)!==NaN)
         {
@@ -58,16 +83,32 @@ function pad(num, size) {
 
 
 
-var ngApp = angular.module('myapp', ['ngRoute']);
+var ngApp = angular.module('myapp', ['ngRoute', 'ngSanitize']);
 
+
+ngApp.directive('stringToNumber', function() {
+  return {
+    require: 'ngModel',
+    link: function(scope, element, attrs, ngModel) {
+      ngModel.$parsers.push(function(value) {
+        return '' + value;
+      });
+      ngModel.$formatters.push(function(value) {
+        return parseFloat(value, 10);
+      });
+    }
+  };
+});
 
 ngApp.controller('mainCtrl', function($scope) {
 	$scope.message = "bottle.py boilerplate";
 });
 
 
-ngApp.controller('clientCtrl', function($scope, $http, $interval) {
+ngApp.controller('clientCtrl', function($scope, $http, $interval, $timeout) {
+        $scope.baseInterval = 5000;
         $scope.prettyDate = prettyDate;
+        $scope.syntaxHighlight = syntaxHighlight;
         $scope.moment = moment;
         $scope.parseInt = parseInt;
         $scope.pad = pad;
@@ -80,7 +121,9 @@ ngApp.controller('clientCtrl', function($scope, $http, $interval) {
         $scope.options.domain = 'client';
         $scope.options.identity = localStorage.getItem('identity');
         $scope.options.email = localStorage.getItem('email');
-        $scope.options.queue = [];
+        $scope.options.cores = localStorage.getItem('cores');
+        $scope.options.queue = {};
+        $scope.options.workerStats=[];
         $scope.options.disabledRow=function(_status){
                 if (_status==='Cancelled'){
                         return {'opacity':0.5}
@@ -91,7 +134,9 @@ ngApp.controller('clientCtrl', function($scope, $http, $interval) {
         $scope.getJobs = function(){
                 var jr = $http.get('/api/getJobsInfo');
                 jr.success(function(queueData){
-                        $scope.options.queue = queueData;
+                        if (queueData.length){
+                                $scope.options.queue = queueData;
+                        }
                 });
         };
         $scope.updateBenchmark = function(reload){
@@ -112,6 +157,8 @@ ngApp.controller('clientCtrl', function($scope, $http, $interval) {
                 var pr = $http.post('/api/pingServer', {qmark:parseInt($scope.options.qmark),
                                                         identity:$scope.options.identity,
                                                         email:$scope.options.email,
+                                                        worker:$scope.options.workerPing,
+                                                        cores:parseInt($scope.options.cores),
                                                         });
                 pr.success(function(result){
                         $scope.clientInfo = result.clientInfo;
@@ -132,7 +179,7 @@ ngApp.controller('clientCtrl', function($scope, $http, $interval) {
         $interval(function(){
                 $scope.ping();
                 $scope.getJobs();
-        }, 5000);
+        }, $scope.baseInterval);
         $scope.uploadFilesChanged = function(e){
                 if (!e.files.length){
                         return null;}
@@ -162,8 +209,55 @@ ngApp.controller('clientCtrl', function($scope, $http, $interval) {
                 localStorage.setItem('identity', $scope.options.identity);
         };
         $scope.updateEmail = function(){
-                console.log('ok');
                 localStorage.setItem('email', $scope.options.email);
         };
+        $scope.updateCores = function(){
+                localStorage.setItem('cores', $scope.options.cores);
+        };
+        $scope.cancelJob = function(jobId){
+                cr = $http.post('/api/cancelJob', {'id':jobId});
+                cr.success(function(){
+                        humane.log('Job Cancelled.')
+                });
+        };
+        $scope.discardNow = function(){
+                if (confirm('Are you sure you want to discard renderes?')){
+                        disr = $http.post('/api/discardNow');
+                        disr.success(function(result){
+                                humane.log(result.message);       
+                                
+                        })
+                }
+        };
+
+        $scope.workerPing = function(){
+                        wp = $http.get('/api/workerPing');
+                        wp.success(function(result){
+                                if (!result.down){
+                                        $scope.options.workerPing=true;
+                                }
+                                else{
+                                        $scope.options.workerPing=false;
+
+                                };
+                });
+        };
+
+        $scope.workerStats = function(){
+                        wp = $http.get('/api/workerStats');
+                        wp.success(function(result){
+                                if (!result.down){
+                                        var _k = _.allKeys(result);
+                                        $scope.options.workerStats=result[_k];
+                                }
+                });
+        };
+
+        $timeout(function(){
+                $scope.workerPing();}, $scope.baseInterval);
+        $interval(function(){
+                $scope.workerPing();
+        }, $scope.baseInterval*12);
+
 
 });

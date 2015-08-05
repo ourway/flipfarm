@@ -26,6 +26,7 @@ Clean code is much better than Cleaner comments!
 from flask import Flask, request, abort, jsonify
 from flask.ext.mako import render_template
 from flask.ext.mako import MakoTemplates
+from flask.ext.basicauth import BasicAuth
 from bson.json_util import dumps
 from bson.objectid import ObjectId
 import ujson
@@ -37,6 +38,8 @@ from copy import copy
 
 __version__ = general.getVersion()
 
+username, password = server_tools.getServerCreditentionals()
+
 
 '''Register extensions'''
 app = Flask(__name__)
@@ -44,15 +47,17 @@ mako = MakoTemplates(app)
 
 app.config.update()
 
+app.config['BASIC_AUTH_USERNAME'] = username
+app.config['BASIC_AUTH_PASSWORD'] = password
+
+basic_auth = BasicAuth(app)
+
 
 
 @app.route("/")
+@basic_auth.required
 def index():
-    body = render_template('server.tpl')
-    title = 'Server Dashboard'
-    data = render_template('index.tpl', body=body, title=title,
-                           version=__version__)
-    return data
+    return 'Server'
 
 
 @app.route('/api/ping', methods=['POST'])
@@ -66,9 +71,12 @@ def ping():
         clientNewInfo = copy(general.unpack(clientNewRawData))
         clientNewInfo['ip'] = client
         if clientNewInfo:
-            data = {'ip':client, 'info':clientNewInfo, 'last_ping':general.now()}
-            slave = mongo.db.slaves.update({'ip':client}, data, upsert=True)  ## update if find or insert new
-    return general.pack({'message':'PONG', 'clientInfo':clientNewInfo, 'last_ping':general.now()})
+            data = {'ip':client, 'info':clientNewInfo,
+                    'last_ping':general.now(), 'queue':[]}
+            slave = mongo.db.slaves.update({'ip':client}, data,
+                                           upsert=True)  ## update if find or insert new
+    return general.pack({'message':'PONG', 'clientInfo':clientNewInfo,
+                         'last_ping':general.now()})
 
 
 
@@ -87,6 +95,7 @@ def addJob():
             'data':job,
             'md5': jobHash,
             'bucket_size': 10,
+            'tags':[],
             'status':'future',
             'datetime':general.now(),
             'owner': client,
@@ -135,18 +144,36 @@ def updateTask():
     data = general.unpack(request.data)
 
     tid =  ObjectId(data.get('_id'))
-    ctid =  data.get('ctid')
+    data =  data.get('data')
     task = mongo.db.tasks.find_one({'_id':tid})
     if not task:
         abort(404)
-    task['status'] = data.get('status')
-    if data.get('progress'):
-        task['progress'] = data.get('progress')
-        task['last_activity'] = general.now()
-        task['ctid'] = ctid
+
+    task['last_activity'] = general.now()
+    for i in data:
+        if data[i]:
+            task[i]=data[i]
+
 
     mongo.db.tasks.update({'_id':tid}, task)
     return general.pack('OK')
+
+
+@app.route('/api/cancelJob', methods=['POST'])
+def cancelJob():
+    data = general.unpack(request.data)
+    jobId = data.get('id')  ## get job is in string format
+    _id = ObjectId(jobId)
+    result = server_tools.cancelJob(_id)
+    return general.pack(result)
+
+
+
+@app.route('/api/slaves', methods=['GET'])
+def slaves():
+    '''Get slaves info for farm stats of client'''
+    return general.pack(server_tools.getSlaveInfo())
+
 
 if __name__ == "__main__":
 
@@ -172,7 +199,7 @@ if __name__ == "__main__":
         http_server = WSGIServer(('0.0.0.0', 9001), app)
         http_server.serve_forever()
 
-    run_tornado()
-    #run_debug()
+    #run_tornado()
+    run_debug()
     #run_gevent()
 

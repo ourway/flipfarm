@@ -51,64 +51,80 @@ def getRenderCommand(category):
 
 def createNewTasks(_id):
     """Create new tasks on database based on this new job"""
-    job = mongo.db.jobs.find_one({'_id':_id})
+    job = mongo.db.jobs.find_one({'_id': _id})
     tasks = job.get('data').get('tasks')
     for task in tasks:
         data = {
-            'name':task.get('name'),
-            'datetime':now(),
-            'status':'future',
-            'owner':job.get('owner'),
-            'priority':job.get('priority'),
-            'is_active':True,
-            'slave':None,
-            'last_activity':now(),
-            'progress':0,
-            'job':job.get('_id'),
+            'name': task.get('name'),
+            'datetime': now(),
+            'status': 'future',
+            'owner': job.get('owner'),
+            'priority': job.get('priority'),
+            'is_active': True,
+            'slave': None,
+            'last_activity': now(),
+            'started_on': None,
+            'finished_on': None,
+            'paused_on': None,
+            'cancelled_on': None,
+            'progress': 0,
+            'job': job.get('_id'),
             'proccess':
                 {
-                    'command':getRenderCommand(job.get('category')),
-                    'cwd':task.get('cwd'),
-                    'filepath':task.get('filepath'),
-                    'target':task.get('target'),
-                }
+                    'command': getRenderCommand(job.get('category')),
+                    'cwd': task.get('cwd'),
+                    'filepath': task.get('filepath'),
+                    'target': task.get('target'),
+            }
         }
         newTask = mongo.db.tasks.insert(data)
         print newTask
 
     return
 
+
+def getJobStatus(tasks):
+    """Calculate Job Status"""
+    if not tasks:
+        return 'Completed'
+    result = 'Likely'
+    for st in ['likely','paused', 'cancelled', 'waiting', 'future']:
+        if all([s.get('status') == st for s in tasks]):
+            return st.title()
+
+
+    ''' On progress tasks are those whom status are on progress, started but not finsihed'''
+    if any([s for s in tasks if ((s.get('status') == 'on progress') and \
+                                 s.get('started_on') and not s.get('finished'))]):
+        return 'On Progress'
+
+    for t in tasks:print t.get('status')
+    return 'n/a'
+
+
 def getClientJobsInformation(client):
     """Lists active client jobs."""
     getSlaveForDispatch()
-    jobs = mongo.db.jobs.find({'owner':client, 'is_active':True})
-    def getJobStatus(tasks):
-        result = 'Likely'
-        for st in ['completed', 'paused', 'cancelled', 'waiting', 'future']:
-            if all([s.get('status')==st for s in tasks]):
-                print st
-                return st.title()
+    jobs = mongo.db.jobs.find({'owner': client, 'is_active': True})
 
-        if any([s.get('status')=='on progress' for s in tasks]):
-            return 'On Progress'
 
-        return result
 
         #        result = i.title()
-        #if any([s.get('status')=='on progress' for s in tasks]):
+        # if any([s.get('status')=='on progress' for s in tasks]):
         #    result = 'On Progress'
-        #return result
+        # return result
 
     result = [{
-        'name':j.get('name'),
-        'datetime':j.get('datetime'),
-        'status': getJobStatus(list(mongo.db.tasks.find({'job':j.get('_id')}))),
-        'priority':j.get('priority'),
-        'progress':sum([t.get('progress') for t in mongo.db.tasks.find({'job':j.get('_id')})])/\
-            (mongo.db.tasks.find({'job':j.get('_id')}).count() or -1),
-        'id':str(j.get('_id')),
-        'tasks_count':mongo.db.tasks.find({'job':j.get('_id'), 'is_active':True}).count(),
-        'failed_count':mongo.db.tasks.find({'job':j.get('_id'), 'is_active':True, 'status':'failed'}).count(),
+        'name': j.get('name'),
+        'datetime': j.get('datetime'),
+        'status': getJobStatus(list(mongo.db.tasks.find({'job': j.get('_id'), 'status':{'$ne':'completed'}}))),
+        'priority': j.get('priority'),
+        'progress': sum([t.get('progress') for t in mongo.db.tasks.find({'job': j.get('_id')})]) /
+        (mongo.db.tasks.find({'job': j.get('_id')}).count() or -1),
+        'id': str(j.get('_id')),
+        'tasks_count': mongo.db.tasks.find({'job': j.get('_id'), 'is_active': True}).count(),
+        'failed_count': mongo.db.tasks.find({'job': j.get('_id'), 'is_active': True, 'status': 'failed'}).count(),
+        'active_task':'Frame 43',
     } for j in jobs]
     return result or '{[]}'
 
@@ -127,22 +143,25 @@ def getSlaveForDispatch():
                 machine 2 is better choice
 
     '''
-    seconds_ago = now()-10
+    seconds_ago = now() - 10
     looking_for = {
-        'last_ping':{'$gt': seconds_ago},  ## $gt means greater than.  $lt means less than
-        'info.cpu_count':{'$gt':0},
-        'info.qmark':{'$gt':0},
+        # $gt means greater than.  $lt means less than
+        'last_ping': {'$gt': seconds_ago},
+        'info.cpu_count': {'$gt': 0},
+        'info.qmark': {'$gt': 0},
+        'info.cores': {'$ne': 0},
     }
     slaves = list(mongo.db.slaves.find(looking_for))
     if not slaves:
         return
     freeness_list = [
-        (mongo.db.tasks.find({'is_active':True}).count() or -1) /\
-        (float(i.get('info').get('qmark', 0.000001)) * i.get('info').get('cpu_count')*80)
+        (mongo.db.tasks.find({'is_active': True}).count() or -1) /
+        (float(i.get('info').get('qmark', 0.000001))
+         * i.get('info').get('cpu_count') * 80)
         for i in slaves]
 
     best_pos = freeness_list.index(min(freeness_list))
-    bestChoice =  slaves[best_pos]
+    bestChoice = slaves[best_pos]
     return bestChoice.get('ip')
 
 
@@ -151,47 +170,81 @@ def dispatchTasks():
     """find none_finished jobs"""
     looking_for = {
         #'$and' : [{ 'status':{'$ne':'completed'} }, { 'status':{'$ne':'cancelled'}}, {'status'}],
-        'status':'future',
-        'is_active':True
+        'status': 'future',
+        'is_active': True
     }
 
     for job in mongo.db.jobs.find(looking_for):
         """now find available tasks"""
         looking_for = {
-            'is_active':True,
-            'status':'future',
-            'slave':None,
-            'job':job.get('_id')
+            'is_active': True,
+            'status': 'future',
+            'slave': None,
+            'job': job.get('_id')
         }
 
         tasks = mongo.db.tasks.find(looking_for)
         '''Create buckets of tasks'''
         buckets = chunks(list(tasks), job.get('bucket_size', 10))
         for bucket in buckets:
-            bestChoice = mongo.db.slaves.find({'ip':getSlaveForDispatch()})
+            bestChoice = mongo.db.slaves.find({'ip': getSlaveForDispatch()})
             if bestChoice.count():
                 slave = bestChoice.next()
-                print slave
             else:
                 print 'Slave not found!!'
                 continue
+            '''Lets add bucket tasks to slave queue'''
+            '''update slave info on db'''
+            mongo.db.slaves.update({'_id':slave.get('_id')}, slave)
 
             for task in bucket:
+                slave['queue'].append(task.get('_id'))
                 task['status'] = 'likely'
                 task['slave'] = slave.get('ip')
-                mongo.db.tasks.update({'_id':task['_id']}, task)
+                mongo.db.tasks.update({'_id': task['_id']}, task)
 
             _d = copy(job)
             _d['status'] = 'dispatched'
-            print mongo.db.jobs.update({'_id':job.get('_id')}, _d)
+            print mongo.db.jobs.update({'_id': job.get('_id')}, _d)
+            return
 
 
 def getQueuedTasksForClient(client):
     """Lets send client tasks for render"""
-    c =  mongo.db.tasks.find().count()
-    queueTasks = mongo.db.tasks.find({'status':'likely', 'is_active':True, 'slave':client})
+    c = mongo.db.tasks.find().count()
+    queueTasks = mongo.db.tasks.find(
+        {'status': 'likely', 'is_active': True, 'slave': client})
     if queueTasks.count():
-        slave = mongo.db.slaves.find_one({'ip':client})
-        return dumps({'tasks':queueTasks, 'slave':slave})
+        slave = mongo.db.slaves.find_one({'ip': client})
+        return dumps({'tasks': queueTasks, 'slave': slave})
 
 
+def getServerCreditentionals():
+    auth = CONFIG.get('auth')
+    if not auth:
+        return 'USER', 'PASS'
+    else:
+        return auth.get('username'), auth.get('password')
+
+
+def cancelJob(_id):
+    """cancelled a job
+        Cancelling a job usually means cancelling whole tasks.
+        Also probabaly we have to send kill dognal to active
+        task processes
+    """
+    job = mongo.db.jobs.find_one({'_id':_id})
+    job['status'] = 'cancelled'
+    """Set status of job to cancelled"""
+    mongo.db.jobs.update({'_id':_id}, job)
+    """Bulk update tasks"""
+    bulk = mongo.db.tasks.initialize_unordered_bulk_op()
+    bulk.find({'job':_id, 'status':{'$ne':'completed'} }).update({
+                                '$set': {
+                                    'status': "cancelled",
+                                    'cancelled_on':now(),
+                                    'slave':None,
+                                }})
+    bulk.execute()
+
+    return {'info':'success'}

@@ -1,7 +1,7 @@
 
 import sys
 from subprocess import Popen, PIPE
-from utils.general import readConfig
+from utils.general import readConfig, now
 from utils.client_tools import getServerUrl, connectToServer
 import psutil
 import datetime
@@ -32,8 +32,8 @@ ca.config_from_object('clientAgentConfig')
 
 
 
-def update_task_status(task_id, status, ctid, progress=0):
-    payload = {'status':status, '_id':task_id, 'ctid':ctid, 'progress':progress or None}
+def updateTaskInfo(task_id, **kw):
+    payload = {'_id':task_id, 'data':kw}
     return connectToServer('/api/updateTask', payload)
 
 
@@ -48,14 +48,27 @@ def parse_prman_output(line):
 
 
 @ca.task(name='clientAgent.execute')
-def execute(cmd, task, directory='.'):
+def execute(cmd, task, directory='.', target=None):
+    """
+        Execute render and parse output and update task info
+        Target is final render output.
+
+    """
+
     #ctid = Celery.AsyncResult.task_id
-    ctid = -2
     stime = time.time()
-    p = psutil.Popen(cmd.split(), stdout=PIPE, stderr=PIPE, bufsize=16, cwd=directory)
-    #update_task_status(task.split('-')[0], 'on progress')
-    print 'Executing %s with PID: %s' % (task, p.pid)
     tuuid = task.split('-')[0]
+    updateTaskInfo(tuuid, progress=0, started_on=now())
+    p = psutil.Popen(cmd.split(), stdout=PIPE, stderr=PIPE, bufsize=16, cwd=directory)
+    updateTaskInfo(tuuid, status='on progress', pid=p.pid)
+    print '*'*80
+    print '\tTask: %s'%task
+    print '\tCommand: %s'%cmd
+    print '\tDirectory: %s'%directory
+    print '\tPID: %s'%p.pid
+    print '\tTarget: %s'%target
+    print '*'*80
+    print '\n'
     has_output = False
     progress = None
     for line in iter(p.stderr.readline, b''):
@@ -64,15 +77,15 @@ def execute(cmd, task, directory='.'):
             progress = int(parse_prman_output(line))
         except (TypeError, ValueError):
             pass
-        print '{t} {prog}% completed.'.format(t=task, prog=progress),len(line),
+        print '>>> {t} {prog}% completed.'.format(t=task, prog=progress),
         if progress and not progress%5:  ## update every 5 percent
-            update_task_status(tuuid, 'on progress', ctid, progress)
+            updateTaskInfo(tuuid, status='on progress', progress=progress)
         if progress==100:  ## completed
-            update_task_status(tuuid, 'completed', ctid, 100)
+            updateTaskInfo(tuuid, status='completed', progress=100, finished=now())
 
     if not has_output:
         print 'NO OUTPUT'
-        update_task_status(tuuid, 'completed', ctid, 100)
+        updateTaskInfo(tuuid, status='completed', progress=100)
 
 
     p.stdout.close()
@@ -90,7 +103,6 @@ def execute(cmd, task, directory='.'):
         'end':etime,
         'command':cmd,
         'task':task,
-        'ctid':ctid
     }
 
 
@@ -106,20 +118,25 @@ def getLatestTasks():
     if not tasks:
         return
     for task in tasks:
-        update_task_status(str(task['_id']['$oid']), 'waiting', -1)
         proccess = task.get('proccess')
         if not proccess:
             continue
         raw_cmd = proccess.get('command')
-        command = raw_cmd.format(threads=data.get('slave').get('info').get('cpu_count'),
+        command = raw_cmd.format(threads=data.get('slave').get('info').get('cores') or \
+                                 data.get('slave').get('info').get('cpu_count'),
                                  cwd=proccess.get('cwd'),
                                  filepath=proccess.get('filepath'))
         tname = '%s-%s'%(task.get('_id').get('$oid'), task.get('name'))
         tname=tname.replace(' ', '_')
-        execute.delay(command, tname, proccess.get('cwd'))
+        ctid = execute.delay(command, tname, proccess.get('cwd'), proccess.get('target'))
+        updateTaskInfo(str(task['_id']['$oid']), status='ready', ctid=str(ctid))
 
 
 
+@ca.task(name='clientAgent.simpleTest')
+def simpleTest():
+    print 'I am happening'
+    return True
 
 
 

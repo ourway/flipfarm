@@ -1,1 +1,47 @@
-my_machine
+
+<br/>
+<div class="panel panel-info">
+        <div class="panel-heading"><h4>Slave Machine Settings</h4></div>
+        <div class="panel-body">
+                <div class="col-md-6">
+                <form class="form">
+<h5>System</h5>
+<div class="input-group">
+  <span class="input-group-addon"><i class="fa fa-plug fa-fw"></i> Cores &nbsp; &nbsp;</span>
+  <input class="form-control" type="number" min="0" 
+        max="{{clientInfo.cpu_count}}" string-to-number ng-change="updateCores();"
+        ng-model="options.cores" placeholder="Max cores (maximum: {{clientInfo.cpu_count}})">
+</div>
+
+<div class="input-group">
+  <span class="input-group-addon"><i class="fa fa-plug fa-fw"></i> Memory</span>
+  <input class="form-control" type="number" min="0" 
+                                            max="{{clientInfo.memory.real_mem_total}}" 
+        ng-model="options.memory_limit" placeholder="(maximum: {{clientInfo.memory.real_mem_total}} Mb)">
+</div>
+
+<hr/>
+<h5>Worker</h5>
+<div class="input-group">
+  <span class="input-group-addon"><i class="fa fa-exchange fa-fw"></i> Worker</span>
+  <button class="btn btn-danger" ng-click="discardNow()">Discard every render</button>
+</div>
+
+<hr/>
+<h5>Statistics</h5>
+<div ng-show="options.workerPing">
+  <button class="btn btn-info" ng-click="workerStats()">Get Worker Stats</button>
+        <br/>
+        <br/>
+         <pre ng-if="options.workerStats" ng-bind-html="syntaxHighlight(options.workerStats)"></pre>
+</div>
+
+
+                </form>
+        
+        </div>
+        </div>
+        
+        <div class="panel-footer"><small>Your settings will be updated automatically</small></div>
+
+</div>
