@@ -22,4 +22,4 @@ Clean code is much better than Cleaner comments!
 
 from pymongo import MongoClient
 client = MongoClient()
-mongo = client.flipfarm_server
+mongo = client.flipfarm_server_007

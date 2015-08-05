@@ -20,13 +20,14 @@ Clean code is much better than Cleaner comments!
 @author: F.Ashouri
 """
 
-from gevent import monkey
-monkey.patch_all()
+#from gevent import monkey
+#monkey.patch_all()
 
 from flask import Flask, request, abort, jsonify
 from flask.ext.mako import render_template
 from flask.ext.mako import MakoTemplates
 from bson.json_util import dumps
+from bson.objectid import ObjectId
 import ujson
 from utils import general, server_tools
 from utils.parsers import alfred
@@ -85,16 +86,19 @@ def addJob():
             'category':data.get('category'),
             'data':job,
             'md5': jobHash,
-            'status':'likely',
+            'bucket_size': 10,
+            'status':'future',
             'datetime':general.now(),
             'owner': client,
             'priority':500,
             'is_active':True,
+            'self':False,
             'progress':0,
         }
-        new = mongo.db.jobs.update({'md5':jobHash}, newJob, upsert=True)
-        server_tools.createNewTasks(jobHash)
-        return general.pack(newJob)
+        #new = mongo.db.jobs.update({'md5':jobHash}, newJob, upsert=True)
+        new = mongo.db.jobs.insert(newJob)
+        server_tools.createNewTasks(new)
+        return general.pack(ujson.loads(dumps(newJob)))
 
 
 @app.route('/api/dbtest/<entery>', methods=['GET', 'POST'])
@@ -117,6 +121,32 @@ def getJobsInfo():
     jobs = server_tools.getClientJobsInformation(client)
     return general.pack(jobs)
 
+
+@app.route('/api/fetchQueuedTasks')
+def fetchQueuedTasks():
+    """Give Queued tasks for a client to render"""
+    client = request.remote_addr
+    data = server_tools.getQueuedTasksForClient(client)
+    return general.pack(data)
+
+
+@app.route('/api/updateTask', methods=['POST'])
+def updateTask():
+    data = general.unpack(request.data)
+
+    tid =  ObjectId(data.get('_id'))
+    ctid =  data.get('ctid')
+    task = mongo.db.tasks.find_one({'_id':tid})
+    if not task:
+        abort(404)
+    task['status'] = data.get('status')
+    if data.get('progress'):
+        task['progress'] = data.get('progress')
+        task['last_activity'] = general.now()
+        task['ctid'] = ctid
+
+    mongo.db.tasks.update({'_id':tid}, task)
+    return general.pack('OK')
 
 if __name__ == "__main__":
 
@@ -142,7 +172,7 @@ if __name__ == "__main__":
         http_server = WSGIServer(('0.0.0.0', 9001), app)
         http_server.serve_forever()
 
-    #run_tornado()
-    run_debug()
+    run_tornado()
+    #run_debug()
     #run_gevent()
 

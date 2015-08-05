@@ -2,8 +2,7 @@
 import sys
 from subprocess import Popen, PIPE
 from utils.general import readConfig
-from utils.client_tools import getServerUrl
-from utils.server_tools import getSlaveForDispatch
+from utils.client_tools import getServerUrl, connectToServer
 import psutil
 import datetime
 import time
@@ -11,7 +10,6 @@ import requests
 import ujson
 from requests import HTTPError, ConnectionError
 from datetime import timedelta
-import msgpack
 import re
 
 CONFIG = readConfig()
@@ -26,7 +24,6 @@ BROKER_URL = 'redis://{host}:6379/10'.format(host=redis_host)
 CELERY_RESULT_BACKEND = 'redis://{host}:6379/10'.format(host=redis_host)
 
 
-
 from celery import Celery
 ca = Celery('clientAgent', broker=BROKER_URL, backend=CELERY_RESULT_BACKEND)
 ca.config_from_object('clientAgentConfig')
@@ -35,16 +32,10 @@ ca.config_from_object('clientAgentConfig')
 
 
 
-def update_task_status(task_uuid, status, progress=0):
-    tasksUpdateUrl = '{s}/api/updateTask'.format(s=getServerUrl())
-    payload = {'status':status, 'uuid':task_uuid, 'progress':progress or None}
-    try:
-        r = requests.post(tasksUpdateUrl, msgpack.packb(payload))
-    except ConnectionError:
-        print 'Server is Down'
-        return False
+def update_task_status(task_id, status, ctid, progress=0):
+    payload = {'status':status, '_id':task_id, 'ctid':ctid, 'progress':progress or None}
+    return connectToServer('/api/updateTask', payload)
 
-    return True
 
 
 def parse_prman_output(line):
@@ -58,7 +49,8 @@ def parse_prman_output(line):
 
 @ca.task(name='clientAgent.execute')
 def execute(cmd, task, directory='.'):
-    print cmd
+    #ctid = Celery.AsyncResult.task_id
+    ctid = -2
     stime = time.time()
     p = psutil.Popen(cmd.split(), stdout=PIPE, stderr=PIPE, bufsize=16, cwd=directory)
     #update_task_status(task.split('-')[0], 'on progress')
@@ -74,13 +66,13 @@ def execute(cmd, task, directory='.'):
             pass
         print '{t} {prog}% completed.'.format(t=task, prog=progress),len(line),
         if progress and not progress%5:  ## update every 5 percent
-            update_task_status(tuuid, 'on progress', progress)
+            update_task_status(tuuid, 'on progress', ctid, progress)
         if progress==100:  ## completed
-            update_task_status(tuuid, 'completed', 100)
+            update_task_status(tuuid, 'completed', ctid, 100)
 
     if not has_output:
-        #print 'NO OUTPUT'
-        update_task_status(tuuid, 'completed', 100)
+        print 'NO OUTPUT'
+        update_task_status(tuuid, 'completed', ctid, 100)
 
 
     p.stdout.close()
@@ -97,7 +89,8 @@ def execute(cmd, task, directory='.'):
         'start':stime,
         'end':etime,
         'command':cmd,
-        'task':task
+        'task':task,
+        'ctid':ctid
     }
 
 
@@ -105,8 +98,26 @@ def execute(cmd, task, directory='.'):
 @ca.task(name='clientAgent.getLatestTasks')
 def getLatestTasks():
     '''get list of tasks from server'''
-    fetchTasksUrl = '{s}/api/fetchLatestTasks'.format(s=getServerUrl())
-    print fetchTasksUrl
+    data = connectToServer('/api/fetchQueuedTasks')
+    if not data:
+        return
+    data = ujson.loads(data)
+    tasks =  data.get('tasks')
+    if not tasks:
+        return
+    for task in tasks:
+        update_task_status(str(task['_id']['$oid']), 'waiting', -1)
+        proccess = task.get('proccess')
+        if not proccess:
+            continue
+        raw_cmd = proccess.get('command')
+        command = raw_cmd.format(threads=data.get('slave').get('info').get('cpu_count'),
+                                 cwd=proccess.get('cwd'),
+                                 filepath=proccess.get('filepath'))
+        tname = '%s-%s'%(task.get('_id').get('$oid'), task.get('name'))
+        tname=tname.replace(' ', '_')
+        execute.delay(command, tname, proccess.get('cwd'))
+
 
 
 

@@ -1,7 +1,7 @@
 
 
 from celery import Celery
-from utils.server_tools import getSlaveForDispatch
+from utils.server_tools import dispatchTasks
 
 BROKER_URL = 'redis://localhost:6379/0'
 CELERY_RESULT_BACKEND = 'redis://localhost:6379/0'
@@ -16,7 +16,7 @@ ca.config_from_object('serverAgentConfig')
 @ca.task(name='task.dispatch')
 def dispatch():
     '''dispatch tasks'''
-    return getSlaveForDispatch()
+    return dispatchTasks()
 
 
 
