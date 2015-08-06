@@ -59,7 +59,13 @@ def execute(cmd, task, directory='.', target=None):
     stime = time.time()
     tuuid = task.split('-')[0]
     updateTaskInfo(tuuid, progress=0, started_on=now())
-    p = psutil.Popen(cmd.split(), stdout=PIPE, stderr=PIPE, bufsize=16, cwd=directory)
+    try:
+        p = psutil.Popen(cmd.split(), stdout=PIPE, stderr=PIPE, bufsize=16, cwd=directory)
+    except OSError, e:
+        updateTaskInfo(tuuid, status='failed', progress=0, failed_on=now())
+        return
+
+
     updateTaskInfo(tuuid, status='on progress', pid=p.pid)
     print '*'*80
     print '\tTask: %s'%task

@@ -253,11 +253,21 @@ ngApp.controller('clientCtrl', function($scope, $http, $interval, $timeout) {
                 });
         };
 
+        $scope.getSlaves = function(){
+                        sr = $http.get('/api/slaves');
+                        sr.success(function(result){
+                                if (result){
+                                        $scope.options.slaves=result;
+                                }
+                });
+        };
+
         $timeout(function(){
                 $scope.workerPing();}, $scope.baseInterval);
         $interval(function(){
-                $scope.workerPing();
-        }, $scope.baseInterval*12);
+                //$scope.workerPing();
+                $scope.getSlaves();
+        }, $scope.baseInterval*2);
 
 
 });

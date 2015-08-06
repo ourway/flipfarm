@@ -23,6 +23,7 @@ Clean code is much better than Cleaner comments!
 from gevent import monkey
 monkey.patch_all()
 
+import sys
 from flask import Flask, request, flash, abort, redirect
 from flask.ext.mako import render_template
 from flask.ext.mako import MakoTemplates
@@ -68,6 +69,7 @@ def ping():
     localStorageInfo = request.data
     payload = copy(systemInfo)
     payload['render_tools'] = client_tools.getRenderTools()
+    payload['os'] = sys.platform
     if localStorageInfo:
         _rawData = ujson.loads(localStorageInfo)
         for lsd in _rawData:
@@ -141,6 +143,11 @@ def workerStats():
     result = {'down':'ok'}
     p = client_tools.getWorkerStats()
     return ujson.dumps(p or result)
+
+@app.route('/api/slaves', methods=['GET'])
+def slaves():
+    result = client_tools.connectToServer('/api/slaves')
+    return result
 
 
 

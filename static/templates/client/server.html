@@ -1,1 +1,61 @@
-server
+
+<br/>
+<div class="panel panel-default" ng-init="getSlaves()">
+<div class="panel-heading">
+        <h4>Render Farm Nodes Status</h4>
+</div>
+<div class="panel-body">
+
+
+                <div class="col-md-4" ng-repeat="slave in options.slaves">
+                    <div class="panel panel-pricing panel-success" 
+                         ng-class="{'panel-danger':options.workerPing==false}">
+                        <div class="panel-heading text-center">
+                            <em class="fa fa-desktop"></em>
+                            <h4>
+                                    <i ng-if="slave.info.os=='darwin'" class="fa fa-apple"></i>
+                                    <i ng-if="slave.info.os=='linux2'" class="fa fa-linux"></i>
+                                    {{slave.info.identity}}</h4>
+                                {{slave.info.ip}}
+                        </div>
+                        <div class="panel-body text-center">
+                                <small><i>{{slave.info.qmark*(slave.info.cores || slave.info.cpu_count)}}</i></small>
+                        </div>
+                        <ul class="list-group">
+                                <li class="list-group-item"><i class="fa fa-circle"></i>
+                                        <b>{{slave.info.cores || slave.info.cpu_count}}</b> Cores
+                                
+                 <div ng-repeat="cpu in slave.info.cpu.percpu track by $index">
+                <div class="progress" style="opacity:0.75;height:8px;background:#fff">
+                <div class="progress-bar"
+                        ng-class="{'progress-bar-danger':cpu>50, 'progress-bar-info':cpu<=50 && cpu>25, 'progress-bar-success':cpu<=25}"
+                        role="progressbar" aria-valuenow="{{cpu}}"
+                  aria-valuemin="0" aria-valuemax="100" style="width:{{cpu}}%">
+                  </div>
+                </div>
+                </div>
+                                
+                                
+                                
+                                </li>
+                                <li class="list-group-item"><i class="fa fa-circle"></i> 
+                                        <b>{{slave.info.memory.free_memory}}<small>Mb</small></b> Free Memory</li>
+                                <li class="list-group-item"><i class="fa fa-circle"></i> 
+                                        <b>{{round(slave.info.disk.free/1024/1024/1024, 2)}}<small>Gb</small></b> Free Disk</li>
+                        </ul>
+                        <div class="panel-footer">
+                                <small><strong>{{slave.queue.length}}</strong> tasks in queue</small>
+                        </div>
+                    </div>
+                </div>
+
+
+
+
+
+
+</div>
+<div class="panel-footer">
+</div>
+
+</div>
