@@ -87,14 +87,15 @@
 
                                 <td>
                                     <a href="#" title="Pause Job"
-                                        ng-if="job.status==='On Progress'"><em class="fa fa-pause fa-stack"></em></a>
+                                        ng-if="job.status==='On Progress'"><em class="fa fa-pause"></em></a>
                                     <a href="#" title="Resume Job"
-                                        ng-if="job.status==='Paused'"><em class="fa fa-play-circle fa-stack"></em></a>
+                                        ng-if="job.status==='Paused'"><em class="fa fa-play-circle"></em></a>
                                     <a href="#" title="Cancel Job" ng-click="cancelJob(job.id)"
-                                        ng-hide="job.status=='Completed' || job.status=='Cancelled'"><em class="fa fa-stop fa-stack"></em></a>
+                                        ng-hide="job.status=='Completed' || job.status=='Cancelled'"><em class="fa fa-stop"></em></a>
                                     <a href="#" title="Move to Archive"
-                                        ng-if="job.status==='Completed'"><em class="fa fa-archive fa-stack"></em></a>
-                                        <a href="#" title="Delete Job"><em class="fa fa-remove-circle"></em></a>
+                                        ng-if="job.status==='Completed'"><em class="fa fa-archive"></em></a>
+                                    <a href="#" title="Try Again" ng-click="tryAgainJob(job.id)"
+                                        ng-if="job.status==='Cancelled' || job.status==='Failed'"><em class="fa fa-random"></em></a>
 
                                 </td>
 

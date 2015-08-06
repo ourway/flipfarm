@@ -1,5 +1,5 @@
 
-import sys
+import os, sys
 from subprocess import Popen, PIPE
 from utils.general import readConfig, now
 from utils.client_tools import getServerUrl, connectToServer
@@ -8,6 +8,7 @@ import datetime
 import time
 import requests
 import ujson
+import json
 from requests import HTTPError, ConnectionError
 from datetime import timedelta
 import re
@@ -36,13 +37,24 @@ def updateTaskInfo(task_id, **kw):
     payload = {'_id':task_id, 'data':kw}
     return connectToServer('/api/updateTask', payload)
 
+def tasklog(task_id, log):
+    payload = {'_id':task_id, 'log':log}
+    return connectToServer('/api/tasklog', payload)
 
 
 def parse_prman_output(line):
+
+    '''first lets catch errors'''
+    pat = re.compile(r'(R[\d]+).*\{([\w]+)\}(.*) \((.*)\)')
+    text = re.findall(pat, line)
+    if len(text):
+        return text[-1]  ## cause its a single topple
+    '''then try to find percentage'''
     pat = re.compile(r'R[\d]*.* ([\d]+)%')
     percent = re.findall(pat, line)
     if percent:
         return percent[-1]
+
 
 
 
@@ -59,11 +71,20 @@ def execute(cmd, task, directory='.', target=None):
     stime = time.time()
     tuuid = task.split('-')[0]
     updateTaskInfo(tuuid, progress=0, started_on=now())
-    try:
-        p = psutil.Popen(cmd.split(), stdout=PIPE, stderr=PIPE, bufsize=16, cwd=directory)
-    except OSError, e:
-        updateTaskInfo(tuuid, status='failed', progress=0, failed_on=now())
+
+    '''Error handeling'''
+    if not os.path.isdir(directory):
+        updateTaskInfo(tuuid, status='failed', failed_on=now())
+        log = {
+            'code':1,
+            'typ':'ERROR',
+            'description': 'FlipFarm: Directory "%s" not found'%directory,
+            'brief': 'Directory not found'
+        }
+        tasklog(tuuid, log)
         return
+
+    p = psutil.Popen(cmd.split(), stdout=PIPE, stderr=PIPE, bufsize=16, cwd=directory)
 
 
     updateTaskInfo(tuuid, status='on progress', pid=p.pid)
@@ -79,15 +100,35 @@ def execute(cmd, task, directory='.', target=None):
     progress = None
     for line in iter(p.stderr.readline, b''):
         has_output = True
-        try:
-            progress = int(parse_prman_output(line))
-        except (TypeError, ValueError):
-            pass
-        print '>>> {t} {prog}% completed.'.format(t=task, prog=progress),
-        if progress and not progress%5:  ## update every 5 percent
-            updateTaskInfo(tuuid, status='on progress', progress=progress)
-        if progress==100:  ## completed
-            updateTaskInfo(tuuid, status='completed', progress=100, finished=now())
+        result = parse_prman_output(line)
+        if result:
+            try:
+                '''Progressing ...'''
+                progress = int(result)
+                print '>>> {t} {prog}% completed.'.format(t=task, prog=progress),
+
+            except (TypeError, ValueError):
+                '''we probabaly have some error codes'''
+                code, typ, desc, brief = result
+                log = {
+                        'code':code,
+                        'type':typ,
+                        'description':desc,
+                        'bref':brief
+                    }
+                print json.dumps(log, indent=4, sort_keys=True)
+                tasklog(tuuid, log)
+                if typ == 'ERROR' and code not in []: #TODO
+                    updateTaskInfo(tuuid, status='failed', failed_on=now())
+                    p.kill()
+                    return
+
+            if progress and not progress%5:  ## update every 5 percent
+                updateTaskInfo(tuuid, status='on progress', progress=progress)
+            if progress==100:  ## completed
+                updateTaskInfo(tuuid, status='completed', progress=100, finished=now())
+        else:
+            pass  ## for now
 
     if not has_output:
         print 'NO OUTPUT'
@@ -95,6 +136,7 @@ def execute(cmd, task, directory='.', target=None):
 
 
     p.stdout.close()
+    p.stderr.close()
     p.wait()
 
     #f.write('########## %s | FlipFarm Log ##########\n' % datetime.datetime.now())
@@ -123,6 +165,8 @@ def getLatestTasks():
     tasks =  data.get('tasks')
     if not tasks:
         return
+    else:
+        print 'got %s tasks.' % len(tasks)
     for task in tasks:
         proccess = task.get('proccess')
         if not proccess:

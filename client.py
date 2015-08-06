@@ -111,7 +111,18 @@ def cancelJob():
     result = client_tools.connectToServer('/api/cancelJob', payload)
     return ujson.dumps(result)
 
+@app.route('/api/archiveJob', methods=['POST'])
+def archiveJob():
+    payload = ujson.loads(request.data)
+    result = client_tools.connectToServer('/api/archiveJob', payload)
+    return ujson.dumps(result)
 
+
+@app.route('/api/tryAgainJob', methods=['POST'])
+def tryAgainJob():
+    payload = ujson.loads(request.data)
+    result = client_tools.connectToServer('/api/tryAgainJob', payload)
+    return ujson.dumps(result)
 
 @app.route('/api/pauseJob', methods=['POST'])
 def pauseJob():
