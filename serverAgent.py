@@ -8,12 +8,12 @@ CELERY_RESULT_BACKEND = 'redis://localhost:6379/0'
 
 
 
-ca = Celery('task', broker=BROKER_URL, backend=CELERY_RESULT_BACKEND)
+ca = Celery('serverAgent', broker=BROKER_URL, backend=CELERY_RESULT_BACKEND)
 ca.config_from_object('serverAgentConfig')
 
 
 
-@ca.task(name='task.dispatch')
+@ca.task(name='serverAgent.dispatch')
 def dispatch():
     '''dispatch tasks'''
     return dispatchTasks()
