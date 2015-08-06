@@ -159,6 +159,20 @@ def updateTask():
     return general.pack('OK')
 
 
+@app.route('/api/tasklog', methods=['POST'])
+def tasklog():
+	data = general.unpack(request.data)
+	tid =  ObjectId(data.get('_id'))
+	log = data.get('log')
+	log['datetime']=general.now()
+	task = mongo.db.tasks.find_one({'_id':tid})
+	if not task:
+		abort(404)
+	task['logs'].append(log)
+	mongo.db.tasks.update({'_id':tid}, task)
+	return general.pack('OK')
+
+
 @app.route('/api/cancelJob', methods=['POST'])
 def cancelJob():
     data = general.unpack(request.data)
@@ -166,6 +180,36 @@ def cancelJob():
     _id = ObjectId(jobId)
     result = server_tools.cancelJob(_id)
     return general.pack(result)
+
+
+@app.route('/api/pauseJob', methods=['POST'])
+def pauseJob():
+    data = general.unpack(request.data)
+    jobId = data.get('id')  ## get job is in string format
+    _id = ObjectId(jobId)
+    result = server_tools.pauseJob(_id)
+    return general.pack(result)
+
+
+@app.route('/api/resumeJob', methods=['POST'])
+def resumeJob():
+    data = general.unpack(request.data)
+    jobId = data.get('id')  ## get job is in string format
+    _id = ObjectId(jobId)
+    result = server_tools.pauseJob(_id)
+    return general.pack(result)
+
+
+@app.route('/api/tryAgainJob', methods=['POST'])
+def tryAgainJob():
+    data = general.unpack(request.data)
+    jobId = data.get('id')  ## get job is in string format
+    _id = ObjectId(jobId)
+    result = server_tools.tryAgainJob(_id)
+    return general.pack(result)
+
+
+
 
 
 

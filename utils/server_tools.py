@@ -66,6 +66,7 @@ def createNewTasks(_id):
             'started_on': None,
             'finished_on': None,
             'paused_on': None,
+            'logs': [],
             'cancelled_on': None,
             'progress': 0,
             'job': job.get('_id'),
@@ -98,8 +99,7 @@ def getJobStatus(tasks):
                                  s.get('started_on') and not s.get('finished'))]):
         return 'On Progress'
 
-    for t in tasks:print t.get('status')
-    return 'n/a'
+    return 'Failed'
 
 
 def getClientJobsInformation(client):
@@ -203,10 +203,9 @@ def dispatchTasks():
                 task['slave'] = slave.get('ip')
                 mongo.db.tasks.update({'_id': task['_id']}, task)
 
-            _d = copy(job)
-            _d['status'] = 'dispatched'
-            print mongo.db.jobs.update({'_id': job.get('_id')}, _d)
-            return
+        _d = copy(job)
+        _d['status'] = 'dispatched'
+        print mongo.db.jobs.update({'_id': job.get('_id')}, _d)
 
 
 def getQueuedTasksForClient(client):
@@ -248,6 +247,33 @@ def cancelJob(_id):
     bulk.execute()
 
     return {'info':'success'}
+
+
+def tryAgainJob(_id):
+    """cancelled a job
+        Cancelling a job usually means cancelling whole tasks.
+        Also probabaly we have to send kill dognal to active
+        task processes
+    """
+    job = mongo.db.jobs.find_one({'_id':_id, 'status':{'$ne':'completed'}})
+    job['status'] = 'future'
+    """Set status of job to cancelled"""
+    mongo.db.jobs.update({'_id':_id}, job)
+    """Bulk update tasks"""
+    bulk = mongo.db.tasks.initialize_unordered_bulk_op()
+    bulk.find({'job':_id, 'status':{'$ne':'completed'} }).update({
+                                '$set': {
+                                    'status': "future",
+                                    'restarted_on':now(),
+                                    'slave':None,
+                                }})
+    bulk.execute()
+
+    return {'info':'success'}
+
+
+
+
 
 def getSlaveInfo(client=None):
 	"""Get slaves information"""
