@@ -88,7 +88,7 @@ def getJobStatus(tasks):
     if not tasks:
         return 'Completed'
     result = 'Likely'
-    for st in ['likely','paused', 'cancelled', 'waiting', 'future']:
+    for st in ['failed', 'likely','paused', 'cancelled', 'waiting', 'future']:
         if all([s.get('status') == st for s in tasks]):
             return st.title()
 
@@ -248,3 +248,15 @@ def cancelJob(_id):
     bulk.execute()
 
     return {'info':'success'}
+
+def getSlaveInfo(client=None):
+	"""Get slaves information"""
+	slaves = mongo.db.slaves.find()
+	return dumps(slaves)
+
+
+
+	
+
+
+
