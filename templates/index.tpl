@@ -27,6 +27,8 @@
         <link rel="stylesheet" href="/static/css/awesome-bootstrap-checkbox.css">
         <link rel="stylesheet" href="/static/css/flatty.css">
         <link rel="stylesheet" href="/static/css/main.css">
+        <link rel="stylesheet" href="/static/css/vex.css" />
+        <link rel="stylesheet" href="/static/css/vex-theme-default.css" />
 
         <script src="/static/js/vendor/modernizr-2.8.3-respond-1.4.2.min.js"></script>
     </head>
@@ -75,6 +77,7 @@
         <script src="/static/js/vendor/underscore-min.js"></script>
         <script src="/static/js/vendor/moment.min.js"></script>
         <script src="/static/js/vendor/humane.min.js"></script>
+        <script src="/static/js/vendor/vex.combined.min.js"></script>
         <script src="/static/js/plugins.js"></script>
         <script src="/static/js/main.js"></script>
 
@@ -89,5 +92,6 @@
             ga('create','UA-XXXXX-X','auto');ga('send','pageview');
         </script>
         -->
+        <script>vex.defaultOptions.className = 'vex-theme-default';</script>
     </body>
 </html>

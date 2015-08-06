@@ -220,15 +220,30 @@ ngApp.controller('clientCtrl', function($scope, $http, $interval, $timeout) {
                         humane.log('Job Cancelled.')
                 });
         };
+
+         $scope.tryAgainJob = function(jobId){
+                cr = $http.post('/api/tryAgainJob', {'id':jobId});
+                cr.success(function(){
+                        humane.log('Job will be sent to dispatch server.')
+                });
+        };       
+
         $scope.discardNow = function(){
-                if (confirm('Are you sure you want to discard renderes?')){
-                        disr = $http.post('/api/discardNow');
-                        disr.success(function(result){
-                                humane.log(result.message);       
-                                
-                        })
-                }
+
+                vex.dialog.confirm({
+                        message: 'Are you sure you want to discard renderes?',
+                        callback: function(value) {
+                        if (value){
+                                disr = $http.post('/api/discardNow');
+                                disr.success(function(result){
+                                        humane.log(result.message);  
+                                })
+                                };
+                        }
+                })
+
         };
+
 
         $scope.workerPing = function(){
                         wp = $http.get('/api/workerPing');
