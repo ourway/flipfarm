@@ -127,13 +127,15 @@
 
 
 
-<div class="modal fade"
+<div class="modal fade" data-keyboard="false"
     id="myModal" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
     <div class="modal-dialog"  style="width:800px">
         <div class="modal-content">
             <div class="modal-header" style="background:#f2f2f2">
 
-                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                <button
+                ng-click="selectedJob={};clearInterval(jobDetailIntervalId.$$intervalId);"
+                type="button" class="close" data-dismiss="modal" aria-hidden="true">
                     ×
                 </button>
                 <h4 class="modal-title" id="myModalLabel">
@@ -170,7 +172,8 @@
                         ng-class="{'label-success':_task.status=='completed',
                             'label-warning':_task.status=='paused',
                             'label-primary':_task.status=='on progress',
-                            'label-danger':_task.status=='failed'
+                            'label-danger':_task.status=='failed',
+                            'label-danger':_task.status=='cancelled'
                     }"
 
                         >{{_task.status}}</span>
@@ -181,7 +184,8 @@
             </div>
             <div class="modal-footer">
 
-                <button type="button" ng-click="selectedJob = {}" class="btn btn-default" data-dismiss="modal">
+                <button type="button"
+                ng-click="selectedJob={};clearInterval(jobDetailIntervalId.$$intervalId);" class="btn btn-default" data-dismiss="modal">
                     Close
                 </button>
             </div>

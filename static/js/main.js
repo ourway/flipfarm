@@ -296,13 +296,31 @@ ngApp.controller('clientCtrl', function($scope, $http, $interval, $timeout) {
                 });
         };
 
-        $scope.selectJobAndShowDetails = function(jobId){
+        $scope.getJobDetailFunc = function(jobId, click){
+
             var jr = $http.post('/api/jobDetail', {'_id':jobId});
             jr.success(function(data){
                 $scope.selectedJob = data;
-                $('#myModal').modal('show');
+                if (click){
+                    $('#myModal').modal('show');
+                }
             });
         };
+        $scope.clearInterval = function(intervalId){
+
+            clearInterval(intervalId);
+        };
+        $scope.selectJobAndShowDetails = function(jobId){
+            if ($scope.jobDetailIntervalId){
+                $scope.clearInterval($scope.jobDetailIntervalId.$$intervalId);
+            }
+            $scope.getJobDetailFunc(jobId, true);
+            //$scope.jobDetailIntervalId = $interval(function(){
+            //    $scope.getJobDetailFunc(jobId);}, 1000);
+            //console.log($scope.jobDetailIntervalId);
+
+        };
+
 
         $timeout(function(){
                 $scope.workerPing();}, $scope.baseInterval);
