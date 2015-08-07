@@ -27,6 +27,9 @@ from flask import abort
 import requests
 from requests import ConnectionError
 import msgpack
+from subprocess import PIPE
+import psutil
+import re
 
 
 @Memoized
@@ -68,9 +71,15 @@ def connectToServer(path, data=None):
     '''Connects to server to fetch some data'''
     serverUrl = getServerUrl()
     url = serverUrl + path
+    result = None
     if data:
-        return post(url, data)
-    return get(url)
+        result = post(url, data)
+    else:
+        result = get(url)
+    if result:
+        return result
+    else:
+        return {}
 
 
 @Memoized
@@ -97,7 +106,8 @@ def cancelAllFromMyCeleryQueue():
     """thsi will discard all tasks from client celery queue"""
 
     from clientAgent import ca  ## import ca here.
-    return ca.control.discard_all()
+    #return ca.control.discard_all()
+    return ca.control.cancel_consumer('celery')
 
 def getWorkerPing():
     from clientAgent import ca  ## import ca here.
@@ -109,3 +119,19 @@ def getWorkerStats():
     from clientAgent import ca  ## import ca here.
     inspect = ca.control.inspect()
     return inspect.stats()
+
+def getImageInfo(path):
+    """Get image information via pixar sho command"""
+    cmd = 'sho -info {path}'.format(path=path)
+    p = psutil.Popen(cmd.split(), stdout=PIPE, stderr=PIPE)
+    _, output = p.communicate()
+    result = {}
+    if output:
+        #result = dict(output)
+        '''parse sho output: http://www.regexr.com/3bhr0'''
+        pat = re.compile(r'([\w \-]+) ([\(\w\d \)\[.\-\]\/]+)')  ## show output file
+        raw = re.findall(pat, output)
+        #for i in raw:
+        #    print i
+        #        result[i[0].split()] = i[1]
+        return raw

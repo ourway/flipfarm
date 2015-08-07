@@ -54,7 +54,7 @@ basic_auth = BasicAuth(app)
 
 
 
-@app.route("/")
+@app.route("/server")
 @basic_auth.required
 def index():
     return 'Server'
@@ -130,7 +130,6 @@ def getJobsInfo():
     jobs = server_tools.getClientJobsInformation(client)
     return general.pack(jobs)
 
-
 @app.route('/api/fetchQueuedTasks')
 def fetchQueuedTasks():
     """Give Queued tasks for a client to render"""
@@ -193,10 +192,11 @@ def pauseJob():
 
 @app.route('/api/resumeJob', methods=['POST'])
 def resumeJob():
+    client = request.remote_addr
     data = general.unpack(request.data)
     jobId = data.get('id')  ## get job is in string format
     _id = ObjectId(jobId)
-    result = server_tools.pauseJob(_id)
+    result = server_tools.resumeJob(_id, client)
     return general.pack(result)
 
 
@@ -218,6 +218,22 @@ def slaves():
     '''Get slaves info for farm stats of client'''
     return general.pack(server_tools.getSlaveInfo())
 
+@app.route('/api/taskStatus', methods=['POST'])
+def taskStatus():
+    '''Get task status'''
+    data = general.unpack(request.data)
+    task_id = data.get('_id')  ## get job is in string format
+    _id = ObjectId(task_id)
+    return general.pack(server_tools.getTaskStatus(_id))
+
+
+@app.route('/api/jobDetail', methods=['POST'])
+def jobDetail():
+    '''Get task status'''
+    data = general.unpack(request.data)
+    job_id = data.get('_id')  ## get job is in string format
+    _id = ObjectId(job_id)
+    return general.pack(server_tools.getJobDetail(_id))
 
 if __name__ == "__main__":
 
@@ -246,4 +262,3 @@ if __name__ == "__main__":
     #run_tornado()
     run_debug()
     #run_gevent()
-

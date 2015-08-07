@@ -2,7 +2,7 @@
 import os, sys
 from subprocess import Popen, PIPE
 from utils.general import readConfig, now
-from utils.client_tools import getServerUrl, connectToServer
+from utils.client_tools import getServerUrl, connectToServer, getImageInfo
 import psutil
 import datetime
 import time
@@ -56,7 +56,10 @@ def parse_prman_output(line):
         return percent[-1]
 
 
-
+def getTaskStatus(task_id):
+    '''Get latest task status from server'''
+    payload = {'_id':task_id}
+    return connectToServer('/api/taskStatus', payload)
 
 
 @ca.task(name='clientAgent.execute')
@@ -70,6 +73,18 @@ def execute(cmd, task, directory='.', target=None):
     #ctid = Celery.AsyncResult.task_id
     stime = time.time()
     tuuid = task.split('-')[0]
+    '''chack task status and make sure its good to continue'''
+    lst = getTaskStatus(tuuid)
+    if lst in ['completed', 'cancelled', 'paused']:
+        log = {
+            'code':2,
+            'typ':'INFO',
+            'description': 'Task is %s, but was in queue, so flipfarm cancelled running process.'%lst,
+            'brief': 'Task process abort'
+        }
+        tasklog(tuuid, log)
+        return
+
     updateTaskInfo(tuuid, progress=0, started_on=now())
 
     '''Error handeling'''
@@ -85,15 +100,16 @@ def execute(cmd, task, directory='.', target=None):
         return
 
     p = psutil.Popen(cmd.split(), stdout=PIPE, stderr=PIPE, bufsize=16, cwd=directory)
-
-
     updateTaskInfo(tuuid, status='on progress', pid=p.pid)
+    processInfo = {
+        'Task':task,
+        'Command':cmd,
+        'Directory':directory,
+        'PID':p.pid,
+        'Target':target
+    }
     print '*'*80
-    print '\tTask: %s'%task
-    print '\tCommand: %s'%cmd
-    print '\tDirectory: %s'%directory
-    print '\tPID: %s'%p.pid
-    print '\tTarget: %s'%target
+    print json.dumps(processInfo, indent=4, sort_keys=True)
     print '*'*80
     print '\n'
     has_output = False
@@ -138,6 +154,11 @@ def execute(cmd, task, directory='.', target=None):
     p.stdout.close()
     p.stderr.close()
     p.wait()
+    if target and 'exr' in target:  ## for prman ##TODO
+        iminfo = getImageInfo(target)
+        updateTaskInfo(tuuid, target_info=iminfo)
+
+
 
     #f.write('########## %s | FlipFarm Log ##########\n' % datetime.datetime.now())
     #p.wait() # wait for the subprocess to exit
@@ -198,4 +219,3 @@ if __name__ == '__main__':
     #md = 'prman -Progress {f}'.format(f=filename)
     #execute.delay(cmd, 'testdev2', directory)
     #getTasks.delay()
-

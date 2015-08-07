@@ -43,10 +43,12 @@ mako = MakoTemplates(app)
 
 
 
-
-
-
 @app.route("/")
+def redir():
+    return redirect('/client#', code=302)
+
+
+@app.route("/client")
 def index():
     body = render_template('client.tpl')
     title = 'Client Dashboard'
@@ -102,7 +104,7 @@ def getJobsInfo():
 
 @app.route('/server')
 def server():
-    return redirect(client_tools.getServerUrl(), code=302)
+    return redirect(client_tools.getServerUrl()+'/server#', code=302)
 
 
 @app.route('/api/cancelJob', methods=['POST'])
@@ -162,6 +164,14 @@ def slaves():
 
 
 
+@app.route('/api/jobDetail', methods=['POST'])
+def jobDetail():
+    payload = ujson.loads(request.data)
+    result = client_tools.connectToServer('/api/jobDetail', payload)
+    return ujson.dumps(result)
+
+
+
 if __name__ == "__main__":
     def run_debug():
         app.run(
@@ -188,4 +198,3 @@ if __name__ == "__main__":
     #run_tornado()
     run_debug()
     #run_gevent()
-

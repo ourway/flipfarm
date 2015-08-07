@@ -1,4 +1,5 @@
 <br/>
+
 <div class="panel panel-default">
         <div class="panel-heading">
 <form role="form">
@@ -45,7 +46,8 @@
                                 <td>{{$index+1}}</td>
                                 <td title="{{job.name}}">
                                         <em class="fa fa-battery-{{parseInt(job.progress/25)}}" ></em>
-                                        <a href="#" ng-click="showJobDetails(job.id)">{{job.name.slice(0, 15)}}</a>
+                                        <a ng-click="selectJobAndShowDetails(job.id)"
+                                        href="#" ng-click="showJobDetails(job.id)">{{job.name.slice(0, 15)}}</a>
 
                                 </td>
                                 <td title="{{moment.unix(job.datetime)}}"><em class="fa fa-clock-o"></em> {{prettyDate(job.datetime)}} ago</td>
@@ -79,22 +81,23 @@
 </div>
 
 
+
                                 </td>
-                                <td><span class="text-primary text-center" 
+                                <td><span class="text-primary text-center"
                                                 style="font-family:monospace">{{job.tasks_count}}</span></td>
-                                <td><span ng-show="job.failed_count" class="text-danger" 
+                                <td><span ng-show="job.failed_count" class="text-danger"
                                                      style="font-family:monospace"><b>{{job.failed_count}}</b></span></td>
 
                                 <td>
-                                    <a href="#" title="Pause Job"
+                                    <a href="#" title="Pause Job" ng-click="pauseJob(job.id)"
                                         ng-if="job.status==='On Progress'"><em class="fa fa-pause"></em></a>
-                                    <a href="#" title="Resume Job"
+                                    <a href="#" title="Resume Job" ng-click="resumeJob(job.id)"
                                         ng-if="job.status==='Paused'"><em class="fa fa-play-circle"></em></a>
                                     <a href="#" title="Cancel Job" ng-click="cancelJob(job.id)"
                                         ng-hide="job.status=='Completed' || job.status=='Cancelled'"><em class="fa fa-stop"></em></a>
                                     <a href="#" title="Move to Archive"
-                                        ng-if="job.status==='Completed'"><em class="fa fa-archive"></em></a>
-                                    <a href="#" title="Try Again" ng-click="tryAgainJob(job.id)"
+                                        ng-if="job.status==='Completed' || job.status==='Cancelled'"><em class="fa fa-archive"></em></a>
+                                    <a href="#" title="Dispatch it again" ng-click="tryAgainJob(job.id)"
                                         ng-if="job.status==='Cancelled' || job.status==='Failed'"><em class="fa fa-random"></em></a>
 
                                 </td>
@@ -107,8 +110,10 @@
         </div>
 
         <div class="panel-footer">
-                <small class="text-info">{{options.queue.length}} jobs totally.
-                        <span ng-show="clientInfo.email">Alerts will be sent to <b>{{clientInfo.email}}</b></span>
+                <small ng-show="options.queue.length" class="text-info">{{options.queue.length}} jobs totally.</small>
+                <small ng-hide="options.queue.length" class="text-info">Your queue is empty!</small>
+                <small>        <span ng-show="clientInfo.email">Alerts will be sent to
+                    <b class="text-primary">{{clientInfo.email}}</b></span>
                         <span ng-hide="clientInfo.email" class="text-warning">
                                 <i class="fa fa-info-circle"></i> Please enter your <b>email</b> for recieving alerts.</span>
                 </small>
@@ -116,5 +121,72 @@
         </div>
 
 
+
+</div>
+
+
+
+
+<div class="modal fade"
+    id="myModal" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog"  style="width:800px">
+        <div class="modal-content">
+            <div class="modal-header" style="background:#f2f2f2">
+
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                    ×
+                </button>
+                <h4 class="modal-title" id="myModalLabel">
+                    Job: <code>{{selectedJob.jobInfo.name}}</code> | {{selectedJob.tasksInfo.length}} Tasks<br/>
+                    <small><i class="fa fa-clock-o"></i> {{prettyDate(selectedJob.jobInfo.datetime)}} ago
+                    by <b>{{selectedJob.jobInfo.owner}}</b>
+                    </small>
+                </h4>
+            </div>
+            <div class="modal-body" style="heigth:300px;overflow-y: scroll; background-color: #E6E6E6;">
+                <table class="table">
+                <tr ng-repeat="_task in selectedJob.tasksInfo | orderBy:'-progress' track by $index">
+                    <td>
+                        <i class="fa fa-picture-o"></i> {{_task.name}}
+                    </td>
+                    <td>
+                        <i class="fa fa-desktop"></i> {{_task.slave}}
+                    </td>
+                    <td>
+<div>
+    <small class="text-primary"><b>{{pad(_task.progress, 0)}}</b>%</small>
+     <div class="progress" style="height:4px">
+    <div class="progress-bar "
+        ng-class="{'progress-bar-danger':_task.progress==0, 'progress-bar-info':_task.progress>90,
+        'progress-bar-success':_task.progress==100, 'progress-bar-striped':_task.status=='On Progress'}"
+            role="progressbar" aria-valuenow="{{pad(_task.progress, 0)}}"
+      aria-valuemin="0" aria-valuemax="100" style="width:{{pad(_task.progress, 0)}}%">
+      </div>
+    </div>
+</div>
+                    </td>
+                    <td>
+                        <span class="label"
+                        ng-class="{'label-success':_task.status=='completed',
+                            'label-warning':_task.status=='paused',
+                            'label-primary':_task.status=='on progress',
+                            'label-danger':_task.status=='failed'
+                    }"
+
+                        >{{_task.status}}</span>
+
+                    </td>
+            </tr>
+            </table>
+            </div>
+            <div class="modal-footer">
+
+                <button type="button" ng-click="selectedJob = {}" class="btn btn-default" data-dismiss="modal">
+                    Close
+                </button>
+            </div>
+        </div>
+
+    </div>
 
 </div>

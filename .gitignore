@@ -6,3 +6,5 @@ databases/
 logs/
 .pyenv
 config.json
+*.codekit
+min/

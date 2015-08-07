@@ -27,7 +27,7 @@ code {
 
 #square.ng-hide-add, #square.ng-hide-remove
 {
-  display: block !important; 
+  display: block !important;
 }
 
 #square.ng-hide-remove, #square.ng-hide-add.ng-hide-add-active{
@@ -75,16 +75,29 @@ code {
   margin: 0px;
 }
 
+/*
+body.modal-open #mainDiv{
+    -webkit-filter: blur(7px);
+    -moz-filter: blur(15px);
+    -o-filter: blur(15px);
+    -ms-filter: blur(15px);
+    filter: blur(15px);
+}
+*/
 
+.modal-backdrop {background: #000;}
 
+.modal-backdrop.in {
+    filter: alpha(opacity=50);
+    opacity: 0.8;
+}
 
+.close {
+    font-size: 30px;
+    display:block;
+}
 
+#FModal{
 
-
-
-
-
-
-
-
-
+    background: #fff
+}

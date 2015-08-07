@@ -10,7 +10,7 @@
                 </span>
                 <h3><span><em  class='fa fa-dashboard fa-2x'></em> Client Dashboard</span></h3>
       </div>
-      <div class="panel panel-body">
+      <div class="panel panel-body" id="mainDiv">
                 <div class="col-md-12">
                         <div ng-show="server_status==='danger'" class="alert alert-warning"><h4>
                         <em class="fa fa-info-circle"></em>
@@ -56,8 +56,8 @@
 CPU Usage
 </label>
 <small class="text-primary" ng-show="options.cores==clientInfo.cpu_count">All cores are available</small>
-<small class="text-info" ng-hide="options.cores==clientInfo.cpu_count || options.cores==0">Just <b>{{options.cores}}</b> 
-        core<span ng-show="options.cores>1">s</span> 
+<small class="text-info" ng-hide="options.cores==clientInfo.cpu_count || options.cores==0">Just <b>{{options.cores}}</b>
+        core<span ng-show="options.cores>1">s</span>
         <span ng-show="options.cores>1">are</span>
         <span ng-show="options.cores<2">is</span>
         available</small>
@@ -202,14 +202,14 @@ CPU Usage
                         </div>
                         <div class="panel-footer">
 
-                <span ng-show="clientInfo.qmark && clientInfo.render_tools.length>0" 
+                <span ng-show="clientInfo.qmark && clientInfo.render_tools.length>0"
                 class="text-success"><i class="fa fa-check"></i> Client has needed tools.</span>
-                <span ng-hide="clientInfo.qmark && clientInfo.render_tools.length>0" 
+                <span ng-hide="clientInfo.qmark && clientInfo.render_tools.length>0"
                 class="text-warning"><i class="fa fa-info"></i> Client not ready yet!</span>
                 <br/>
-                <span ng-show="options.workerPing==true" 
+                <span ng-show="options.workerPing==true"
                 class="text-success"><i class="fa fa-circle"></i> Worker is up and running</span>
-                <span ng-show="options.workerPing==false" 
+                <span ng-show="options.workerPing==false"
                 class="text-danger"><i class="fa fa-circle"></i> Worker is DOWN!</span>
 
                         </div>

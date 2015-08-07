@@ -39,6 +39,7 @@ from utils.general import now, chunks, readConfig
 from bson.json_util import dumps
 from models.db import mongo
 from copy import copy
+import ujson
 
 CONFIG = readConfig()
 
@@ -67,6 +68,7 @@ def createNewTasks(_id):
             'finished_on': None,
             'paused_on': None,
             'logs': [],
+            'target_info':{},
             'cancelled_on': None,
             'progress': 0,
             'job': job.get('_id'),
@@ -126,7 +128,7 @@ def getClientJobsInformation(client):
         'failed_count': mongo.db.tasks.find({'job': j.get('_id'), 'is_active': True, 'status': 'failed'}).count(),
         'active_task':'Frame 43',
     } for j in jobs]
-    return result or '{[]}'
+    return result or {}
 
 
 def getSlaveForDispatch():
@@ -164,17 +166,7 @@ def getSlaveForDispatch():
     bestChoice = slaves[best_pos]
     return bestChoice.get('ip')
 
-
-def dispatchTasks():
-    """Dispatch tasks every few seconds using an agent"""
-    """find none_finished jobs"""
-    looking_for = {
-        #'$and' : [{ 'status':{'$ne':'completed'} }, { 'status':{'$ne':'cancelled'}}, {'status'}],
-        'status': 'future',
-        'is_active': True
-    }
-
-    for job in mongo.db.jobs.find(looking_for):
+def dispatchTasksJob(job, slave=None):
         """now find available tasks"""
         looking_for = {
             'is_active': True,
@@ -187,12 +179,13 @@ def dispatchTasks():
         '''Create buckets of tasks'''
         buckets = chunks(list(tasks), job.get('bucket_size', 10))
         for bucket in buckets:
-            bestChoice = mongo.db.slaves.find({'ip': getSlaveForDispatch()})
-            if bestChoice.count():
-                slave = bestChoice.next()
-            else:
-                print 'Slave not found!!'
-                continue
+            if not slave:
+                bestChoice = mongo.db.slaves.find({'ip': getSlaveForDispatch()})
+                if bestChoice.count():
+                    slave = bestChoice.next()
+                else:
+                    print 'Slave not found!!'
+                    continue
             '''Lets add bucket tasks to slave queue'''
             '''update slave info on db'''
             mongo.db.slaves.update({'_id':slave.get('_id')}, slave)
@@ -206,6 +199,19 @@ def dispatchTasks():
         _d = copy(job)
         _d['status'] = 'dispatched'
         print mongo.db.jobs.update({'_id': job.get('_id')}, _d)
+
+def dispatchTasks(slave=None):
+    """Dispatch tasks every few seconds using an agent
+        If slave is something, then we force add the task to that slave.
+    """
+    """find none_finished jobs"""
+    looking_for = {
+        #'$and' : [{ 'status':{'$ne':'completed'} }, { 'status':{'$ne':'cancelled'}}, {'status'}],
+        'status': 'future',
+        'is_active': True
+    }
+    for job in mongo.db.jobs.find(looking_for):
+        dispatchTasksJob(job, slave)
 
 
 def getQueuedTasksForClient(client):
@@ -250,14 +256,12 @@ def cancelJob(_id):
 
 
 def tryAgainJob(_id):
-    """cancelled a job
-        Cancelling a job usually means cancelling whole tasks.
-        Also probabaly we have to send kill dognal to active
-        task processes
+    """Try Again a cancelled job.
+        It means schanging all tasks status to future and reset slave info to None.
     """
     job = mongo.db.jobs.find_one({'_id':_id, 'status':{'$ne':'completed'}})
     job['status'] = 'future'
-    """Set status of job to cancelled"""
+    """Set status of job to future"""
     mongo.db.jobs.update({'_id':_id}, job)
     """Bulk update tasks"""
     bulk = mongo.db.tasks.initialize_unordered_bulk_op()
@@ -272,17 +276,67 @@ def tryAgainJob(_id):
     return {'info':'success'}
 
 
+def pauseJob(_id):
+    """Pause the job.
+    Pausing a job means changing all ready tasks tasks status to pause.
+    """
+    job = mongo.db.jobs.find_one({'_id':_id})
+    job['status'] = 'paused'
+    """Set status of job to paused"""
+    mongo.db.jobs.update({'_id':_id}, job)
+    """Bulk update tasks"""
+    bulk = mongo.db.tasks.initialize_unordered_bulk_op()
+    bulk.find({'job':_id, 'status':'ready' }).update({
+                                '$set': {
+                                    'status': "paused",
+                                    'paused_on':now(),
+                                }})
+    bulk.execute()
+
+    return {'info':'success'}
 
 
+def resumeJob(_id, client):
+    """resume the job.
+    resuming a job means changing all tasks status to future.
+    """
+    job = mongo.db.jobs.find_one({'_id':_id})
+    """Set status of job to future"""
+    job['status'] = 'future'
+    """find slave"""
+    slave = mongo.db.slaves.find_one({'ip':client})
+    mongo.db.jobs.update({'_id':_id}, job)
+    """Bulk update tasks"""
+    bulk = mongo.db.tasks.initialize_unordered_bulk_op()
+    bulk.find({'job':_id, 'status':{'$ne':'completed'} }).update({
+                                '$set': {
+                                    'status': "future",
+                                    'paused_on':now(),
+                                    'slave': None,
+                                }})
+    bulk.execute()
+
+    dispatchTasks(slave)
+
+    return {'info':'success'}
+
+
+def getTaskStatus(_id):
+    '''Get task status'''
+    task = mongo.db.tasks.find_one({'_id':_id})
+    if task:
+        return task.get('status', 'N/A')
 
 def getSlaveInfo(client=None):
 	"""Get slaves information"""
 	slaves = mongo.db.slaves.find()
 	return dumps(slaves)
 
-
-
-	
-
-
-
+def getJobDetail(_id):
+    '''Get job detail for show in a modal'''
+    job = mongo.db.jobs.find_one({'_id':_id})
+    output = {}
+    output['jobInfo'] = ujson.loads(dumps(job))
+    tasks = list(mongo.db.tasks.find({'job':_id}))
+    output['tasksInfo'] = ujson.loads(dumps(tasks))
+    return output

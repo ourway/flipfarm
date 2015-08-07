@@ -9,6 +9,18 @@
         <title>${title} | Flip/Farm</title>
         <meta name="description" content="">
         <meta name="viewport" content="width=device-width, initial-scale=1">
+
+        <link rel="shortcut icon" href="/static/images/favicon.ico" type="image/x-icon" />
+        <link rel="apple-touch-icon" href="/static/images/apple-touch-icon.png" />
+    <link rel="apple-touch-icon" sizes="57x57" href="/static/images/apple-touch-icon-57x57.png" />
+    <link rel="apple-touch-icon" sizes="72x72" href="/static/images/apple-touch-icon-72x72.png" />
+    <link rel="apple-touch-icon" sizes="76x76" href="/static/images/apple-touch-icon-76x76.png" />
+    <link rel="apple-touch-icon" sizes="114x114" href="/static/images/apple-touch-icon-114x114.png" />
+    <link rel="apple-touch-icon" sizes="120x120" href="/static/images/apple-touch-icon-120x120.png" />
+    <link rel="apple-touch-icon" sizes="144x144" href="/static/images/apple-touch-icon-144x144.png" />
+    <link rel="apple-touch-icon" sizes="152x152" href="/static/images/apple-touch-icon-152x152.png" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/static/images/apple-touch-icon-180x180.png" />
+
         <link rel="apple-touch-icon" href="/static/apple-touch-icon.png">
 
         <link rel="stylesheet" href="/static/css/bootstrap.min.css">
@@ -26,9 +38,11 @@
         <link rel="stylesheet" href="/static/css/font-awesome.min.css">
         <link rel="stylesheet" href="/static/css/awesome-bootstrap-checkbox.css">
         <link rel="stylesheet" href="/static/css/flatty.css">
-        <link rel="stylesheet" href="/static/css/main.css">
         <link rel="stylesheet" href="/static/css/vex.css" />
+        <link rel="stylesheet" href="/static/css/json.human.css" />
         <link rel="stylesheet" href="/static/css/vex-theme-default.css" />
+        <link rel="stylesheet" href="/static/css/main.css">
+
 
         <script src="/static/js/vendor/modernizr-2.8.3-respond-1.4.2.min.js"></script>
     </head>
@@ -61,11 +75,11 @@
 
       <footer>
 			<address>
-				 <strong>Pooyamehr Studio</strong> | Farsheed Ashouri<br /> &copy; 2015			
+				 <strong>Pooyamehr Studio</strong> | Farsheed Ashouri<br /> &copy; 2015
             </address>
 
       </footer>
-    </div> <!-- /container -->       
+    </div> <!-- /container -->
         <!-- <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script> -->
         <script>window.jQuery || document.write('<script src="/static/js/vendor/jquery-1.11.2.min.js"><\/script>')</script>
 
@@ -78,11 +92,12 @@
         <script src="/static/js/vendor/moment.min.js"></script>
         <script src="/static/js/vendor/humane.min.js"></script>
         <script src="/static/js/vendor/vex.combined.min.js"></script>
+        <script src="/static/js/vendor/json.human.js"></script>
         <script src="/static/js/plugins.js"></script>
         <script src="/static/js/main.js"></script>
 
         <!-- Google Analytics: change UA-XXXXX-X to be your site's ID. -->
-        <!-- 
+        <!--
         <script>
             (function(b,o,i,l,e,r){b.GoogleAnalyticsObject=l;b[l]||(b[l]=
             function(){(b[l].q=b[l].q||[]).push(arguments)});b[l].l=+new Date;

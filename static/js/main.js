@@ -4,6 +4,8 @@
 /*global humane*/
 /*global Math*/
 /*global _*/
+/*global vex*/
+/*global JsonHuman*/
 
 humane.timeout = 5000; // default: 2500
 humane.waitForMove = true; // default: false
@@ -14,7 +16,7 @@ function syntaxHighlight(json) {
         if (!json){
                 return;
         }
-    if (typeof json != 'string') {
+    if (typeof json !== 'string') {
          json = JSON.stringify(json, undefined, 2);
     }
     json = json.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
@@ -36,13 +38,14 @@ function syntaxHighlight(json) {
 }
 
 var prettyDate = function (time) {
-  if (parseInt(time)!==NaN)
+  var _d = time;
+  if (!isNaN(parseInt(time)))
         {
-                var _d = moment.unix(time);
+                _d = moment.unix(time);
         }
   else
         {
-                var _d = moment(time);
+                _d = moment(time);
         }
   return moment.duration(_d - moment()).humanize();
 };
@@ -111,6 +114,7 @@ ngApp.controller('clientCtrl', function($scope, $http, $interval, $timeout) {
         $scope.syntaxHighlight = syntaxHighlight;
         $scope.moment = moment;
         $scope.parseInt = parseInt;
+        $scope.JsonHuman = JsonHuman;
         $scope.pad = pad;
         $scope._ = _;
         $scope.round = Math.round;
@@ -126,8 +130,8 @@ ngApp.controller('clientCtrl', function($scope, $http, $interval, $timeout) {
         $scope.options.workerStats=[];
         $scope.options.disabledRow=function(_status){
                 if (_status==='Cancelled'){
-                        return {'opacity':0.5}
-                };
+                        return {'opacity':0.5};
+                }
 
         };
 
@@ -215,18 +219,31 @@ ngApp.controller('clientCtrl', function($scope, $http, $interval, $timeout) {
                 localStorage.setItem('cores', $scope.options.cores);
         };
         $scope.cancelJob = function(jobId){
-                cr = $http.post('/api/cancelJob', {'id':jobId});
+                var cr = $http.post('/api/cancelJob', {'id':jobId});
                 cr.success(function(){
-                        humane.log('Job Cancelled.')
+                        humane.log('Job Cancelled.');
+                });
+        };
+
+        $scope.pauseJob = function(jobId){
+                var cr = $http.post('/api/pauseJob', {'id':jobId});
+                cr.success(function(){
+                        humane.log('Job Paused.');
+                });
+        };
+        $scope.resumeJob = function(jobId){
+                var cr = $http.post('/api/resumeJob', {'id':jobId});
+                cr.success(function(){
+                        humane.log('Job queued again.');
                 });
         };
 
          $scope.tryAgainJob = function(jobId){
-                cr = $http.post('/api/tryAgainJob', {'id':jobId});
+                var cr = $http.post('/api/tryAgainJob', {'id':jobId});
                 cr.success(function(){
-                        humane.log('Job will be sent to dispatch server.')
+                        humane.log('Job will be sent to dispatch server.');
                 });
-        };       
+        };
 
         $scope.discardNow = function(){
 
@@ -234,19 +251,19 @@ ngApp.controller('clientCtrl', function($scope, $http, $interval, $timeout) {
                         message: 'Are you sure you want to discard renderes?',
                         callback: function(value) {
                         if (value){
-                                disr = $http.post('/api/discardNow');
+                                var disr = $http.post('/api/discardNow');
                                 disr.success(function(result){
-                                        humane.log(result.message);  
-                                })
-                                };
+                                        humane.log(result.message);
+                                });
+                                }
                         }
-                })
+                });
 
         };
 
 
         $scope.workerPing = function(){
-                        wp = $http.get('/api/workerPing');
+                        var wp = $http.get('/api/workerPing');
                         wp.success(function(result){
                                 if (!result.down){
                                         $scope.options.workerPing=true;
@@ -254,27 +271,37 @@ ngApp.controller('clientCtrl', function($scope, $http, $interval, $timeout) {
                                 else{
                                         $scope.options.workerPing=false;
 
-                                };
+                                }
                 });
         };
 
         $scope.workerStats = function(){
-                        wp = $http.get('/api/workerStats');
+                        var wp = $http.get('/api/workerStats');
                         wp.success(function(result){
                                 if (!result.down){
                                         var _k = _.allKeys(result);
                                         $scope.options.workerStats=result[_k];
+                                        $('#workerStatsDiv').html(JsonHuman.format(result[_k]));
+
                                 }
                 });
         };
 
         $scope.getSlaves = function(){
-                        sr = $http.get('/api/slaves');
+                        var sr = $http.get('/api/slaves');
                         sr.success(function(result){
                                 if (result){
                                         $scope.options.slaves=result;
                                 }
                 });
+        };
+
+        $scope.selectJobAndShowDetails = function(jobId){
+            var jr = $http.post('/api/jobDetail', {'_id':jobId});
+            jr.success(function(data){
+                $scope.selectedJob = data;
+                $('#myModal').modal('show');
+            });
         };
 
         $timeout(function(){
@@ -283,6 +310,7 @@ ngApp.controller('clientCtrl', function($scope, $http, $interval, $timeout) {
                 //$scope.workerPing();
                 $scope.getSlaves();
         }, $scope.baseInterval*2);
+
 
 
 });
