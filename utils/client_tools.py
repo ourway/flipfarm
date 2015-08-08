@@ -31,6 +31,9 @@ from subprocess import PIPE
 import psutil
 import re
 import getpass
+from uuid import getnode as get_mac
+
+MAC = get_mac()
 user=getpass.getuser()
 
 
@@ -108,8 +111,8 @@ def cancelAllFromMyCeleryQueue():
     """thsi will discard all tasks from client celery queue"""
 
     from clientAgent import ca  ## import ca here.
-    #return ca.control.discard_all()
-    return ca.control.cancel_consumer('celery')
+    return ca.control.discard_all()
+    #  return ca.control.cancel_consumer('celery')
 
 def getWorkerPing():
     from clientAgent import ca  ## import ca here.
@@ -122,18 +125,22 @@ def getWorkerStats():
     inspect = ca.control.inspect(destination=['celery@%s'%user])
     return inspect.stats()
 
+
 def getImageInfo(path):
     """Get image information via pixar sho command"""
     cmd = 'sho -info {path}'.format(path=path)
     p = psutil.Popen(cmd.split(), stdout=PIPE, stderr=PIPE)
     _, output = p.communicate()
     result = {}
+    def stripper(t):
+        return (t[0].strip().lower().replace(' ', '_'),
+                t[0].strip().lower().replace(' ', '_'))
     if output:
         #result = dict(output)
-        '''parse sho output: http://www.regexr.com/3bhr0'''
-        pat = re.compile(r'([\w \-]+) ([\(\w\d \)\[.\-\]\/]+)')  ## show output file
+        '''parse sho ou tput: http://www.regexr.com/3bhr0'''
+        pat = re.compile(r'([\w \-]+)  ([\(\w\d \)\[.\-\]\/]+)')  ## show output file
         raw = re.findall(pat, output)
         #for i in raw:
         #    print i
         #        result[i[0].split()] = i[1]
-        return raw
+        return dict(map(stripper, raw))

@@ -12,11 +12,11 @@
                         ng-class="{'panel-danger':true}">
 
                         <div class="panel-heading text-center">
-                            <em class="fa fa-desktop"></em>
+                                <i ng-if="slave.info.os=='darwin'" class="fa fa-apple"></i>
+                                <i ng-if="slave.info.os=='linux2'" class="fa fa-linux"></i>
                             <h4>
-                                    <i ng-if="slave.info.os=='darwin'" class="fa fa-apple"></i>
-                                    <i ng-if="slave.info.os=='linux2'" class="fa fa-linux"></i>
-                                    {{slave.info.identity}}</h4>
+
+                                {{slave.info.identity.slice(0, 15)}}</h4>
                                 {{slave.info.ip}}
                         </div>
                         <div class="panel-body text-center">

@@ -7,8 +7,8 @@
 /*global vex*/
 /*global JsonHuman*/
 
-humane.timeout = 5000; // default: 2500
-humane.waitForMove = true; // default: false
+humane.timeout = 3000; // default: 2500
+//humane.waitForMove = true; // default: false
 
 console.log('Pooyamehr Studio');
 
@@ -126,7 +126,7 @@ ngApp.controller('clientCtrl', function($scope, $http, $interval, $timeout) {
         $scope.options.identity = localStorage.getItem('identity');
         $scope.options.email = localStorage.getItem('email');
         $scope.options.cores = localStorage.getItem('cores');
-        $scope.options.queue = {};
+        $scope.options.queue = [];
         $scope.options.workerStats=[];
         $scope.options.disabledRow=function(_status){
                 if (_status==='Cancelled'){
@@ -141,8 +141,11 @@ ngApp.controller('clientCtrl', function($scope, $http, $interval, $timeout) {
         $scope.getJobs = function(){
                 var jr = $http.get('/api/getJobsInfo');
                 jr.success(function(queueData){
-                        if (queueData.length){
+                        if (!_.isEmpty(queueData)){
                                 $scope.options.queue = queueData;
+                        }
+                        else{
+                            $scope.options.queue = [];
                         }
                 });
         };
@@ -232,6 +235,13 @@ ngApp.controller('clientCtrl', function($scope, $http, $interval, $timeout) {
                 var cr = $http.post('/api/pauseJob', {'id':jobId});
                 cr.success(function(){
                         humane.log('Job Paused.');
+                });
+        };
+
+        $scope.archiveJob = function(jobId){
+                var cr = $http.post('/api/archiveJob', {'id':jobId});
+                cr.success(function(){
+                        humane.log('Job archived.');
                 });
         };
         $scope.resumeJob = function(jobId){
@@ -329,7 +339,7 @@ ngApp.controller('clientCtrl', function($scope, $http, $interval, $timeout) {
         };
 
         $scope.shoImage = function(path){
-            console.log(path)
+            console.log(path);
 
             $http.post('/api/shoImage', {'target_path':path});
 
@@ -341,6 +351,12 @@ ngApp.controller('clientCtrl', function($scope, $http, $interval, $timeout) {
                 $scope.getSlaves();
         }, $scope.baseInterval*2);
 
+        $scope.shoXMLStatc = function(dir, taskName){
+            var tname = taskName.replace(/ /g, '_');
+            var url = '/api/serveStatic?path='+dir+'/'+'.flipfarmPrmanStats-'+tname+'.xml';
+            //window.open(url, "", "width=800, height=600");
+            $http.get(url);
+        };
 
 
 });

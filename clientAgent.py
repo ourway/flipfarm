@@ -13,6 +13,7 @@ from requests import HTTPError, ConnectionError
 from datetime import timedelta
 import re
 
+
 CONFIG = readConfig()
 
 ### celery setup
@@ -28,7 +29,6 @@ CELERY_RESULT_BACKEND = 'redis://{host}:6379/10'.format(host=redis_host)
 from celery import Celery
 ca = Celery('clientAgent', broker=BROKER_URL, backend=CELERY_RESULT_BACKEND)
 ca.config_from_object('clientAgentConfig')
-
 
 
 
@@ -70,7 +70,6 @@ def execute(cmd, task, directory='.', target=None):
 
     """
 
-    print cmd
     #ctid = Celery.AsyncResult.task_id
     stime = time.time()
     tuuid = task.split('-')[0]
@@ -83,6 +82,7 @@ def execute(cmd, task, directory='.', target=None):
             'description': 'Task is %s, but was in queue, so flipfarm cancelled running process.'%lst,
             'brief': 'Task process abort'
         }
+        print '\tTask %s is %s'%(task, lst)
         tasklog(tuuid, log)
         return
 
@@ -197,7 +197,7 @@ def getLatestTasks():
         raw_cmd = proccess.get('command')
         command = raw_cmd.format(threads=data.get('slave').get('info').get('cores') or \
                                  data.get('slave').get('info').get('cpu_count'),
-                                 cwd=proccess.get('cwd'),
+                                 cwd=proccess.get('cwd'), task=task.get('name').replace(' ', '_'),
                                  filepath=proccess.get('filepath'))
         tname = '%s-%s'%(task.get('_id').get('$oid'), task.get('name'))
         tname=tname.replace(' ', '_')

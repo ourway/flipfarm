@@ -95,7 +95,7 @@
                                         ng-if="job.status==='Paused'"><em class="fa fa-play-circle"></em></a>
                                     <a href="#" title="Cancel Job" ng-click="cancelJob(job.id)"
                                         ng-hide="job.status=='Completed' || job.status=='Cancelled'"><em class="fa fa-stop"></em></a>
-                                    <a href="#" title="Move to Archive"
+                                    <a href="#" title="Move to Archive" ng-click="archiveJob(job.id)"
                                         ng-if="job.status==='Completed' || job.status==='Cancelled'"><em class="fa fa-archive"></em></a>
                                     <a href="#" title="Dispatch it again" ng-click="tryAgainJob(job.id)"
                                         ng-if="job.status==='Cancelled' || job.status==='Failed'"><em class="fa fa-random"></em></a>
@@ -167,16 +167,13 @@
     </div>
 </div>
 
-<a ng-show="_task.status=='completed'" ng-click="shoImage(_task.proccess.target)"><i class="fa fa-eye"></i></a>
+<a href="#" ng-show="_task.status=='completed'" ng-click="shoImage(_task.proccess.target)"><i class="fa fa-eye"></i></a>
+<a href="#" ng-show="_task.status=='completed'" ng-click="shoXMLStatc(_task.proccess.cwd, _task.name)">
+    <i class="fa fa-newspaper-o"></i></a>
                     </td>
                     <td>
                         <span class="label"
-                        ng-class="{'label-success':_task.status=='completed',
-                            'label-warning':_task.status=='paused',
-                            'label-primary':_task.status=='on progress',
-                            'label-danger':_task.status=='failed',
-                            'label-danger':_task.status=='cancelled',
-                            'label-default':_task.status=='ready'
+                        ng-class="{'label-success':_task.status=='completed', 'label-warning':_task.status=='paused', 'label-primary':_task.status=='on progress', 'label-danger':_task.status=='cancelled', 'label-default':_task.status=='ready'
                     }"
 
                         >{{_task.status}}</span>

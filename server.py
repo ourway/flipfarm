@@ -72,7 +72,7 @@ def ping():
         clientNewInfo['ip'] = client
         if clientNewInfo:
             data = {'ip':client, 'info':clientNewInfo,
-                    'last_ping':general.now(), 'queue':[]}
+                    'last_ping':general.now()}
             slave = mongo.db.slaves.update({'ip':client}, data,
                                            upsert=True)  ## update if find or insert new
     return general.pack({'message':'PONG', 'clientInfo':clientNewInfo,
@@ -189,6 +189,13 @@ def pauseJob():
     result = server_tools.pauseJob(_id)
     return general.pack(result)
 
+@app.route('/api/archiveJob', methods=['POST'])
+def archiveJob():
+    data = general.unpack(request.data)
+    jobId = data.get('id')  ## get job is in string format
+    _id = ObjectId(jobId)
+    result = server_tools.archiveJob(_id)
+    return general.pack(result)
 
 @app.route('/api/resumeJob', methods=['POST'])
 def resumeJob():

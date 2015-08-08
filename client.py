@@ -24,7 +24,7 @@ from gevent import monkey
 monkey.patch_all()
 
 import sys
-from flask import Flask, request, flash, abort, redirect
+from flask import Flask, request, flash, abort, redirect, send_from_directory
 from flask.ext.mako import render_template
 from flask.ext.mako import MakoTemplates
 import os
@@ -33,6 +33,7 @@ from subprocess import PIPE
 import psutil
 from utils import general, client_tools
 from copy import copy
+import webbrowser as wb
 
 __version__ = general.getVersion()
 
@@ -115,13 +116,6 @@ def cancelJob():
     result = client_tools.connectToServer('/api/cancelJob', payload)
     return ujson.dumps(result)
 
-@app.route('/api/archiveJob', methods=['POST'])
-def archiveJob():
-    payload = ujson.loads(request.data)
-    result = client_tools.connectToServer('/api/archiveJob', payload)
-    return ujson.dumps(result)
-
-
 @app.route('/api/tryAgainJob', methods=['POST'])
 def tryAgainJob():
     payload = ujson.loads(request.data)
@@ -140,6 +134,11 @@ def resumeJob():
     result = client_tools.connectToServer('/api/resumeJob', payload)
     return ujson.dumps(result)
 
+@app.route('/api/archiveJob', methods=['POST'])
+def archiveJob():
+    payload = ujson.loads(request.data)
+    result = client_tools.connectToServer('/api/archiveJob', payload)
+    return ujson.dumps(result)
 
 @app.route('/api/discardNow', methods=['POST'])
 def discardNow():
@@ -172,7 +171,7 @@ def shoImage():
     if target_path and os.path.isfile(target_path):
         basecmd = 'sho "{fp}"'
         cmd = basecmd.format(fp=target_path)
-        ps.system(cmd)
+        os.system(cmd)
         #p = psutil.Popen(cmd.split(), stdout=PIPE, stderr=PIPE)
         return '{"info":"success"}'
     else:
@@ -186,6 +185,19 @@ def jobDetail():
     result = client_tools.connectToServer('/api/jobDetail', payload)
     return ujson.dumps(result)
 
+@app.route('/api/serveStatic')
+def serveStatic():
+    path = request.args.get('path')
+    if path:
+        if os.path.isfile(path):
+            wb.open('file://'+path)
+            return 'DONE'
+            #return redirect('file://'+path, code=302)
+            #dir = os.path.dirname(path)
+            #return send_from_directory(dir, os.path.basename(path))
+        abort(404)
+    else:
+        abort(404)
 
 
 if __name__ == "__main__":

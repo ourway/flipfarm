@@ -8,3 +8,5 @@ logs/
 config.json
 *.codekit
 min/
+*.state
+*.pid

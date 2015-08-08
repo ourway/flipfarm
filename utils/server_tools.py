@@ -46,7 +46,7 @@ CONFIG = readConfig()
 
 def getRenderCommand(category):
     if category == 'Alfred':
-        command = 'prman -cwd {cwd} -t:{threads} -Progress {filepath}'
+        command = 'prman -statsfile {cwd}/.flipfarmPrmanStats-{task}.xml -cwd {cwd} -t:{threads} -Progress {filepath}'
         return command
 
 
@@ -101,7 +101,7 @@ def getJobStatus(tasks):
                                  s.get('started_on') and not s.get('finished'))]):
         return 'On Progress'
 
-    return 'Failed'
+    return 'Waiting'
 
 
 def getClientJobsInformation(client):
@@ -145,7 +145,7 @@ def getSlaveForDispatch():
                 machine 2 is better choice
 
     '''
-    seconds_ago = now() - 10
+    seconds_ago = now() - 15
     looking_for = {
         # $gt means greater than.  $lt means less than
         'last_ping': {'$gt': seconds_ago},
@@ -157,9 +157,8 @@ def getSlaveForDispatch():
     if not slaves:
         return
     freeness_list = [
-        (mongo.db.tasks.find({'is_active': True}).count() or -1) /
-        (float(i.get('info').get('qmark', 0.000001))
-         * i.get('info').get('cpu_count') * 80)
+        (mongo.db.tasks.find({'is_active': True, 'slave':i.get('ip')}).count() or -1) /
+        (float(i.get('info').get('qmark', 0.000001)) * i.get('info').get('cpu_count') * 80)
         for i in slaves]
 
     best_pos = freeness_list.index(min(freeness_list))
@@ -191,9 +190,14 @@ def dispatchTasksJob(job, slave=None):
             mongo.db.slaves.update({'_id':slave.get('_id')}, slave)
 
             for task in bucket:
+                if not hasattr(slave, 'queue'):
+                    slave['queue'] = []
                 slave['queue'].append(task.get('_id'))
+                """Lets update slave info"""
+                mongo.db.slaves.update({'_id': slave['_id']}, slave)
                 task['status'] = 'likely'
                 task['slave'] = slave.get('ip')
+                print '%s tasks submited to %s' % (len(bucket), slave.get('identity') or slave.get('ip'))
                 mongo.db.tasks.update({'_id': task['_id']}, task)
 
         _d = copy(job)
@@ -320,6 +324,27 @@ def resumeJob(_id, client):
 
     return {'info':'success'}
 
+
+def archiveJob(_id):
+    """archive the job.
+    archiving a job means changing all tasks is_active to False.
+    """
+    job = mongo.db.jobs.find_one({'_id':_id})
+    """Set status of job to future"""
+    job['status'] = 'archived'
+    job['is_active'] = False
+    """find slave"""
+    mongo.db.jobs.update({'_id':_id}, job)
+    """Bulk update tasks"""
+    bulk = mongo.db.tasks.initialize_unordered_bulk_op()
+    bulk.find({'job':_id}).update({
+                                '$set': {
+                                    'archived':now(),
+                                    'is_active':False
+                                }})
+    bulk.execute()
+
+    return {'info':'success'}
 
 def getTaskStatus(_id):
     '''Get task status'''
