@@ -70,6 +70,7 @@ def execute(cmd, task, directory='.', target=None):
 
     """
 
+    print cmd
     #ctid = Celery.AsyncResult.task_id
     stime = time.time()
     tuuid = task.split('-')[0]
@@ -97,6 +98,7 @@ def execute(cmd, task, directory='.', target=None):
             'brief': 'Directory not found'
         }
         tasklog(tuuid, log)
+        print json.dumps(log, indent=4, sort_keys=True)
         return
 
     p = psutil.Popen(cmd.split(), stdout=PIPE, stderr=PIPE, bufsize=16, cwd=directory)
@@ -139,7 +141,7 @@ def execute(cmd, task, directory='.', target=None):
                     p.kill()
                     return
 
-            if progress and not progress%5:  ## update every 5 percent
+            if progress:  ## update every 5 percent
                 updateTaskInfo(tuuid, status='on progress', progress=progress)
             if progress==100:  ## completed
                 updateTaskInfo(tuuid, status='completed', progress=100, finished=now())

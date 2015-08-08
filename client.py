@@ -27,8 +27,10 @@ import sys
 from flask import Flask, request, flash, abort, redirect
 from flask.ext.mako import render_template
 from flask.ext.mako import MakoTemplates
-
+import os
 import ujson
+from subprocess import PIPE
+import psutil
 from utils import general, client_tools
 from copy import copy
 
@@ -161,6 +163,19 @@ def workerStats():
 def slaves():
     result = client_tools.connectToServer('/api/slaves')
     return result
+
+
+@app.route('/api/shoImage', methods=['POST'])
+def shoImage():
+    payload = ujson.loads(request.data)
+    target_path = payload.get('target_path')
+    if target_path and os.path.isfile(target_path):
+        basecmd = 'sho "{fp}"'
+        cmd = basecmd.format(fp=target_path)
+        p = psutil.Popen(cmd.split(), stdout=PIPE, stderr=PIPE)
+        return '{"info":"success"}'
+    else:
+        abort(404)
 
 
 

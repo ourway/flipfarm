@@ -311,17 +311,26 @@ ngApp.controller('clientCtrl', function($scope, $http, $interval, $timeout) {
             clearInterval(intervalId);
         };
         $scope.selectJobAndShowDetails = function(jobId){
-            if ($scope.jobDetailIntervalId){
-                $scope.clearInterval($scope.jobDetailIntervalId.$$intervalId);
-            }
+
             $scope.getJobDetailFunc(jobId, true);
-            //$scope.jobDetailIntervalId = $interval(function(){
-            //    $scope.getJobDetailFunc(jobId);}, 1000);
-            //console.log($scope.jobDetailIntervalId);
+            if ($scope.jobDetailIntervalId){
+                clearInterval($scope.jobDetailIntervalId.$$intervalId);
+            }
+            $scope.jobDetailIntervalId = $interval(function(){
+
+                $scope.getJobDetailFunc(jobId);
+
+                }, 1000);
+            console.log($scope.jobDetailIntervalId);
 
         };
 
+        $scope.shoImage = function(path){
+            console.log(path)
 
+            $http.post('/api/shoImage', {'target_path':path});
+
+        };
         $timeout(function(){
                 $scope.workerPing();}, $scope.baseInterval);
         $interval(function(){
