@@ -135,6 +135,9 @@ ngApp.controller('clientCtrl', function($scope, $http, $interval, $timeout) {
 
         };
 
+        $scope.isSlaveActive = function(last_ping){
+            return true;
+        };
         $scope.getJobs = function(){
                 var jr = $http.get('/api/getJobsInfo');
                 jr.success(function(queueData){

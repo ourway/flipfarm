@@ -30,6 +30,8 @@ import msgpack
 from subprocess import PIPE
 import psutil
 import re
+import getpass
+user=getpass.getuser()
 
 
 @Memoized
@@ -111,13 +113,13 @@ def cancelAllFromMyCeleryQueue():
 
 def getWorkerPing():
     from clientAgent import ca  ## import ca here.
-    inspect = ca.control.inspect()
+    inspect = ca.control.inspect(destination=['celery@%s'%user])
     return inspect.ping()
 
 
 def getWorkerStats():
     from clientAgent import ca  ## import ca here.
-    inspect = ca.control.inspect()
+    inspect = ca.control.inspect(destination=['celery@%s'%user])
     return inspect.stats()
 
 def getImageInfo(path):

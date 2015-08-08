@@ -8,8 +8,9 @@
 
 
                 <div class="col-md-4" ng-repeat="slave in options.slaves">
-                    <div class="panel panel-pricing panel-success" 
-                         ng-class="{'panel-danger':options.workerPing==false}">
+                    <div class="panel panel-pricing panel-success"
+                        ng-class="{'panel-danger':true}">
+
                         <div class="panel-heading text-center">
                             <em class="fa fa-desktop"></em>
                             <h4>
@@ -24,7 +25,7 @@
                         <ul class="list-group">
                                 <li class="list-group-item"><i class="fa fa-circle"></i>
                                         <b>{{slave.info.cores || slave.info.cpu_count}}</b> Cores
-                                
+
                  <div ng-repeat="cpu in slave.info.cpu.percpu track by $index">
                 <div class="progress" style="opacity:0.75;height:8px;background:#fff">
                 <div class="progress-bar"
@@ -34,13 +35,13 @@
                   </div>
                 </div>
                 </div>
-                                
-                                
-                                
+
+
+
                                 </li>
-                                <li class="list-group-item"><i class="fa fa-circle"></i> 
+                                <li class="list-group-item"><i class="fa fa-circle"></i>
                                         <b>{{slave.info.memory.free_memory}}<small>Mb</small></b> Free Memory</li>
-                                <li class="list-group-item"><i class="fa fa-circle"></i> 
+                                <li class="list-group-item"><i class="fa fa-circle"></i>
                                         <b>{{round(slave.info.disk.free/1024/1024/1024, 2)}}<small>Gb</small></b> Free Disk</li>
                         </ul>
                         <div class="panel-footer">

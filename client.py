@@ -172,7 +172,8 @@ def shoImage():
     if target_path and os.path.isfile(target_path):
         basecmd = 'sho "{fp}"'
         cmd = basecmd.format(fp=target_path)
-        p = psutil.Popen(cmd.split(), stdout=PIPE, stderr=PIPE)
+        ps.system(cmd)
+        #p = psutil.Popen(cmd.split(), stdout=PIPE, stderr=PIPE)
         return '{"info":"success"}'
     else:
         abort(404)
