@@ -132,7 +132,7 @@ def execute(cmd, task, directory='.', target=None):
                         'code':code,
                         'type':typ,
                         'description':desc,
-                        'bref':brief
+                        'brief':brief
                     }
                 print json.dumps(log, indent=4, sort_keys=True)
                 tasklog(tuuid, log)

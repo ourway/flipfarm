@@ -16,3 +16,4 @@ gevent
 gunicorn
 redis
 msgpack-python
+flower

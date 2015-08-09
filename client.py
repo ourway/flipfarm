@@ -175,7 +175,23 @@ def shoImage():
         #p = psutil.Popen(cmd.split(), stdout=PIPE, stderr=PIPE)
         return '{"info":"success"}'
     else:
-        abort(404)
+        abort(400)
+
+@app.route('/api/killProcess', methods=['POST'])
+def killProcess():
+    payload = ujson.loads(request.data)
+    pid = payload.get('pid')
+    task_id = payload.get('_id')
+    if pid and task_id:
+        try:
+            os.system('kill %s'%pid)
+        except Exception, e:
+            print e
+        new_payload = {'_id':task_id, 'data':{'status':'failed'}}
+        client_tools.connectToServer('/api/updateTask', new_payload)
+        return '{"info":"success"}'
+    else:
+        return 'Nothing'
 
 
 

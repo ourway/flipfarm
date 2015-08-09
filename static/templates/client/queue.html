@@ -129,30 +129,44 @@
 
 <div class="modal fade" data-keyboard="false"
     id="myModal" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-    <div class="modal-dialog"  style="width:800px">
+    <div class="modal-dialog"  style="width:80%;font-size:12px;">
         <div class="modal-content">
-            <div class="modal-header" style="background:#f2f2f2">
+            <div class="modal-header" style="background:#4D8CBC;color:#eee">
 
-                <button
+                <button style="color:#fff"
                 ng-click="clearInterval(jobDetailIntervalId.$$intervalId);"
                 type="button" class="close" data-dismiss="modal" aria-hidden="true">
-                    ×
+                    <i class="fa fa-close"></i>
                 </button>
                 <h4 class="modal-title" id="myModalLabel">
                     Job: <code>{{selectedJob.jobInfo.name}}</code> | {{selectedJob.tasksInfo.length}} Tasks<br/>
-                    <small><i class="fa fa-clock-o"></i> {{prettyDate(selectedJob.jobInfo.datetime)}} ago
+                    <small style="color:#ccc"><i class="fa fa-clock-o"></i> {{prettyDate(selectedJob.jobInfo.datetime)}} ago
                     by <b>{{selectedJob.jobInfo.owner}}</b>
                     </small>
                 </h4>
             </div>
-            <div class="modal-body" style="heigth:300px;overflow-y: scroll; background-color: #E6E6E6;">
-                <table class="table">
-                <tr ng-repeat="_task in selectedJob.tasksInfo | orderBy:'-progress' track by $index">
-                    <td>
-                        <i class="fa fa-picture-o"></i> {{_task.name}}
+            <div class="modal-body" style="padding:0px;">
+                <table
+                class="table tabled-responsive table-striped table-hover">
+                <tr ng-class="{'success':_task.status=='completed'}" ng-repeat="_task in selectedJob.tasksInfo | orderBy:'-progress' track by $index">
+                    <td class="default">
+                        <span class="text-primary"><i class="fa fa-picture-o"></i> {{_task.name}}</span>
                     </td>
                     <td>
+
                         <i class="fa fa-desktop"></i> {{_task.slave}}
+    <a href="#" class="text-danger" ng-show="_task.status=='on progress'" ng-click="killProcess(_task.id, _task.pid)">
+    <i class="fa fa-times-circle-o fa-spin"></i></a>
+                    </td>
+                    <td>
+                        <div ng-show="_task.status=='completed'">
+                        <span class="text-info">{{_task.target_info.original_size}}</span>
+                        <span><b>{{_task.target_info.original_bits_per_sample}}</b>bit</span>
+                        <small>{{getReadableFileSizeString(_task.target_info.file_size)}}</small>
+
+
+
+                        </div>
                     </td>
                     <td>
 <div  ng-show="_task.status!='completed'" >
@@ -170,10 +184,21 @@
 <a href="#" ng-show="_task.status=='completed'" ng-click="shoImage(_task.proccess.target)"><i class="fa fa-eye"></i></a>
 <a href="#" ng-show="_task.status=='completed'" ng-click="shoXMLStatc(_task.proccess.cwd, _task.name)">
     <i class="fa fa-newspaper-o"></i></a>
+
                     </td>
+
+                <td>
+                    <span class="label label-default"  style="cursor:default" title="{{log.brief}}"
+                        ng-class="{'label-danger':log.type=='ERROR', 'label-warning':log.type=='WARNING'}"
+                    ng-repeat="log in _task.logs">
+                        {{log.code}}
+                    <a style="cursor:help;color:white;" title="{{log.description}}"><b>?</b></a>
+                    </span>
+                </td>
+
                     <td>
                         <span class="label"
-                        ng-class="{'label-success':_task.status=='completed', 'label-warning':_task.status=='paused', 'label-primary':_task.status=='on progress', 'label-danger':_task.status=='cancelled', 'label-default':_task.status=='ready'
+                        ng-class="{'label-success':_task.status=='completed', 'label-warning':_task.status=='paused', 'label-primary':_task.status=='on progress', 'label-danger':_task.status=='failed', 'label-default':_task.status=='ready'
                     }"
 
                         >{{_task.status}}</span>

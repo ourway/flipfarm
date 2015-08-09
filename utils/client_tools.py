@@ -134,7 +134,7 @@ def getImageInfo(path):
     result = {}
     def stripper(t):
         return (t[0].strip().lower().replace(' ', '_'),
-                t[0].strip().lower().replace(' ', '_'))
+                t[1].strip().lower())
     if output:
         #result = dict(output)
         '''parse sho ou tput: http://www.regexr.com/3bhr0'''

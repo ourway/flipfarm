@@ -56,8 +56,8 @@ var isASCII = function (str, extended) {
 var getReadableFileSizeString = function (fileSizeInBytes) {
   var i = -1;
   var byteUnits = [
-    ' \u06A9\u064A\u0644\u0648\u0628\u0627\u06CC\u062A',
-    ' \u0645\u06AF\u0627\u0628\u0627\u06CC\u062A',
+    ' Kb',
+    ' Mb',
     ' GB',
     ' TB',
     'PB',
@@ -255,6 +255,14 @@ ngApp.controller('clientCtrl', function($scope, $http, $interval, $timeout) {
                 var cr = $http.post('/api/tryAgainJob', {'id':jobId});
                 cr.success(function(){
                         humane.log('Job will be sent to dispatch server.');
+                });
+        };
+
+         $scope.killProcess = function(taskId, taskPid){
+                var cr = $http.post('/api/killProcess',
+                    {'_id':taskId, 'pid':taskPid});
+                cr.success(function(){
+                        humane.log('Task process killed successfully');
                 });
         };
 
