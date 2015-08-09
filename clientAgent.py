@@ -77,7 +77,7 @@ def execute(cmd, task, directory='.', target=None):
     lst = getTaskStatus(tuuid)
     if lst in ['completed', 'cancelled', 'paused']:
         log = {
-            'code':2,
+            'code':'FF002',
             'typ':'INFO',
             'description': 'Task is %s, but was in queue, so flipfarm cancelled running process.'%lst,
             'brief': 'Task process abort'
@@ -92,7 +92,7 @@ def execute(cmd, task, directory='.', target=None):
     if not os.path.isdir(directory):
         updateTaskInfo(tuuid, status='failed', failed_on=now())
         log = {
-            'code':1,
+            'code':'FF001',
             'typ':'ERROR',
             'description': 'FlipFarm: Directory "%s" not found'%directory,
             'brief': 'Directory not found'

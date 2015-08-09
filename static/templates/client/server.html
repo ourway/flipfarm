@@ -9,7 +9,7 @@
 
                 <div class="col-md-4" ng-repeat="slave in options.slaves">
                     <div class="panel panel-pricing panel-success"
-                        ng-class="{'panel-danger':true}">
+                        ng-class="{'panel-danger':slave.worker==true}">
 
                         <div class="panel-heading text-center">
                                 <i ng-if="slave.info.os=='darwin'" class="fa fa-apple"></i>

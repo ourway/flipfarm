@@ -40,6 +40,7 @@ from bson.json_util import dumps
 from models.db import mongo
 from copy import copy
 import ujson
+import time
 
 CONFIG = readConfig()
 
@@ -107,7 +108,8 @@ def getJobStatus(tasks):
 def getClientJobsInformation(client):
     """Lists active client jobs."""
     getSlaveForDispatch()
-    jobs = mongo.db.jobs.find({'owner': client, 'is_active': True})
+    #jobs = mongo.db.jobs.find({'owner': client, 'is_active': True})
+    jobs = mongo.db.jobs.find({'is_active': True})
 
 
 
@@ -145,15 +147,34 @@ def getSlaveForDispatch():
                 machine 2 is better choice
 
     '''
-    seconds_ago = now() - 15
+    seconds_ago = now() - 60
+
+    '''Remove off slaves'''
+    looking_for = {
+        # $gt means greater than.  $lt means less than
+       'last_ping': {'$lt': seconds_ago},
+    }
+    bulk = mongo.db.tasks.initialize_unordered_bulk_op()
+    bulk.find(looking_for).update({
+                                '$set': {
+                                    'info.worker': False,
+                                }})
+    bulk.execute()
+
     looking_for = {
         # $gt means greater than.  $lt means less than
         'last_ping': {'$gt': seconds_ago},
         'info.cpu_count': {'$gt': 0},
         'info.qmark': {'$gt': 0},
         'info.cores': {'$ne': 0},
+        'info.worker':True,
     }
     slaves = list(mongo.db.slaves.find(looking_for))
+    print slaves
+
+
+
+
     if not slaves:
         return
     freeness_list = [
@@ -355,6 +376,9 @@ def getTaskStatus(_id):
 def getSlaveInfo(client=None):
 	"""Get slaves information"""
 	slaves = mongo.db.slaves.find()
+        #for i in slaves:
+            #if  now() - i.get('last_ping')<20:
+            #    print i.get('ip')
 	return dumps(slaves)
 
 def getJobDetail(_id):

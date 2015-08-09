@@ -155,7 +155,7 @@
                     <td>
 
                         <i class="fa fa-desktop"></i> {{_task.slave}}
-    <a href="#" class="text-danger" ng-show="_task.status=='on progress'" ng-click="killProcess(_task.id, _task.pid)">
+    <a href="#" class="text-danger" ng-show="_task.status=='on progress'" ng-click="killProcess(_task._id.$oid, _task.pid)">
     <i class="fa fa-times-circle-o fa-spin"></i></a>
                     </td>
                     <td>

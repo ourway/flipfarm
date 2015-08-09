@@ -358,7 +358,6 @@ ngApp.controller('clientCtrl', function($scope, $http, $interval, $timeout) {
                 //$scope.workerPing();
                 $scope.getSlaves();
         }, $scope.baseInterval*2);
-
         $scope.shoXMLStatc = function(dir, taskName){
             var tname = taskName.replace(/ /g, '_');
             var url = '/api/serveStatic?path='+dir+'/'+'.flipfarmPrmanStats-'+tname+'.xml';
