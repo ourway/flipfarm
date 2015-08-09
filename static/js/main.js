@@ -316,7 +316,7 @@ ngApp.controller('clientCtrl', function($scope, $http, $interval, $timeout) {
                                 }
                 });
         };
-
+        $scope.getSlaves();
         $scope.getJobDetailFunc = function(jobId, click){
 
             var jr = $http.post('/api/jobDetail', {'_id':jobId});
@@ -355,9 +355,9 @@ ngApp.controller('clientCtrl', function($scope, $http, $interval, $timeout) {
         $timeout(function(){
                 $scope.workerPing();}, $scope.baseInterval);
         $interval(function(){
-                //$scope.workerPing();
+                $scope.workerPing();
                 $scope.getSlaves();
-        }, $scope.baseInterval*2);
+        }, $scope.baseInterval+1);
         $scope.shoXMLStatc = function(dir, taskName){
             var tname = taskName.replace(/ /g, '_');
             var url = '/api/serveStatic?path='+dir+'/'+'.flipfarmPrmanStats-'+tname+'.xml';
