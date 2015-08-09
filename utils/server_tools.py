@@ -41,6 +41,8 @@ from models.db import mongo
 from copy import copy
 import ujson
 import time
+from random import choice
+from itertools import cycle
 
 CONFIG = readConfig()
 
@@ -107,7 +109,7 @@ def getJobStatus(tasks):
 
 def getClientJobsInformation(client):
     """Lists active client jobs."""
-    getSlaveForDispatch()
+    #getSlaveForDispatch()
     #jobs = mongo.db.jobs.find({'owner': client, 'is_active': True})
     jobs = mongo.db.jobs.find({'is_active': True})
 
@@ -162,29 +164,22 @@ def getSlaveForDispatch():
     bulk.execute()
 
     looking_for = {
-        # $gt means greater than.  $lt means less than
-        'last_ping': {'$gt': seconds_ago},
-        'info.cpu_count': {'$gt': 0},
-        'info.qmark': {'$gt': 0},
-        'info.cores': {'$ne': 0},
-        'info.worker':True,
+        'info.worker': True,
     }
     slaves = list(mongo.db.slaves.find(looking_for))
-    print slaves
+    print len(slaves)
 
+   # freeness_list = [
+   #     (mongo.db.tasks.find({'is_active': True, 'slave':i.get('ip')}).count() or -1) /
+   #     (float(i.get('info').get('qmark', 0.000001)) * i.get('info').get('cpu_count') * 80)
+   #     for i in slaves]
 
-
-
-    if not slaves:
-        return
-    freeness_list = [
-        (mongo.db.tasks.find({'is_active': True, 'slave':i.get('ip')}).count() or -1) /
-        (float(i.get('info').get('qmark', 0.000001)) * i.get('info').get('cpu_count') * 80)
-        for i in slaves]
-
-    best_pos = freeness_list.index(min(freeness_list))
-    bestChoice = slaves[best_pos]
-    return bestChoice.get('ip')
+    #best_pos = freeness_list.index(min(freeness_list))
+    #bestChoice = slaves[best_pos]
+    #return bestChoice.get('ip')
+    #result = choice(slaves)
+    #print result.get('ip')
+    return cycle(slaves)
 
 def dispatchTasksJob(job, slave=None):
         """now find available tasks"""
@@ -194,32 +189,38 @@ def dispatchTasksJob(job, slave=None):
             'slave': None,
             'job': job.get('_id')
         }
-
         tasks = mongo.db.tasks.find(looking_for)
         '''Create buckets of tasks'''
         buckets = chunks(list(tasks), job.get('bucket_size', 10))
+        active_slaves = {
+            'info.worker': True,
+        }
+        slaves = list(mongo.db.slaves.find(active_slaves))
+        print len(slaves)
         for bucket in buckets:
-            if not slave:
-                bestChoice = mongo.db.slaves.find({'ip': getSlaveForDispatch()})
-                if bestChoice.count():
-                    slave = bestChoice.next()
-                else:
-                    print 'Slave not found!!'
-                    continue
+
+            NEW_slave = choice(slaves)
+            print '*'*80
+            print NEW_slave
+            print '*'*80
+
+            if not NEW_slave:
+                print 'No any active slaves'
+                return
             '''Lets add bucket tasks to slave queue'''
             '''update slave info on db'''
-            mongo.db.slaves.update({'_id':slave.get('_id')}, slave)
+            #mongo.db.slaves.update({'_id':slave.get('_id')}, slave)
 
             for task in bucket:
                 if not hasattr(slave, 'queue'):
-                    slave['queue'] = []
-                slave['queue'].append(task.get('_id'))
+                    NEW_slave['queue'] = []
+                NEW_slave['queue'].append(task.get('_id'))
                 """Lets update slave info"""
-                mongo.db.slaves.update({'_id': slave['_id']}, slave)
+                mongo.db.slaves.update({'_id': NEW_slave['_id']}, NEW_slave)
                 task['status'] = 'likely'
-                task['slave'] = slave.get('ip')
-                print '%s tasks submited to %s' % (len(bucket), slave.get('identity') or slave.get('ip'))
+                task['slave'] = NEW_slave.get('ip')
                 mongo.db.tasks.update({'_id': task['_id']}, task)
+            print '%s tasks submited to %s' % (len(bucket), NEW_slave.get('identity') or NEW_slave.get('ip'))
 
         _d = copy(job)
         _d['status'] = 'dispatched'
