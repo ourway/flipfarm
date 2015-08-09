@@ -24,7 +24,9 @@ code {
 }
 
 
-
+body{
+font-size:11px;
+}
 #square.ng-hide-add, #square.ng-hide-remove
 {
   display: block !important;

@@ -47,6 +47,14 @@ from itertools import cycle
 CONFIG = readConfig()
 
 
+def getClientIp(request):
+    '''get correct client ip'''
+    if request.headers.getlist("X-Forwarded-For"):
+        ip = request.headers.getlist("X-Forwarded-For")[0]
+    else:
+        ip = request.remote_addr
+    return ip
+
 def getRenderCommand(category):
     if category == 'Alfred':
         command = 'prman -statsfile {cwd}/.flipfarmPrmanStats-{task}.xml -cwd {cwd} -t:{threads} -Progress {filepath}'

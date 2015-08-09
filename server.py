@@ -63,7 +63,7 @@ def index():
 @app.route('/api/ping', methods=['POST'])
 def ping():
     ''' This method pings server'''
-    client = request.remote_addr
+    client = server_tools.getClientIp(request)
 
     '''Find if it's client's first ping'''
     clientNewRawData = request.data
@@ -86,7 +86,8 @@ def addJob():
     """Gets user uploded job description and add it to jobs"""
     data = general.unpack(request.data)
     job = alfred.parse(data.get('job'))
-    client = request.remote_addr
+    #client = request.remote_addr
+    client = server_tools.getClientIp(request)
     jobHash = hashlib.md5(data.get('job')).hexdigest()  ## hash of actual uploaded file
     if job:
         newJob = {
@@ -126,14 +127,17 @@ def dbtest(entery):
 @app.route('/api/getJobsInfo')
 def getJobsInfo():
     """List jobs information for client"""
-    client = request.remote_addr
+    #client = request.remote_addr
+    client = server_tools.getClientIp(request)
     jobs = server_tools.getClientJobsInformation(client)
     return general.pack(jobs)
 
 @app.route('/api/fetchQueuedTasks')
 def fetchQueuedTasks():
     """Give Queued tasks for a client to render"""
-    client = request.remote_addr
+
+    client = server_tools.getClientIp(request)
+    #client = request.remote_addr
     data = server_tools.getQueuedTasksForClient(client)
     return general.pack(data)
 
@@ -199,7 +203,8 @@ def archiveJob():
 
 @app.route('/api/resumeJob', methods=['POST'])
 def resumeJob():
-    client = request.remote_addr
+    #client = request.remote_addr
+    client = server_tools.getClientIp(request)
     data = general.unpack(request.data)
     jobId = data.get('id')  ## get job is in string format
     _id = ObjectId(jobId)
