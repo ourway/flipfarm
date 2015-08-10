@@ -12,6 +12,6 @@ alias "flipfarm-client"="flipfarm;gunicorn -b 127.0.0.1:9000 -k gevent -w 2 --wo
 alias "flipfarm-server"="flipfarm;gunicorn -b 0.0.0.0:9001 -k gevent -w 4 --worker-connections 16000 --threads 2 --max-requests 1024 -t 10 -n flipfarm-server -p server.pid server:app --reload"
 alias "flipfarm-client-worker"="flipfarm;celery -A clientAgent worker -c 1 -l info -n `whoami` --statedb=client.state --beat --pidfile=clientAgent.pid"
 alias "flipfarm-server-worker"="flipfarm;celery -A serverAgent worker -c 4 -n `whoami`-server --statedb=server.state --beat --pidfile=serverAgent.pid -l info"
-
+export PATH=$FLIPFARM_ROOT/.pyenv/bin:$PATH
 #--access-logfile logs/client.log
 # -f logs/clientAgent.log
