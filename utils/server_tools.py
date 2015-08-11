@@ -227,6 +227,7 @@ def dispatchTasksJob(job, slave=None):
                 mongo.db.slaves.update({'_id': NEW_slave['_id']}, NEW_slave)
                 task['status'] = 'likely'
                 task['slave'] = NEW_slave.get('ip')
+                task['slave_name'] = NEW_slave.get('identity')
                 mongo.db.tasks.update({'_id': task['_id']}, task)
             print '%s tasks submited to %s' % (len(bucket), NEW_slave.get('identity') or NEW_slave.get('ip'))
 
@@ -383,12 +384,16 @@ def getTaskStatus(_id):
         return task.get('status', 'N/A')
 
 def getSlaveInfo(client=None):
-	"""Get slaves information"""
-	slaves = mongo.db.slaves.find()
+    """Get slaves information"""
+    looking_for = {
+        #'$and' : [{ 'status':{'$ne':'completed'} }, { 'status':{'$ne':'cancelled'}}, {'status'}],
+        'last_ping': {'$gt':now()-15},
+    }
+    slaves = mongo.db.slaves.find(looking_for)
         #for i in slaves:
             #if  now() - i.get('last_ping')<20:
             #    print i.get('ip')
-	return dumps(slaves)
+    return dumps(slaves or [])
 
 def getJobDetail(_id):
     '''Get job detail for show in a modal'''

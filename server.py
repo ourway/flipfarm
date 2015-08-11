@@ -95,7 +95,7 @@ def addJob():
             'category':data.get('category'),
             'data':job,
             'md5': jobHash,
-            'bucket_size': 10,
+            'bucket_size': 1,
             'tags':[],
             'status':'future',
             'datetime':general.now(),

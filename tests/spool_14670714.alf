@@ -1,0 +1,329 @@
+##AlfredToDo 3.0
+
+Job -title {waterfall_shading_0801043052} -comment {#Created for lnw03 by RenderMan for Maya 20.1 (@1509300 Jul 21 2015)} -dirmaps {
+    {{mayabatch} {maya} NFS}
+} -envkey {rms-20.1-maya-2015} -pbias 1 -crews {} -tags {} -service {} -whendone {} -whenerror {}  -serialsubtasks 1 -subtasks {
+  Task -title {Job} -serialsubtasks 1 -subtasks {
+
+    Task -title { Preflight} -serialsubtasks 1 -subtasks {
+      Task -title {Render Preflight } -cmds {
+        Cmd {prman -t:0 -Progress -recover %r -checkpoint 5m -cwd "%D(/FARM/Projects/Waterfall_1_Sprint/sequences/seq_01/sets/waterCity/maya/)" "%D(renderman/waterfall_shading_0801043052/rib/job/job.rib)"} -service {local:PixarRender}
+      } -preview {sho "/FARM/Projects/Waterfall_1_Sprint/sequences/seq_01/sets/waterCity/maya/renderman/waterfall_shading_0801043052/images/waterfall_shading.job.exr" "/FARM/Projects/Waterfall_1_Sprint/sequences/seq_01/sets/waterCity/maya/renderman/waterfall_shading_0801043052/images/waterfall_shading_cameraShape1_DenoiseCrossFrame.job" }    }
+
+    Task -title { Frames 1-100} -serialsubtasks 0 -subtasks {
+
+    Task -title { Frames 1-100} -serialsubtasks 1 -subtasks {
+      Task -title {Render  1-100} -serialsubtasks 0 -subtasks {
+      Task -title {Render Frame 1} -cmds {
+        Cmd {prman -t:0 -Progress -recover %r -checkpoint 5m -cwd "%D(/FARM/Projects/Waterfall_1_Sprint/sequences/seq_01/sets/waterCity/maya/)" "%D(renderman/waterfall_shading_0801043052/rib/0001/0001.rib)"} -service {local:PixarRender}
+      } -preview {sho "/FARM/Projects/Waterfall_1_Sprint/sequences/seq_01/sets/waterCity/maya/renderman/waterfall_shading_0801043052/images/waterfall_shading.0001.exr" "/FARM/Projects/Waterfall_1_Sprint/sequences/seq_01/sets/waterCity/maya/renderman/waterfall_shading_0801043052/images/waterfall_shading_cameraShape1_DenoiseCrossFrame.0001" }
+      Task -title {Render Frame 2} -cmds {
+        Cmd {prman -t:0 -Progress -recover %r -checkpoint 5m -cwd "%D(/FARM/Projects/Waterfall_1_Sprint/sequences/seq_01/sets/waterCity/maya/)" "%D(renderman/waterfall_shading_0801043052/rib/0002/0002.rib)"} -service {local:PixarRender}
+      } -preview {sho "/FARM/Projects/Waterfall_1_Sprint/sequences/seq_01/sets/waterCity/maya/renderman/waterfall_shading_0801043052/images/waterfall_shading.0002.exr" "/FARM/Projects/Waterfall_1_Sprint/sequences/seq_01/sets/waterCity/maya/renderman/waterfall_shading_0801043052/images/waterfall_shading_cameraShape1_DenoiseCrossFrame.0002" }
+      Task -title {Render Frame 3} -cmds {
+        Cmd {prman -t:0 -Progress -recover %r -checkpoint 5m -cwd "%D(/FARM/Projects/Waterfall_1_Sprint/sequences/seq_01/sets/waterCity/maya/)" "%D(renderman/waterfall_shading_0801043052/rib/0003/0003.rib)"} -service {local:PixarRender}
+      } -preview {sho "/FARM/Projects/Waterfall_1_Sprint/sequences/seq_01/sets/waterCity/maya/renderman/waterfall_shading_0801043052/images/waterfall_shading.0003.exr" "/FARM/Projects/Waterfall_1_Sprint/sequences/seq_01/sets/waterCity/maya/renderman/waterfall_shading_0801043052/images/waterfall_shading_cameraShape1_DenoiseCrossFrame.0003" }
+      Task -title {Render Frame 4} -cmds {
+        Cmd {prman -t:0 -Progress -recover %r -checkpoint 5m -cwd "%D(/FARM/Projects/Waterfall_1_Sprint/sequences/seq_01/sets/waterCity/maya/)" "%D(renderman/waterfall_shading_0801043052/rib/0004/0004.rib)"} -service {local:PixarRender}
+      } -preview {sho "/FARM/Projects/Waterfall_1_Sprint/sequences/seq_01/sets/waterCity/maya/renderman/waterfall_shading_0801043052/images/waterfall_shading.0004.exr" "/FARM/Projects/Waterfall_1_Sprint/sequences/seq_01/sets/waterCity/maya/renderman/waterfall_shading_0801043052/images/waterfall_shading_cameraShape1_DenoiseCrossFrame.0004" }
+      Task -title {Render Frame 5} -cmds {
+        Cmd {prman -t:0 -Progress -recover %r -checkpoint 5m -cwd "%D(/FARM/Projects/Waterfall_1_Sprint/sequences/seq_01/sets/waterCity/maya/)" "%D(renderman/waterfall_shading_0801043052/rib/0005/0005.rib)"} -service {local:PixarRender}
+      } -preview {sho "/FARM/Projects/Waterfall_1_Sprint/sequences/seq_01/sets/waterCity/maya/renderman/waterfall_shading_0801043052/images/waterfall_shading.0005.exr" "/FARM/Projects/Waterfall_1_Sprint/sequences/seq_01/sets/waterCity/maya/renderman/waterfall_shading_0801043052/images/waterfall_shading_cameraShape1_DenoiseCrossFrame.0005" }
+      Task -title {Render Frame 6} -cmds {
+        Cmd {prman -t:0 -Progress -recover %r -checkpoint 5m -cwd "%D(/FARM/Projects/Waterfall_1_Sprint/sequences/seq_01/sets/waterCity/maya/)" "%D(renderman/waterfall_shading_0801043052/rib/0006/0006.rib)"} -service {local:PixarRender}
+      } -preview {sho "/FARM/Projects/Waterfall_1_Sprint/sequences/seq_01/sets/waterCity/maya/renderman/waterfall_shading_0801043052/images/waterfall_shading.0006.exr" "/FARM/Projects/Waterfall_1_Sprint/sequences/seq_01/sets/waterCity/maya/renderman/waterfall_shading_0801043052/images/waterfall_shading_cameraShape1_DenoiseCrossFrame.0006" }
+      Task -title {Render Frame 7} -cmds {
+        Cmd {prman -t:0 -Progress -recover %r -checkpoint 5m -cwd "%D(/FARM/Projects/Waterfall_1_Sprint/sequences/seq_01/sets/waterCity/maya/)" "%D(renderman/waterfall_shading_0801043052/rib/0007/0007.rib)"} -service {local:PixarRender}
+      } -preview {sho "/FARM/Projects/Waterfall_1_Sprint/sequences/seq_01/sets/waterCity/maya/renderman/waterfall_shading_0801043052/images/waterfall_shading.0007.exr" "/FARM/Projects/Waterfall_1_Sprint/sequences/seq_01/sets/waterCity/maya/renderman/waterfall_shading_0801043052/images/waterfall_shading_cameraShape1_DenoiseCrossFrame.0007" }
+      Task -title {Render Frame 8} -cmds {
+        Cmd {prman -t:0 -Progress -recover %r -checkpoint 5m -cwd "%D(/FARM/Projects/Waterfall_1_Sprint/sequences/seq_01/sets/waterCity/maya/)" "%D(renderman/waterfall_shading_0801043052/rib/0008/0008.rib)"} -service {local:PixarRender}
+      } -preview {sho "/FARM/Projects/Waterfall_1_Sprint/sequences/seq_01/sets/waterCity/maya/renderman/waterfall_shading_0801043052/images/waterfall_shading.0008.exr" "/FARM/Projects/Waterfall_1_Sprint/sequences/seq_01/sets/waterCity/maya/renderman/waterfall_shading_0801043052/images/waterfall_shading_cameraShape1_DenoiseCrossFrame.0008" }
+      Task -title {Render Frame 9} -cmds {
+        Cmd {prman -t:0 -Progress -recover %r -checkpoint 5m -cwd "%D(/FARM/Projects/Waterfall_1_Sprint/sequences/seq_01/sets/waterCity/maya/)" "%D(renderman/waterfall_shading_0801043052/rib/0009/0009.rib)"} -service {local:PixarRender}
+      } -preview {sho "/FARM/Projects/Waterfall_1_Sprint/sequences/seq_01/sets/waterCity/maya/renderman/waterfall_shading_0801043052/images/waterfall_shading.0009.exr" "/FARM/Projects/Waterfall_1_Sprint/sequences/seq_01/sets/waterCity/maya/renderman/waterfall_shading_0801043052/images/waterfall_shading_cameraShape1_DenoiseCrossFrame.0009" }
+      Task -title {Render Frame 10} -cmds {
+        Cmd {prman -t:0 -Progress -recover %r -checkpoint 5m -cwd "%D(/FARM/Projects/Waterfall_1_Sprint/sequences/seq_01/sets/waterCity/maya/)" "%D(renderman/waterfall_shading_0801043052/rib/0010/0010.rib)"} -service {local:PixarRender}
+      } -preview {sho "/FARM/Projects/Waterfall_1_Sprint/sequences/seq_01/sets/waterCity/maya/renderman/waterfall_shading_0801043052/images/waterfall_shading.0010.exr" "/FARM/Projects/Waterfall_1_Sprint/sequences/seq_01/sets/waterCity/maya/renderman/waterfall_shading_0801043052/images/waterfall_shading_cameraShape1_DenoiseCrossFrame.0010" }
+      Task -title {Render Frame 11} -cmds {
+        Cmd {prman -t:0 -Progress -recover %r -checkpoint 5m -cwd "%D(/FARM/Projects/Waterfall_1_Sprint/sequences/seq_01/sets/waterCity/maya/)" "%D(renderman/waterfall_shading_0801043052/rib/0011/0011.rib)"} -service {local:PixarRender}
+      } -preview {sho "/FARM/Projects/Waterfall_1_Sprint/sequences/seq_01/sets/waterCity/maya/renderman/waterfall_shading_0801043052/images/waterfall_shading.0011.exr" "/FARM/Projects/Waterfall_1_Sprint/sequences/seq_01/sets/waterCity/maya/renderman/waterfall_shading_0801043052/images/waterfall_shading_cameraShape1_DenoiseCrossFrame.0011" }
+      Task -title {Render Frame 12} -cmds {
+        Cmd {prman -t:0 -Progress -recover %r -checkpoint 5m -cwd "%D(/FARM/Projects/Waterfall_1_Sprint/sequences/seq_01/sets/waterCity/maya/)" "%D(renderman/waterfall_shading_0801043052/rib/0012/0012.rib)"} -service {local:PixarRender}
+      } -preview {sho "/FARM/Projects/Waterfall_1_Sprint/sequences/seq_01/sets/waterCity/maya/renderman/waterfall_shading_0801043052/images/waterfall_shading.0012.exr" "/FARM/Projects/Waterfall_1_Sprint/sequences/seq_01/sets/waterCity/maya/renderman/waterfall_shading_0801043052/images/waterfall_shading_cameraShape1_DenoiseCrossFrame.0012" }
+      Task -title {Render Frame 13} -cmds {
+        Cmd {prman -t:0 -Progress -recover %r -checkpoint 5m -cwd "%D(/FARM/Projects/Waterfall_1_Sprint/sequences/seq_01/sets/waterCity/maya/)" "%D(renderman/waterfall_shading_0801043052/rib/0013/0013.rib)"} -service {local:PixarRender}
+      } -preview {sho "/FARM/Projects/Waterfall_1_Sprint/sequences/seq_01/sets/waterCity/maya/renderman/waterfall_shading_0801043052/images/waterfall_shading.0013.exr" "/FARM/Projects/Waterfall_1_Sprint/sequences/seq_01/sets/waterCity/maya/renderman/waterfall_shading_0801043052/images/waterfall_shading_cameraShape1_DenoiseCrossFrame.0013" }
+      Task -title {Render Frame 14} -cmds {
+        Cmd {prman -t:0 -Progress -recover %r -checkpoint 5m -cwd "%D(/FARM/Projects/Waterfall_1_Sprint/sequences/seq_01/sets/waterCity/maya/)" "%D(renderman/waterfall_shading_0801043052/rib/0014/0014.rib)"} -service {local:PixarRender}
+      } -preview {sho "/FARM/Projects/Waterfall_1_Sprint/sequences/seq_01/sets/waterCity/maya/renderman/waterfall_shading_0801043052/images/waterfall_shading.0014.exr" "/FARM/Projects/Waterfall_1_Sprint/sequences/seq_01/sets/waterCity/maya/renderman/waterfall_shading_0801043052/images/waterfall_shading_cameraShape1_DenoiseCrossFrame.0014" }
+      Task -title {Render Frame 15} -cmds {
+        Cmd {prman -t:0 -Progress -recover %r -checkpoint 5m -cwd "%D(/FARM/Projects/Waterfall_1_Sprint/sequences/seq_01/sets/waterCity/maya/)" "%D(renderman/waterfall_shading_0801043052/rib/0015/0015.rib)"} -service {local:PixarRender}
+      } -preview {sho "/FARM/Projects/Waterfall_1_Sprint/sequences/seq_01/sets/waterCity/maya/renderman/waterfall_shading_0801043052/images/waterfall_shading.0015.exr" "/FARM/Projects/Waterfall_1_Sprint/sequences/seq_01/sets/waterCity/maya/renderman/waterfall_shading_0801043052/images/waterfall_shading_cameraShape1_DenoiseCrossFrame.0015" }
+      Task -title {Render Frame 16} -cmds {
+        Cmd {prman -t:0 -Progress -recover %r -checkpoint 5m -cwd "%D(/FARM/Projects/Waterfall_1_Sprint/sequences/seq_01/sets/waterCity/maya/)" "%D(renderman/waterfall_shading_0801043052/rib/0016/0016.rib)"} -service {local:PixarRender}
+      } -preview {sho "/FARM/Projects/Waterfall_1_Sprint/sequences/seq_01/sets/waterCity/maya/renderman/waterfall_shading_0801043052/images/waterfall_shading.0016.exr" "/FARM/Projects/Waterfall_1_Sprint/sequences/seq_01/sets/waterCity/maya/renderman/waterfall_shading_0801043052/images/waterfall_shading_cameraShape1_DenoiseCrossFrame.0016" }
+      Task -title {Render Frame 17} -cmds {
+        Cmd {prman -t:0 -Progress -recover %r -checkpoint 5m -cwd "%D(/FARM/Projects/Waterfall_1_Sprint/sequences/seq_01/sets/waterCity/maya/)" "%D(renderman/waterfall_shading_0801043052/rib/0017/0017.rib)"} -service {local:PixarRender}
+      } -preview {sho "/FARM/Projects/Waterfall_1_Sprint/sequences/seq_01/sets/waterCity/maya/renderman/waterfall_shading_0801043052/images/waterfall_shading.0017.exr" "/FARM/Projects/Waterfall_1_Sprint/sequences/seq_01/sets/waterCity/maya/renderman/waterfall_shading_0801043052/images/waterfall_shading_cameraShape1_DenoiseCrossFrame.0017" }
+      Task -title {Render Frame 18} -cmds {
+        Cmd {prman -t:0 -Progress -recover %r -checkpoint 5m -cwd "%D(/FARM/Projects/Waterfall_1_Sprint/sequences/seq_01/sets/waterCity/maya/)" "%D(renderman/waterfall_shading_0801043052/rib/0018/0018.rib)"} -service {local:PixarRender}
+      } -preview {sho "/FARM/Projects/Waterfall_1_Sprint/sequences/seq_01/sets/waterCity/maya/renderman/waterfall_shading_0801043052/images/waterfall_shading.0018.exr" "/FARM/Projects/Waterfall_1_Sprint/sequences/seq_01/sets/waterCity/maya/renderman/waterfall_shading_0801043052/images/waterfall_shading_cameraShape1_DenoiseCrossFrame.0018" }
+      Task -title {Render Frame 19} -cmds {
+        Cmd {prman -t:0 -Progress -recover %r -checkpoint 5m -cwd "%D(/FARM/Projects/Waterfall_1_Sprint/sequences/seq_01/sets/waterCity/maya/)" "%D(renderman/waterfall_shading_0801043052/rib/0019/0019.rib)"} -service {local:PixarRender}
+      } -preview {sho "/FARM/Projects/Waterfall_1_Sprint/sequences/seq_01/sets/waterCity/maya/renderman/waterfall_shading_0801043052/images/waterfall_shading.0019.exr" "/FARM/Projects/Waterfall_1_Sprint/sequences/seq_01/sets/waterCity/maya/renderman/waterfall_shading_0801043052/images/waterfall_shading_cameraShape1_DenoiseCrossFrame.0019" }
+      Task -title {Render Frame 20} -cmds {
+        Cmd {prman -t:0 -Progress -recover %r -checkpoint 5m -cwd "%D(/FARM/Projects/Waterfall_1_Sprint/sequences/seq_01/sets/waterCity/maya/)" "%D(renderman/waterfall_shading_0801043052/rib/0020/0020.rib)"} -service {local:PixarRender}
+      } -preview {sho "/FARM/Projects/Waterfall_1_Sprint/sequences/seq_01/sets/waterCity/maya/renderman/waterfall_shading_0801043052/images/waterfall_shading.0020.exr" "/FARM/Projects/Waterfall_1_Sprint/sequences/seq_01/sets/waterCity/maya/renderman/waterfall_shading_0801043052/images/waterfall_shading_cameraShape1_DenoiseCrossFrame.0020" }
+      Task -title {Render Frame 21} -cmds {
+        Cmd {prman -t:0 -Progress -recover %r -checkpoint 5m -cwd "%D(/FARM/Projects/Waterfall_1_Sprint/sequences/seq_01/sets/waterCity/maya/)" "%D(renderman/waterfall_shading_0801043052/rib/0021/0021.rib)"} -service {local:PixarRender}
+      } -preview {sho "/FARM/Projects/Waterfall_1_Sprint/sequences/seq_01/sets/waterCity/maya/renderman/waterfall_shading_0801043052/images/waterfall_shading.0021.exr" "/FARM/Projects/Waterfall_1_Sprint/sequences/seq_01/sets/waterCity/maya/renderman/waterfall_shading_0801043052/images/waterfall_shading_cameraShape1_DenoiseCrossFrame.0021" }
+      Task -title {Render Frame 22} -cmds {
+        Cmd {prman -t:0 -Progress -recover %r -checkpoint 5m -cwd "%D(/FARM/Projects/Waterfall_1_Sprint/sequences/seq_01/sets/waterCity/maya/)" "%D(renderman/waterfall_shading_0801043052/rib/0022/0022.rib)"} -service {local:PixarRender}
+      } -preview {sho "/FARM/Projects/Waterfall_1_Sprint/sequences/seq_01/sets/waterCity/maya/renderman/waterfall_shading_0801043052/images/waterfall_shading.0022.exr" "/FARM/Projects/Waterfall_1_Sprint/sequences/seq_01/sets/waterCity/maya/renderman/waterfall_shading_0801043052/images/waterfall_shading_cameraShape1_DenoiseCrossFrame.0022" }
+      Task -title {Render Frame 23} -cmds {
+        Cmd {prman -t:0 -Progress -recover %r -checkpoint 5m -cwd "%D(/FARM/Projects/Waterfall_1_Sprint/sequences/seq_01/sets/waterCity/maya/)" "%D(renderman/waterfall_shading_0801043052/rib/0023/0023.rib)"} -service {local:PixarRender}
+      } -preview {sho "/FARM/Projects/Waterfall_1_Sprint/sequences/seq_01/sets/waterCity/maya/renderman/waterfall_shading_0801043052/images/waterfall_shading.0023.exr" "/FARM/Projects/Waterfall_1_Sprint/sequences/seq_01/sets/waterCity/maya/renderman/waterfall_shading_0801043052/images/waterfall_shading_cameraShape1_DenoiseCrossFrame.0023" }
+      Task -title {Render Frame 24} -cmds {
+        Cmd {prman -t:0 -Progress -recover %r -checkpoint 5m -cwd "%D(/FARM/Projects/Waterfall_1_Sprint/sequences/seq_01/sets/waterCity/maya/)" "%D(renderman/waterfall_shading_0801043052/rib/0024/0024.rib)"} -service {local:PixarRender}
+      } -preview {sho "/FARM/Projects/Waterfall_1_Sprint/sequences/seq_01/sets/waterCity/maya/renderman/waterfall_shading_0801043052/images/waterfall_shading.0024.exr" "/FARM/Projects/Waterfall_1_Sprint/sequences/seq_01/sets/waterCity/maya/renderman/waterfall_shading_0801043052/images/waterfall_shading_cameraShape1_DenoiseCrossFrame.0024" }
+      Task -title {Render Frame 25} -cmds {
+        Cmd {prman -t:0 -Progress -recover %r -checkpoint 5m -cwd "%D(/FARM/Projects/Waterfall_1_Sprint/sequences/seq_01/sets/waterCity/maya/)" "%D(renderman/waterfall_shading_0801043052/rib/0025/0025.rib)"} -service {local:PixarRender}
+      } -preview {sho "/FARM/Projects/Waterfall_1_Sprint/sequences/seq_01/sets/waterCity/maya/renderman/waterfall_shading_0801043052/images/waterfall_shading.0025.exr" "/FARM/Projects/Waterfall_1_Sprint/sequences/seq_01/sets/waterCity/maya/renderman/waterfall_shading_0801043052/images/waterfall_shading_cameraShape1_DenoiseCrossFrame.0025" }
+      Task -title {Render Frame 26} -cmds {
+        Cmd {prman -t:0 -Progress -recover %r -checkpoint 5m -cwd "%D(/FARM/Projects/Waterfall_1_Sprint/sequences/seq_01/sets/waterCity/maya/)" "%D(renderman/waterfall_shading_0801043052/rib/0026/0026.rib)"} -service {local:PixarRender}
+      } -preview {sho "/FARM/Projects/Waterfall_1_Sprint/sequences/seq_01/sets/waterCity/maya/renderman/waterfall_shading_0801043052/images/waterfall_shading.0026.exr" "/FARM/Projects/Waterfall_1_Sprint/sequences/seq_01/sets/waterCity/maya/renderman/waterfall_shading_0801043052/images/waterfall_shading_cameraShape1_DenoiseCrossFrame.0026" }
+      Task -title {Render Frame 27} -cmds {
+        Cmd {prman -t:0 -Progress -recover %r -checkpoint 5m -cwd "%D(/FARM/Projects/Waterfall_1_Sprint/sequences/seq_01/sets/waterCity/maya/)" "%D(renderman/waterfall_shading_0801043052/rib/0027/0027.rib)"} -service {local:PixarRender}
+      } -preview {sho "/FARM/Projects/Waterfall_1_Sprint/sequences/seq_01/sets/waterCity/maya/renderman/waterfall_shading_0801043052/images/waterfall_shading.0027.exr" "/FARM/Projects/Waterfall_1_Sprint/sequences/seq_01/sets/waterCity/maya/renderman/waterfall_shading_0801043052/images/waterfall_shading_cameraShape1_DenoiseCrossFrame.0027" }
+      Task -title {Render Frame 28} -cmds {
+        Cmd {prman -t:0 -Progress -recover %r -checkpoint 5m -cwd "%D(/FARM/Projects/Waterfall_1_Sprint/sequences/seq_01/sets/waterCity/maya/)" "%D(renderman/waterfall_shading_0801043052/rib/0028/0028.rib)"} -service {local:PixarRender}
+      } -preview {sho "/FARM/Projects/Waterfall_1_Sprint/sequences/seq_01/sets/waterCity/maya/renderman/waterfall_shading_0801043052/images/waterfall_shading.0028.exr" "/FARM/Projects/Waterfall_1_Sprint/sequences/seq_01/sets/waterCity/maya/renderman/waterfall_shading_0801043052/images/waterfall_shading_cameraShape1_DenoiseCrossFrame.0028" }
+      Task -title {Render Frame 29} -cmds {
+        Cmd {prman -t:0 -Progress -recover %r -checkpoint 5m -cwd "%D(/FARM/Projects/Waterfall_1_Sprint/sequences/seq_01/sets/waterCity/maya/)" "%D(renderman/waterfall_shading_0801043052/rib/0029/0029.rib)"} -service {local:PixarRender}
+      } -preview {sho "/FARM/Projects/Waterfall_1_Sprint/sequences/seq_01/sets/waterCity/maya/renderman/waterfall_shading_0801043052/images/waterfall_shading.0029.exr" "/FARM/Projects/Waterfall_1_Sprint/sequences/seq_01/sets/waterCity/maya/renderman/waterfall_shading_0801043052/images/waterfall_shading_cameraShape1_DenoiseCrossFrame.0029" }
+      Task -title {Render Frame 30} -cmds {
+        Cmd {prman -t:0 -Progress -recover %r -checkpoint 5m -cwd "%D(/FARM/Projects/Waterfall_1_Sprint/sequences/seq_01/sets/waterCity/maya/)" "%D(renderman/waterfall_shading_0801043052/rib/0030/0030.rib)"} -service {local:PixarRender}
+      } -preview {sho "/FARM/Projects/Waterfall_1_Sprint/sequences/seq_01/sets/waterCity/maya/renderman/waterfall_shading_0801043052/images/waterfall_shading.0030.exr" "/FARM/Projects/Waterfall_1_Sprint/sequences/seq_01/sets/waterCity/maya/renderman/waterfall_shading_0801043052/images/waterfall_shading_cameraShape1_DenoiseCrossFrame.0030" }
+      Task -title {Render Frame 31} -cmds {
+        Cmd {prman -t:0 -Progress -recover %r -checkpoint 5m -cwd "%D(/FARM/Projects/Waterfall_1_Sprint/sequences/seq_01/sets/waterCity/maya/)" "%D(renderman/waterfall_shading_0801043052/rib/0031/0031.rib)"} -service {local:PixarRender}
+      } -preview {sho "/FARM/Projects/Waterfall_1_Sprint/sequences/seq_01/sets/waterCity/maya/renderman/waterfall_shading_0801043052/images/waterfall_shading.0031.exr" "/FARM/Projects/Waterfall_1_Sprint/sequences/seq_01/sets/waterCity/maya/renderman/waterfall_shading_0801043052/images/waterfall_shading_cameraShape1_DenoiseCrossFrame.0031" }
+      Task -title {Render Frame 32} -cmds {
+        Cmd {prman -t:0 -Progress -recover %r -checkpoint 5m -cwd "%D(/FARM/Projects/Waterfall_1_Sprint/sequences/seq_01/sets/waterCity/maya/)" "%D(renderman/waterfall_shading_0801043052/rib/0032/0032.rib)"} -service {local:PixarRender}
+      } -preview {sho "/FARM/Projects/Waterfall_1_Sprint/sequences/seq_01/sets/waterCity/maya/renderman/waterfall_shading_0801043052/images/waterfall_shading.0032.exr" "/FARM/Projects/Waterfall_1_Sprint/sequences/seq_01/sets/waterCity/maya/renderman/waterfall_shading_0801043052/images/waterfall_shading_cameraShape1_DenoiseCrossFrame.0032" }
+      Task -title {Render Frame 33} -cmds {
+        Cmd {prman -t:0 -Progress -recover %r -checkpoint 5m -cwd "%D(/FARM/Projects/Waterfall_1_Sprint/sequences/seq_01/sets/waterCity/maya/)" "%D(renderman/waterfall_shading_0801043052/rib/0033/0033.rib)"} -service {local:PixarRender}
+      } -preview {sho "/FARM/Projects/Waterfall_1_Sprint/sequences/seq_01/sets/waterCity/maya/renderman/waterfall_shading_0801043052/images/waterfall_shading.0033.exr" "/FARM/Projects/Waterfall_1_Sprint/sequences/seq_01/sets/waterCity/maya/renderman/waterfall_shading_0801043052/images/waterfall_shading_cameraShape1_DenoiseCrossFrame.0033" }
+      Task -title {Render Frame 34} -cmds {
+        Cmd {prman -t:0 -Progress -recover %r -checkpoint 5m -cwd "%D(/FARM/Projects/Waterfall_1_Sprint/sequences/seq_01/sets/waterCity/maya/)" "%D(renderman/waterfall_shading_0801043052/rib/0034/0034.rib)"} -service {local:PixarRender}
+      } -preview {sho "/FARM/Projects/Waterfall_1_Sprint/sequences/seq_01/sets/waterCity/maya/renderman/waterfall_shading_0801043052/images/waterfall_shading.0034.exr" "/FARM/Projects/Waterfall_1_Sprint/sequences/seq_01/sets/waterCity/maya/renderman/waterfall_shading_0801043052/images/waterfall_shading_cameraShape1_DenoiseCrossFrame.0034" }
+      Task -title {Render Frame 35} -cmds {
+        Cmd {prman -t:0 -Progress -recover %r -checkpoint 5m -cwd "%D(/FARM/Projects/Waterfall_1_Sprint/sequences/seq_01/sets/waterCity/maya/)" "%D(renderman/waterfall_shading_0801043052/rib/0035/0035.rib)"} -service {local:PixarRender}
+      } -preview {sho "/FARM/Projects/Waterfall_1_Sprint/sequences/seq_01/sets/waterCity/maya/renderman/waterfall_shading_0801043052/images/waterfall_shading.0035.exr" "/FARM/Projects/Waterfall_1_Sprint/sequences/seq_01/sets/waterCity/maya/renderman/waterfall_shading_0801043052/images/waterfall_shading_cameraShape1_DenoiseCrossFrame.0035" }
+      Task -title {Render Frame 36} -cmds {
+        Cmd {prman -t:0 -Progress -recover %r -checkpoint 5m -cwd "%D(/FARM/Projects/Waterfall_1_Sprint/sequences/seq_01/sets/waterCity/maya/)" "%D(renderman/waterfall_shading_0801043052/rib/0036/0036.rib)"} -service {local:PixarRender}
+      } -preview {sho "/FARM/Projects/Waterfall_1_Sprint/sequences/seq_01/sets/waterCity/maya/renderman/waterfall_shading_0801043052/images/waterfall_shading.0036.exr" "/FARM/Projects/Waterfall_1_Sprint/sequences/seq_01/sets/waterCity/maya/renderman/waterfall_shading_0801043052/images/waterfall_shading_cameraShape1_DenoiseCrossFrame.0036" }
+      Task -title {Render Frame 37} -cmds {
+        Cmd {prman -t:0 -Progress -recover %r -checkpoint 5m -cwd "%D(/FARM/Projects/Waterfall_1_Sprint/sequences/seq_01/sets/waterCity/maya/)" "%D(renderman/waterfall_shading_0801043052/rib/0037/0037.rib)"} -service {local:PixarRender}
+      } -preview {sho "/FARM/Projects/Waterfall_1_Sprint/sequences/seq_01/sets/waterCity/maya/renderman/waterfall_shading_0801043052/images/waterfall_shading.0037.exr" "/FARM/Projects/Waterfall_1_Sprint/sequences/seq_01/sets/waterCity/maya/renderman/waterfall_shading_0801043052/images/waterfall_shading_cameraShape1_DenoiseCrossFrame.0037" }
+      Task -title {Render Frame 38} -cmds {
+        Cmd {prman -t:0 -Progress -recover %r -checkpoint 5m -cwd "%D(/FARM/Projects/Waterfall_1_Sprint/sequences/seq_01/sets/waterCity/maya/)" "%D(renderman/waterfall_shading_0801043052/rib/0038/0038.rib)"} -service {local:PixarRender}
+      } -preview {sho "/FARM/Projects/Waterfall_1_Sprint/sequences/seq_01/sets/waterCity/maya/renderman/waterfall_shading_0801043052/images/waterfall_shading.0038.exr" "/FARM/Projects/Waterfall_1_Sprint/sequences/seq_01/sets/waterCity/maya/renderman/waterfall_shading_0801043052/images/waterfall_shading_cameraShape1_DenoiseCrossFrame.0038" }
+      Task -title {Render Frame 39} -cmds {
+        Cmd {prman -t:0 -Progress -recover %r -checkpoint 5m -cwd "%D(/FARM/Projects/Waterfall_1_Sprint/sequences/seq_01/sets/waterCity/maya/)" "%D(renderman/waterfall_shading_0801043052/rib/0039/0039.rib)"} -service {local:PixarRender}
+      } -preview {sho "/FARM/Projects/Waterfall_1_Sprint/sequences/seq_01/sets/waterCity/maya/renderman/waterfall_shading_0801043052/images/waterfall_shading.0039.exr" "/FARM/Projects/Waterfall_1_Sprint/sequences/seq_01/sets/waterCity/maya/renderman/waterfall_shading_0801043052/images/waterfall_shading_cameraShape1_DenoiseCrossFrame.0039" }
+      Task -title {Render Frame 40} -cmds {
+        Cmd {prman -t:0 -Progress -recover %r -checkpoint 5m -cwd "%D(/FARM/Projects/Waterfall_1_Sprint/sequences/seq_01/sets/waterCity/maya/)" "%D(renderman/waterfall_shading_0801043052/rib/0040/0040.rib)"} -service {local:PixarRender}
+      } -preview {sho "/FARM/Projects/Waterfall_1_Sprint/sequences/seq_01/sets/waterCity/maya/renderman/waterfall_shading_0801043052/images/waterfall_shading.0040.exr" "/FARM/Projects/Waterfall_1_Sprint/sequences/seq_01/sets/waterCity/maya/renderman/waterfall_shading_0801043052/images/waterfall_shading_cameraShape1_DenoiseCrossFrame.0040" }
+      Task -title {Render Frame 41} -cmds {
+        Cmd {prman -t:0 -Progress -recover %r -checkpoint 5m -cwd "%D(/FARM/Projects/Waterfall_1_Sprint/sequences/seq_01/sets/waterCity/maya/)" "%D(renderman/waterfall_shading_0801043052/rib/0041/0041.rib)"} -service {local:PixarRender}
+      } -preview {sho "/FARM/Projects/Waterfall_1_Sprint/sequences/seq_01/sets/waterCity/maya/renderman/waterfall_shading_0801043052/images/waterfall_shading.0041.exr" "/FARM/Projects/Waterfall_1_Sprint/sequences/seq_01/sets/waterCity/maya/renderman/waterfall_shading_0801043052/images/waterfall_shading_cameraShape1_DenoiseCrossFrame.0041" }
+      Task -title {Render Frame 42} -cmds {
+        Cmd {prman -t:0 -Progress -recover %r -checkpoint 5m -cwd "%D(/FARM/Projects/Waterfall_1_Sprint/sequences/seq_01/sets/waterCity/maya/)" "%D(renderman/waterfall_shading_0801043052/rib/0042/0042.rib)"} -service {local:PixarRender}
+      } -preview {sho "/FARM/Projects/Waterfall_1_Sprint/sequences/seq_01/sets/waterCity/maya/renderman/waterfall_shading_0801043052/images/waterfall_shading.0042.exr" "/FARM/Projects/Waterfall_1_Sprint/sequences/seq_01/sets/waterCity/maya/renderman/waterfall_shading_0801043052/images/waterfall_shading_cameraShape1_DenoiseCrossFrame.0042" }
+      Task -title {Render Frame 43} -cmds {
+        Cmd {prman -t:0 -Progress -recover %r -checkpoint 5m -cwd "%D(/FARM/Projects/Waterfall_1_Sprint/sequences/seq_01/sets/waterCity/maya/)" "%D(renderman/waterfall_shading_0801043052/rib/0043/0043.rib)"} -service {local:PixarRender}
+      } -preview {sho "/FARM/Projects/Waterfall_1_Sprint/sequences/seq_01/sets/waterCity/maya/renderman/waterfall_shading_0801043052/images/waterfall_shading.0043.exr" "/FARM/Projects/Waterfall_1_Sprint/sequences/seq_01/sets/waterCity/maya/renderman/waterfall_shading_0801043052/images/waterfall_shading_cameraShape1_DenoiseCrossFrame.0043" }
+      Task -title {Render Frame 44} -cmds {
+        Cmd {prman -t:0 -Progress -recover %r -checkpoint 5m -cwd "%D(/FARM/Projects/Waterfall_1_Sprint/sequences/seq_01/sets/waterCity/maya/)" "%D(renderman/waterfall_shading_0801043052/rib/0044/0044.rib)"} -service {local:PixarRender}
+      } -preview {sho "/FARM/Projects/Waterfall_1_Sprint/sequences/seq_01/sets/waterCity/maya/renderman/waterfall_shading_0801043052/images/waterfall_shading.0044.exr" "/FARM/Projects/Waterfall_1_Sprint/sequences/seq_01/sets/waterCity/maya/renderman/waterfall_shading_0801043052/images/waterfall_shading_cameraShape1_DenoiseCrossFrame.0044" }
+      Task -title {Render Frame 45} -cmds {
+        Cmd {prman -t:0 -Progress -recover %r -checkpoint 5m -cwd "%D(/FARM/Projects/Waterfall_1_Sprint/sequences/seq_01/sets/waterCity/maya/)" "%D(renderman/waterfall_shading_0801043052/rib/0045/0045.rib)"} -service {local:PixarRender}
+      } -preview {sho "/FARM/Projects/Waterfall_1_Sprint/sequences/seq_01/sets/waterCity/maya/renderman/waterfall_shading_0801043052/images/waterfall_shading.0045.exr" "/FARM/Projects/Waterfall_1_Sprint/sequences/seq_01/sets/waterCity/maya/renderman/waterfall_shading_0801043052/images/waterfall_shading_cameraShape1_DenoiseCrossFrame.0045" }
+      Task -title {Render Frame 46} -cmds {
+        Cmd {prman -t:0 -Progress -recover %r -checkpoint 5m -cwd "%D(/FARM/Projects/Waterfall_1_Sprint/sequences/seq_01/sets/waterCity/maya/)" "%D(renderman/waterfall_shading_0801043052/rib/0046/0046.rib)"} -service {local:PixarRender}
+      } -preview {sho "/FARM/Projects/Waterfall_1_Sprint/sequences/seq_01/sets/waterCity/maya/renderman/waterfall_shading_0801043052/images/waterfall_shading.0046.exr" "/FARM/Projects/Waterfall_1_Sprint/sequences/seq_01/sets/waterCity/maya/renderman/waterfall_shading_0801043052/images/waterfall_shading_cameraShape1_DenoiseCrossFrame.0046" }
+      Task -title {Render Frame 47} -cmds {
+        Cmd {prman -t:0 -Progress -recover %r -checkpoint 5m -cwd "%D(/FARM/Projects/Waterfall_1_Sprint/sequences/seq_01/sets/waterCity/maya/)" "%D(renderman/waterfall_shading_0801043052/rib/0047/0047.rib)"} -service {local:PixarRender}
+      } -preview {sho "/FARM/Projects/Waterfall_1_Sprint/sequences/seq_01/sets/waterCity/maya/renderman/waterfall_shading_0801043052/images/waterfall_shading.0047.exr" "/FARM/Projects/Waterfall_1_Sprint/sequences/seq_01/sets/waterCity/maya/renderman/waterfall_shading_0801043052/images/waterfall_shading_cameraShape1_DenoiseCrossFrame.0047" }
+      Task -title {Render Frame 48} -cmds {
+        Cmd {prman -t:0 -Progress -recover %r -checkpoint 5m -cwd "%D(/FARM/Projects/Waterfall_1_Sprint/sequences/seq_01/sets/waterCity/maya/)" "%D(renderman/waterfall_shading_0801043052/rib/0048/0048.rib)"} -service {local:PixarRender}
+      } -preview {sho "/FARM/Projects/Waterfall_1_Sprint/sequences/seq_01/sets/waterCity/maya/renderman/waterfall_shading_0801043052/images/waterfall_shading.0048.exr" "/FARM/Projects/Waterfall_1_Sprint/sequences/seq_01/sets/waterCity/maya/renderman/waterfall_shading_0801043052/images/waterfall_shading_cameraShape1_DenoiseCrossFrame.0048" }
+      Task -title {Render Frame 49} -cmds {
+        Cmd {prman -t:0 -Progress -recover %r -checkpoint 5m -cwd "%D(/FARM/Projects/Waterfall_1_Sprint/sequences/seq_01/sets/waterCity/maya/)" "%D(renderman/waterfall_shading_0801043052/rib/0049/0049.rib)"} -service {local:PixarRender}
+      } -preview {sho "/FARM/Projects/Waterfall_1_Sprint/sequences/seq_01/sets/waterCity/maya/renderman/waterfall_shading_0801043052/images/waterfall_shading.0049.exr" "/FARM/Projects/Waterfall_1_Sprint/sequences/seq_01/sets/waterCity/maya/renderman/waterfall_shading_0801043052/images/waterfall_shading_cameraShape1_DenoiseCrossFrame.0049" }
+      Task -title {Render Frame 50} -cmds {
+        Cmd {prman -t:0 -Progress -recover %r -checkpoint 5m -cwd "%D(/FARM/Projects/Waterfall_1_Sprint/sequences/seq_01/sets/waterCity/maya/)" "%D(renderman/waterfall_shading_0801043052/rib/0050/0050.rib)"} -service {local:PixarRender}
+      } -preview {sho "/FARM/Projects/Waterfall_1_Sprint/sequences/seq_01/sets/waterCity/maya/renderman/waterfall_shading_0801043052/images/waterfall_shading.0050.exr" "/FARM/Projects/Waterfall_1_Sprint/sequences/seq_01/sets/waterCity/maya/renderman/waterfall_shading_0801043052/images/waterfall_shading_cameraShape1_DenoiseCrossFrame.0050" }
+      Task -title {Render Frame 51} -cmds {
+        Cmd {prman -t:0 -Progress -recover %r -checkpoint 5m -cwd "%D(/FARM/Projects/Waterfall_1_Sprint/sequences/seq_01/sets/waterCity/maya/)" "%D(renderman/waterfall_shading_0801043052/rib/0051/0051.rib)"} -service {local:PixarRender}
+      } -preview {sho "/FARM/Projects/Waterfall_1_Sprint/sequences/seq_01/sets/waterCity/maya/renderman/waterfall_shading_0801043052/images/waterfall_shading.0051.exr" "/FARM/Projects/Waterfall_1_Sprint/sequences/seq_01/sets/waterCity/maya/renderman/waterfall_shading_0801043052/images/waterfall_shading_cameraShape1_DenoiseCrossFrame.0051" }
+      Task -title {Render Frame 52} -cmds {
+        Cmd {prman -t:0 -Progress -recover %r -checkpoint 5m -cwd "%D(/FARM/Projects/Waterfall_1_Sprint/sequences/seq_01/sets/waterCity/maya/)" "%D(renderman/waterfall_shading_0801043052/rib/0052/0052.rib)"} -service {local:PixarRender}
+      } -preview {sho "/FARM/Projects/Waterfall_1_Sprint/sequences/seq_01/sets/waterCity/maya/renderman/waterfall_shading_0801043052/images/waterfall_shading.0052.exr" "/FARM/Projects/Waterfall_1_Sprint/sequences/seq_01/sets/waterCity/maya/renderman/waterfall_shading_0801043052/images/waterfall_shading_cameraShape1_DenoiseCrossFrame.0052" }
+      Task -title {Render Frame 53} -cmds {
+        Cmd {prman -t:0 -Progress -recover %r -checkpoint 5m -cwd "%D(/FARM/Projects/Waterfall_1_Sprint/sequences/seq_01/sets/waterCity/maya/)" "%D(renderman/waterfall_shading_0801043052/rib/0053/0053.rib)"} -service {local:PixarRender}
+      } -preview {sho "/FARM/Projects/Waterfall_1_Sprint/sequences/seq_01/sets/waterCity/maya/renderman/waterfall_shading_0801043052/images/waterfall_shading.0053.exr" "/FARM/Projects/Waterfall_1_Sprint/sequences/seq_01/sets/waterCity/maya/renderman/waterfall_shading_0801043052/images/waterfall_shading_cameraShape1_DenoiseCrossFrame.0053" }
+      Task -title {Render Frame 54} -cmds {
+        Cmd {prman -t:0 -Progress -recover %r -checkpoint 5m -cwd "%D(/FARM/Projects/Waterfall_1_Sprint/sequences/seq_01/sets/waterCity/maya/)" "%D(renderman/waterfall_shading_0801043052/rib/0054/0054.rib)"} -service {local:PixarRender}
+      } -preview {sho "/FARM/Projects/Waterfall_1_Sprint/sequences/seq_01/sets/waterCity/maya/renderman/waterfall_shading_0801043052/images/waterfall_shading.0054.exr" "/FARM/Projects/Waterfall_1_Sprint/sequences/seq_01/sets/waterCity/maya/renderman/waterfall_shading_0801043052/images/waterfall_shading_cameraShape1_DenoiseCrossFrame.0054" }
+      Task -title {Render Frame 55} -cmds {
+        Cmd {prman -t:0 -Progress -recover %r -checkpoint 5m -cwd "%D(/FARM/Projects/Waterfall_1_Sprint/sequences/seq_01/sets/waterCity/maya/)" "%D(renderman/waterfall_shading_0801043052/rib/0055/0055.rib)"} -service {local:PixarRender}
+      } -preview {sho "/FARM/Projects/Waterfall_1_Sprint/sequences/seq_01/sets/waterCity/maya/renderman/waterfall_shading_0801043052/images/waterfall_shading.0055.exr" "/FARM/Projects/Waterfall_1_Sprint/sequences/seq_01/sets/waterCity/maya/renderman/waterfall_shading_0801043052/images/waterfall_shading_cameraShape1_DenoiseCrossFrame.0055" }
+      Task -title {Render Frame 56} -cmds {
+        Cmd {prman -t:0 -Progress -recover %r -checkpoint 5m -cwd "%D(/FARM/Projects/Waterfall_1_Sprint/sequences/seq_01/sets/waterCity/maya/)" "%D(renderman/waterfall_shading_0801043052/rib/0056/0056.rib)"} -service {local:PixarRender}
+      } -preview {sho "/FARM/Projects/Waterfall_1_Sprint/sequences/seq_01/sets/waterCity/maya/renderman/waterfall_shading_0801043052/images/waterfall_shading.0056.exr" "/FARM/Projects/Waterfall_1_Sprint/sequences/seq_01/sets/waterCity/maya/renderman/waterfall_shading_0801043052/images/waterfall_shading_cameraShape1_DenoiseCrossFrame.0056" }
+      Task -title {Render Frame 57} -cmds {
+        Cmd {prman -t:0 -Progress -recover %r -checkpoint 5m -cwd "%D(/FARM/Projects/Waterfall_1_Sprint/sequences/seq_01/sets/waterCity/maya/)" "%D(renderman/waterfall_shading_0801043052/rib/0057/0057.rib)"} -service {local:PixarRender}
+      } -preview {sho "/FARM/Projects/Waterfall_1_Sprint/sequences/seq_01/sets/waterCity/maya/renderman/waterfall_shading_0801043052/images/waterfall_shading.0057.exr" "/FARM/Projects/Waterfall_1_Sprint/sequences/seq_01/sets/waterCity/maya/renderman/waterfall_shading_0801043052/images/waterfall_shading_cameraShape1_DenoiseCrossFrame.0057" }
+      Task -title {Render Frame 58} -cmds {
+        Cmd {prman -t:0 -Progress -recover %r -checkpoint 5m -cwd "%D(/FARM/Projects/Waterfall_1_Sprint/sequences/seq_01/sets/waterCity/maya/)" "%D(renderman/waterfall_shading_0801043052/rib/0058/0058.rib)"} -service {local:PixarRender}
+      } -preview {sho "/FARM/Projects/Waterfall_1_Sprint/sequences/seq_01/sets/waterCity/maya/renderman/waterfall_shading_0801043052/images/waterfall_shading.0058.exr" "/FARM/Projects/Waterfall_1_Sprint/sequences/seq_01/sets/waterCity/maya/renderman/waterfall_shading_0801043052/images/waterfall_shading_cameraShape1_DenoiseCrossFrame.0058" }
+      Task -title {Render Frame 59} -cmds {
+        Cmd {prman -t:0 -Progress -recover %r -checkpoint 5m -cwd "%D(/FARM/Projects/Waterfall_1_Sprint/sequences/seq_01/sets/waterCity/maya/)" "%D(renderman/waterfall_shading_0801043052/rib/0059/0059.rib)"} -service {local:PixarRender}
+      } -preview {sho "/FARM/Projects/Waterfall_1_Sprint/sequences/seq_01/sets/waterCity/maya/renderman/waterfall_shading_0801043052/images/waterfall_shading.0059.exr" "/FARM/Projects/Waterfall_1_Sprint/sequences/seq_01/sets/waterCity/maya/renderman/waterfall_shading_0801043052/images/waterfall_shading_cameraShape1_DenoiseCrossFrame.0059" }
+      Task -title {Render Frame 60} -cmds {
+        Cmd {prman -t:0 -Progress -recover %r -checkpoint 5m -cwd "%D(/FARM/Projects/Waterfall_1_Sprint/sequences/seq_01/sets/waterCity/maya/)" "%D(renderman/waterfall_shading_0801043052/rib/0060/0060.rib)"} -service {local:PixarRender}
+      } -preview {sho "/FARM/Projects/Waterfall_1_Sprint/sequences/seq_01/sets/waterCity/maya/renderman/waterfall_shading_0801043052/images/waterfall_shading.0060.exr" "/FARM/Projects/Waterfall_1_Sprint/sequences/seq_01/sets/waterCity/maya/renderman/waterfall_shading_0801043052/images/waterfall_shading_cameraShape1_DenoiseCrossFrame.0060" }
+      Task -title {Render Frame 61} -cmds {
+        Cmd {prman -t:0 -Progress -recover %r -checkpoint 5m -cwd "%D(/FARM/Projects/Waterfall_1_Sprint/sequences/seq_01/sets/waterCity/maya/)" "%D(renderman/waterfall_shading_0801043052/rib/0061/0061.rib)"} -service {local:PixarRender}
+      } -preview {sho "/FARM/Projects/Waterfall_1_Sprint/sequences/seq_01/sets/waterCity/maya/renderman/waterfall_shading_0801043052/images/waterfall_shading.0061.exr" "/FARM/Projects/Waterfall_1_Sprint/sequences/seq_01/sets/waterCity/maya/renderman/waterfall_shading_0801043052/images/waterfall_shading_cameraShape1_DenoiseCrossFrame.0061" }
+      Task -title {Render Frame 62} -cmds {
+        Cmd {prman -t:0 -Progress -recover %r -checkpoint 5m -cwd "%D(/FARM/Projects/Waterfall_1_Sprint/sequences/seq_01/sets/waterCity/maya/)" "%D(renderman/waterfall_shading_0801043052/rib/0062/0062.rib)"} -service {local:PixarRender}
+      } -preview {sho "/FARM/Projects/Waterfall_1_Sprint/sequences/seq_01/sets/waterCity/maya/renderman/waterfall_shading_0801043052/images/waterfall_shading.0062.exr" "/FARM/Projects/Waterfall_1_Sprint/sequences/seq_01/sets/waterCity/maya/renderman/waterfall_shading_0801043052/images/waterfall_shading_cameraShape1_DenoiseCrossFrame.0062" }
+      Task -title {Render Frame 63} -cmds {
+        Cmd {prman -t:0 -Progress -recover %r -checkpoint 5m -cwd "%D(/FARM/Projects/Waterfall_1_Sprint/sequences/seq_01/sets/waterCity/maya/)" "%D(renderman/waterfall_shading_0801043052/rib/0063/0063.rib)"} -service {local:PixarRender}
+      } -preview {sho "/FARM/Projects/Waterfall_1_Sprint/sequences/seq_01/sets/waterCity/maya/renderman/waterfall_shading_0801043052/images/waterfall_shading.0063.exr" "/FARM/Projects/Waterfall_1_Sprint/sequences/seq_01/sets/waterCity/maya/renderman/waterfall_shading_0801043052/images/waterfall_shading_cameraShape1_DenoiseCrossFrame.0063" }
+      Task -title {Render Frame 64} -cmds {
+        Cmd {prman -t:0 -Progress -recover %r -checkpoint 5m -cwd "%D(/FARM/Projects/Waterfall_1_Sprint/sequences/seq_01/sets/waterCity/maya/)" "%D(renderman/waterfall_shading_0801043052/rib/0064/0064.rib)"} -service {local:PixarRender}
+      } -preview {sho "/FARM/Projects/Waterfall_1_Sprint/sequences/seq_01/sets/waterCity/maya/renderman/waterfall_shading_0801043052/images/waterfall_shading.0064.exr" "/FARM/Projects/Waterfall_1_Sprint/sequences/seq_01/sets/waterCity/maya/renderman/waterfall_shading_0801043052/images/waterfall_shading_cameraShape1_DenoiseCrossFrame.0064" }
+      Task -title {Render Frame 65} -cmds {
+        Cmd {prman -t:0 -Progress -recover %r -checkpoint 5m -cwd "%D(/FARM/Projects/Waterfall_1_Sprint/sequences/seq_01/sets/waterCity/maya/)" "%D(renderman/waterfall_shading_0801043052/rib/0065/0065.rib)"} -service {local:PixarRender}
+      } -preview {sho "/FARM/Projects/Waterfall_1_Sprint/sequences/seq_01/sets/waterCity/maya/renderman/waterfall_shading_0801043052/images/waterfall_shading.0065.exr" "/FARM/Projects/Waterfall_1_Sprint/sequences/seq_01/sets/waterCity/maya/renderman/waterfall_shading_0801043052/images/waterfall_shading_cameraShape1_DenoiseCrossFrame.0065" }
+      Task -title {Render Frame 66} -cmds {
+        Cmd {prman -t:0 -Progress -recover %r -checkpoint 5m -cwd "%D(/FARM/Projects/Waterfall_1_Sprint/sequences/seq_01/sets/waterCity/maya/)" "%D(renderman/waterfall_shading_0801043052/rib/0066/0066.rib)"} -service {local:PixarRender}
+      } -preview {sho "/FARM/Projects/Waterfall_1_Sprint/sequences/seq_01/sets/waterCity/maya/renderman/waterfall_shading_0801043052/images/waterfall_shading.0066.exr" "/FARM/Projects/Waterfall_1_Sprint/sequences/seq_01/sets/waterCity/maya/renderman/waterfall_shading_0801043052/images/waterfall_shading_cameraShape1_DenoiseCrossFrame.0066" }
+      Task -title {Render Frame 67} -cmds {
+        Cmd {prman -t:0 -Progress -recover %r -checkpoint 5m -cwd "%D(/FARM/Projects/Waterfall_1_Sprint/sequences/seq_01/sets/waterCity/maya/)" "%D(renderman/waterfall_shading_0801043052/rib/0067/0067.rib)"} -service {local:PixarRender}
+      } -preview {sho "/FARM/Projects/Waterfall_1_Sprint/sequences/seq_01/sets/waterCity/maya/renderman/waterfall_shading_0801043052/images/waterfall_shading.0067.exr" "/FARM/Projects/Waterfall_1_Sprint/sequences/seq_01/sets/waterCity/maya/renderman/waterfall_shading_0801043052/images/waterfall_shading_cameraShape1_DenoiseCrossFrame.0067" }
+      Task -title {Render Frame 68} -cmds {
+        Cmd {prman -t:0 -Progress -recover %r -checkpoint 5m -cwd "%D(/FARM/Projects/Waterfall_1_Sprint/sequences/seq_01/sets/waterCity/maya/)" "%D(renderman/waterfall_shading_0801043052/rib/0068/0068.rib)"} -service {local:PixarRender}
+      } -preview {sho "/FARM/Projects/Waterfall_1_Sprint/sequences/seq_01/sets/waterCity/maya/renderman/waterfall_shading_0801043052/images/waterfall_shading.0068.exr" "/FARM/Projects/Waterfall_1_Sprint/sequences/seq_01/sets/waterCity/maya/renderman/waterfall_shading_0801043052/images/waterfall_shading_cameraShape1_DenoiseCrossFrame.0068" }
+      Task -title {Render Frame 69} -cmds {
+        Cmd {prman -t:0 -Progress -recover %r -checkpoint 5m -cwd "%D(/FARM/Projects/Waterfall_1_Sprint/sequences/seq_01/sets/waterCity/maya/)" "%D(renderman/waterfall_shading_0801043052/rib/0069/0069.rib)"} -service {local:PixarRender}
+      } -preview {sho "/FARM/Projects/Waterfall_1_Sprint/sequences/seq_01/sets/waterCity/maya/renderman/waterfall_shading_0801043052/images/waterfall_shading.0069.exr" "/FARM/Projects/Waterfall_1_Sprint/sequences/seq_01/sets/waterCity/maya/renderman/waterfall_shading_0801043052/images/waterfall_shading_cameraShape1_DenoiseCrossFrame.0069" }
+      Task -title {Render Frame 70} -cmds {
+        Cmd {prman -t:0 -Progress -recover %r -checkpoint 5m -cwd "%D(/FARM/Projects/Waterfall_1_Sprint/sequences/seq_01/sets/waterCity/maya/)" "%D(renderman/waterfall_shading_0801043052/rib/0070/0070.rib)"} -service {local:PixarRender}
+      } -preview {sho "/FARM/Projects/Waterfall_1_Sprint/sequences/seq_01/sets/waterCity/maya/renderman/waterfall_shading_0801043052/images/waterfall_shading.0070.exr" "/FARM/Projects/Waterfall_1_Sprint/sequences/seq_01/sets/waterCity/maya/renderman/waterfall_shading_0801043052/images/waterfall_shading_cameraShape1_DenoiseCrossFrame.0070" }
+      Task -title {Render Frame 71} -cmds {
+        Cmd {prman -t:0 -Progress -recover %r -checkpoint 5m -cwd "%D(/FARM/Projects/Waterfall_1_Sprint/sequences/seq_01/sets/waterCity/maya/)" "%D(renderman/waterfall_shading_0801043052/rib/0071/0071.rib)"} -service {local:PixarRender}
+      } -preview {sho "/FARM/Projects/Waterfall_1_Sprint/sequences/seq_01/sets/waterCity/maya/renderman/waterfall_shading_0801043052/images/waterfall_shading.0071.exr" "/FARM/Projects/Waterfall_1_Sprint/sequences/seq_01/sets/waterCity/maya/renderman/waterfall_shading_0801043052/images/waterfall_shading_cameraShape1_DenoiseCrossFrame.0071" }
+      Task -title {Render Frame 72} -cmds {
+        Cmd {prman -t:0 -Progress -recover %r -checkpoint 5m -cwd "%D(/FARM/Projects/Waterfall_1_Sprint/sequences/seq_01/sets/waterCity/maya/)" "%D(renderman/waterfall_shading_0801043052/rib/0072/0072.rib)"} -service {local:PixarRender}
+      } -preview {sho "/FARM/Projects/Waterfall_1_Sprint/sequences/seq_01/sets/waterCity/maya/renderman/waterfall_shading_0801043052/images/waterfall_shading.0072.exr" "/FARM/Projects/Waterfall_1_Sprint/sequences/seq_01/sets/waterCity/maya/renderman/waterfall_shading_0801043052/images/waterfall_shading_cameraShape1_DenoiseCrossFrame.0072" }
+      Task -title {Render Frame 73} -cmds {
+        Cmd {prman -t:0 -Progress -recover %r -checkpoint 5m -cwd "%D(/FARM/Projects/Waterfall_1_Sprint/sequences/seq_01/sets/waterCity/maya/)" "%D(renderman/waterfall_shading_0801043052/rib/0073/0073.rib)"} -service {local:PixarRender}
+      } -preview {sho "/FARM/Projects/Waterfall_1_Sprint/sequences/seq_01/sets/waterCity/maya/renderman/waterfall_shading_0801043052/images/waterfall_shading.0073.exr" "/FARM/Projects/Waterfall_1_Sprint/sequences/seq_01/sets/waterCity/maya/renderman/waterfall_shading_0801043052/images/waterfall_shading_cameraShape1_DenoiseCrossFrame.0073" }
+      Task -title {Render Frame 74} -cmds {
+        Cmd {prman -t:0 -Progress -recover %r -checkpoint 5m -cwd "%D(/FARM/Projects/Waterfall_1_Sprint/sequences/seq_01/sets/waterCity/maya/)" "%D(renderman/waterfall_shading_0801043052/rib/0074/0074.rib)"} -service {local:PixarRender}
+      } -preview {sho "/FARM/Projects/Waterfall_1_Sprint/sequences/seq_01/sets/waterCity/maya/renderman/waterfall_shading_0801043052/images/waterfall_shading.0074.exr" "/FARM/Projects/Waterfall_1_Sprint/sequences/seq_01/sets/waterCity/maya/renderman/waterfall_shading_0801043052/images/waterfall_shading_cameraShape1_DenoiseCrossFrame.0074" }
+      Task -title {Render Frame 75} -cmds {
+        Cmd {prman -t:0 -Progress -recover %r -checkpoint 5m -cwd "%D(/FARM/Projects/Waterfall_1_Sprint/sequences/seq_01/sets/waterCity/maya/)" "%D(renderman/waterfall_shading_0801043052/rib/0075/0075.rib)"} -service {local:PixarRender}
+      } -preview {sho "/FARM/Projects/Waterfall_1_Sprint/sequences/seq_01/sets/waterCity/maya/renderman/waterfall_shading_0801043052/images/waterfall_shading.0075.exr" "/FARM/Projects/Waterfall_1_Sprint/sequences/seq_01/sets/waterCity/maya/renderman/waterfall_shading_0801043052/images/waterfall_shading_cameraShape1_DenoiseCrossFrame.0075" }
+      Task -title {Render Frame 76} -cmds {
+        Cmd {prman -t:0 -Progress -recover %r -checkpoint 5m -cwd "%D(/FARM/Projects/Waterfall_1_Sprint/sequences/seq_01/sets/waterCity/maya/)" "%D(renderman/waterfall_shading_0801043052/rib/0076/0076.rib)"} -service {local:PixarRender}
+      } -preview {sho "/FARM/Projects/Waterfall_1_Sprint/sequences/seq_01/sets/waterCity/maya/renderman/waterfall_shading_0801043052/images/waterfall_shading.0076.exr" "/FARM/Projects/Waterfall_1_Sprint/sequences/seq_01/sets/waterCity/maya/renderman/waterfall_shading_0801043052/images/waterfall_shading_cameraShape1_DenoiseCrossFrame.0076" }
+      Task -title {Render Frame 77} -cmds {
+        Cmd {prman -t:0 -Progress -recover %r -checkpoint 5m -cwd "%D(/FARM/Projects/Waterfall_1_Sprint/sequences/seq_01/sets/waterCity/maya/)" "%D(renderman/waterfall_shading_0801043052/rib/0077/0077.rib)"} -service {local:PixarRender}
+      } -preview {sho "/FARM/Projects/Waterfall_1_Sprint/sequences/seq_01/sets/waterCity/maya/renderman/waterfall_shading_0801043052/images/waterfall_shading.0077.exr" "/FARM/Projects/Waterfall_1_Sprint/sequences/seq_01/sets/waterCity/maya/renderman/waterfall_shading_0801043052/images/waterfall_shading_cameraShape1_DenoiseCrossFrame.0077" }
+      Task -title {Render Frame 78} -cmds {
+        Cmd {prman -t:0 -Progress -recover %r -checkpoint 5m -cwd "%D(/FARM/Projects/Waterfall_1_Sprint/sequences/seq_01/sets/waterCity/maya/)" "%D(renderman/waterfall_shading_0801043052/rib/0078/0078.rib)"} -service {local:PixarRender}
+      } -preview {sho "/FARM/Projects/Waterfall_1_Sprint/sequences/seq_01/sets/waterCity/maya/renderman/waterfall_shading_0801043052/images/waterfall_shading.0078.exr" "/FARM/Projects/Waterfall_1_Sprint/sequences/seq_01/sets/waterCity/maya/renderman/waterfall_shading_0801043052/images/waterfall_shading_cameraShape1_DenoiseCrossFrame.0078" }
+      Task -title {Render Frame 79} -cmds {
+        Cmd {prman -t:0 -Progress -recover %r -checkpoint 5m -cwd "%D(/FARM/Projects/Waterfall_1_Sprint/sequences/seq_01/sets/waterCity/maya/)" "%D(renderman/waterfall_shading_0801043052/rib/0079/0079.rib)"} -service {local:PixarRender}
+      } -preview {sho "/FARM/Projects/Waterfall_1_Sprint/sequences/seq_01/sets/waterCity/maya/renderman/waterfall_shading_0801043052/images/waterfall_shading.0079.exr" "/FARM/Projects/Waterfall_1_Sprint/sequences/seq_01/sets/waterCity/maya/renderman/waterfall_shading_0801043052/images/waterfall_shading_cameraShape1_DenoiseCrossFrame.0079" }
+      Task -title {Render Frame 80} -cmds {
+        Cmd {prman -t:0 -Progress -recover %r -checkpoint 5m -cwd "%D(/FARM/Projects/Waterfall_1_Sprint/sequences/seq_01/sets/waterCity/maya/)" "%D(renderman/waterfall_shading_0801043052/rib/0080/0080.rib)"} -service {local:PixarRender}
+      } -preview {sho "/FARM/Projects/Waterfall_1_Sprint/sequences/seq_01/sets/waterCity/maya/renderman/waterfall_shading_0801043052/images/waterfall_shading.0080.exr" "/FARM/Projects/Waterfall_1_Sprint/sequences/seq_01/sets/waterCity/maya/renderman/waterfall_shading_0801043052/images/waterfall_shading_cameraShape1_DenoiseCrossFrame.0080" }
+      Task -title {Render Frame 81} -cmds {
+        Cmd {prman -t:0 -Progress -recover %r -checkpoint 5m -cwd "%D(/FARM/Projects/Waterfall_1_Sprint/sequences/seq_01/sets/waterCity/maya/)" "%D(renderman/waterfall_shading_0801043052/rib/0081/0081.rib)"} -service {local:PixarRender}
+      } -preview {sho "/FARM/Projects/Waterfall_1_Sprint/sequences/seq_01/sets/waterCity/maya/renderman/waterfall_shading_0801043052/images/waterfall_shading.0081.exr" "/FARM/Projects/Waterfall_1_Sprint/sequences/seq_01/sets/waterCity/maya/renderman/waterfall_shading_0801043052/images/waterfall_shading_cameraShape1_DenoiseCrossFrame.0081" }
+      Task -title {Render Frame 82} -cmds {
+        Cmd {prman -t:0 -Progress -recover %r -checkpoint 5m -cwd "%D(/FARM/Projects/Waterfall_1_Sprint/sequences/seq_01/sets/waterCity/maya/)" "%D(renderman/waterfall_shading_0801043052/rib/0082/0082.rib)"} -service {local:PixarRender}
+      } -preview {sho "/FARM/Projects/Waterfall_1_Sprint/sequences/seq_01/sets/waterCity/maya/renderman/waterfall_shading_0801043052/images/waterfall_shading.0082.exr" "/FARM/Projects/Waterfall_1_Sprint/sequences/seq_01/sets/waterCity/maya/renderman/waterfall_shading_0801043052/images/waterfall_shading_cameraShape1_DenoiseCrossFrame.0082" }
+      Task -title {Render Frame 83} -cmds {
+        Cmd {prman -t:0 -Progress -recover %r -checkpoint 5m -cwd "%D(/FARM/Projects/Waterfall_1_Sprint/sequences/seq_01/sets/waterCity/maya/)" "%D(renderman/waterfall_shading_0801043052/rib/0083/0083.rib)"} -service {local:PixarRender}
+      } -preview {sho "/FARM/Projects/Waterfall_1_Sprint/sequences/seq_01/sets/waterCity/maya/renderman/waterfall_shading_0801043052/images/waterfall_shading.0083.exr" "/FARM/Projects/Waterfall_1_Sprint/sequences/seq_01/sets/waterCity/maya/renderman/waterfall_shading_0801043052/images/waterfall_shading_cameraShape1_DenoiseCrossFrame.0083" }
+      Task -title {Render Frame 84} -cmds {
+        Cmd {prman -t:0 -Progress -recover %r -checkpoint 5m -cwd "%D(/FARM/Projects/Waterfall_1_Sprint/sequences/seq_01/sets/waterCity/maya/)" "%D(renderman/waterfall_shading_0801043052/rib/0084/0084.rib)"} -service {local:PixarRender}
+      } -preview {sho "/FARM/Projects/Waterfall_1_Sprint/sequences/seq_01/sets/waterCity/maya/renderman/waterfall_shading_0801043052/images/waterfall_shading.0084.exr" "/FARM/Projects/Waterfall_1_Sprint/sequences/seq_01/sets/waterCity/maya/renderman/waterfall_shading_0801043052/images/waterfall_shading_cameraShape1_DenoiseCrossFrame.0084" }
+      Task -title {Render Frame 85} -cmds {
+        Cmd {prman -t:0 -Progress -recover %r -checkpoint 5m -cwd "%D(/FARM/Projects/Waterfall_1_Sprint/sequences/seq_01/sets/waterCity/maya/)" "%D(renderman/waterfall_shading_0801043052/rib/0085/0085.rib)"} -service {local:PixarRender}
+      } -preview {sho "/FARM/Projects/Waterfall_1_Sprint/sequences/seq_01/sets/waterCity/maya/renderman/waterfall_shading_0801043052/images/waterfall_shading.0085.exr" "/FARM/Projects/Waterfall_1_Sprint/sequences/seq_01/sets/waterCity/maya/renderman/waterfall_shading_0801043052/images/waterfall_shading_cameraShape1_DenoiseCrossFrame.0085" }
+      Task -title {Render Frame 86} -cmds {
+        Cmd {prman -t:0 -Progress -recover %r -checkpoint 5m -cwd "%D(/FARM/Projects/Waterfall_1_Sprint/sequences/seq_01/sets/waterCity/maya/)" "%D(renderman/waterfall_shading_0801043052/rib/0086/0086.rib)"} -service {local:PixarRender}
+      } -preview {sho "/FARM/Projects/Waterfall_1_Sprint/sequences/seq_01/sets/waterCity/maya/renderman/waterfall_shading_0801043052/images/waterfall_shading.0086.exr" "/FARM/Projects/Waterfall_1_Sprint/sequences/seq_01/sets/waterCity/maya/renderman/waterfall_shading_0801043052/images/waterfall_shading_cameraShape1_DenoiseCrossFrame.0086" }
+      Task -title {Render Frame 87} -cmds {
+        Cmd {prman -t:0 -Progress -recover %r -checkpoint 5m -cwd "%D(/FARM/Projects/Waterfall_1_Sprint/sequences/seq_01/sets/waterCity/maya/)" "%D(renderman/waterfall_shading_0801043052/rib/0087/0087.rib)"} -service {local:PixarRender}
+      } -preview {sho "/FARM/Projects/Waterfall_1_Sprint/sequences/seq_01/sets/waterCity/maya/renderman/waterfall_shading_0801043052/images/waterfall_shading.0087.exr" "/FARM/Projects/Waterfall_1_Sprint/sequences/seq_01/sets/waterCity/maya/renderman/waterfall_shading_0801043052/images/waterfall_shading_cameraShape1_DenoiseCrossFrame.0087" }
+      Task -title {Render Frame 88} -cmds {
+        Cmd {prman -t:0 -Progress -recover %r -checkpoint 5m -cwd "%D(/FARM/Projects/Waterfall_1_Sprint/sequences/seq_01/sets/waterCity/maya/)" "%D(renderman/waterfall_shading_0801043052/rib/0088/0088.rib)"} -service {local:PixarRender}
+      } -preview {sho "/FARM/Projects/Waterfall_1_Sprint/sequences/seq_01/sets/waterCity/maya/renderman/waterfall_shading_0801043052/images/waterfall_shading.0088.exr" "/FARM/Projects/Waterfall_1_Sprint/sequences/seq_01/sets/waterCity/maya/renderman/waterfall_shading_0801043052/images/waterfall_shading_cameraShape1_DenoiseCrossFrame.0088" }
+      Task -title {Render Frame 89} -cmds {
+        Cmd {prman -t:0 -Progress -recover %r -checkpoint 5m -cwd "%D(/FARM/Projects/Waterfall_1_Sprint/sequences/seq_01/sets/waterCity/maya/)" "%D(renderman/waterfall_shading_0801043052/rib/0089/0089.rib)"} -service {local:PixarRender}
+      } -preview {sho "/FARM/Projects/Waterfall_1_Sprint/sequences/seq_01/sets/waterCity/maya/renderman/waterfall_shading_0801043052/images/waterfall_shading.0089.exr" "/FARM/Projects/Waterfall_1_Sprint/sequences/seq_01/sets/waterCity/maya/renderman/waterfall_shading_0801043052/images/waterfall_shading_cameraShape1_DenoiseCrossFrame.0089" }
+      Task -title {Render Frame 90} -cmds {
+        Cmd {prman -t:0 -Progress -recover %r -checkpoint 5m -cwd "%D(/FARM/Projects/Waterfall_1_Sprint/sequences/seq_01/sets/waterCity/maya/)" "%D(renderman/waterfall_shading_0801043052/rib/0090/0090.rib)"} -service {local:PixarRender}
+      } -preview {sho "/FARM/Projects/Waterfall_1_Sprint/sequences/seq_01/sets/waterCity/maya/renderman/waterfall_shading_0801043052/images/waterfall_shading.0090.exr" "/FARM/Projects/Waterfall_1_Sprint/sequences/seq_01/sets/waterCity/maya/renderman/waterfall_shading_0801043052/images/waterfall_shading_cameraShape1_DenoiseCrossFrame.0090" }
+      Task -title {Render Frame 91} -cmds {
+        Cmd {prman -t:0 -Progress -recover %r -checkpoint 5m -cwd "%D(/FARM/Projects/Waterfall_1_Sprint/sequences/seq_01/sets/waterCity/maya/)" "%D(renderman/waterfall_shading_0801043052/rib/0091/0091.rib)"} -service {local:PixarRender}
+      } -preview {sho "/FARM/Projects/Waterfall_1_Sprint/sequences/seq_01/sets/waterCity/maya/renderman/waterfall_shading_0801043052/images/waterfall_shading.0091.exr" "/FARM/Projects/Waterfall_1_Sprint/sequences/seq_01/sets/waterCity/maya/renderman/waterfall_shading_0801043052/images/waterfall_shading_cameraShape1_DenoiseCrossFrame.0091" }
+      Task -title {Render Frame 92} -cmds {
+        Cmd {prman -t:0 -Progress -recover %r -checkpoint 5m -cwd "%D(/FARM/Projects/Waterfall_1_Sprint/sequences/seq_01/sets/waterCity/maya/)" "%D(renderman/waterfall_shading_0801043052/rib/0092/0092.rib)"} -service {local:PixarRender}
+      } -preview {sho "/FARM/Projects/Waterfall_1_Sprint/sequences/seq_01/sets/waterCity/maya/renderman/waterfall_shading_0801043052/images/waterfall_shading.0092.exr" "/FARM/Projects/Waterfall_1_Sprint/sequences/seq_01/sets/waterCity/maya/renderman/waterfall_shading_0801043052/images/waterfall_shading_cameraShape1_DenoiseCrossFrame.0092" }
+      Task -title {Render Frame 93} -cmds {
+        Cmd {prman -t:0 -Progress -recover %r -checkpoint 5m -cwd "%D(/FARM/Projects/Waterfall_1_Sprint/sequences/seq_01/sets/waterCity/maya/)" "%D(renderman/waterfall_shading_0801043052/rib/0093/0093.rib)"} -service {local:PixarRender}
+      } -preview {sho "/FARM/Projects/Waterfall_1_Sprint/sequences/seq_01/sets/waterCity/maya/renderman/waterfall_shading_0801043052/images/waterfall_shading.0093.exr" "/FARM/Projects/Waterfall_1_Sprint/sequences/seq_01/sets/waterCity/maya/renderman/waterfall_shading_0801043052/images/waterfall_shading_cameraShape1_DenoiseCrossFrame.0093" }
+      Task -title {Render Frame 94} -cmds {
+        Cmd {prman -t:0 -Progress -recover %r -checkpoint 5m -cwd "%D(/FARM/Projects/Waterfall_1_Sprint/sequences/seq_01/sets/waterCity/maya/)" "%D(renderman/waterfall_shading_0801043052/rib/0094/0094.rib)"} -service {local:PixarRender}
+      } -preview {sho "/FARM/Projects/Waterfall_1_Sprint/sequences/seq_01/sets/waterCity/maya/renderman/waterfall_shading_0801043052/images/waterfall_shading.0094.exr" "/FARM/Projects/Waterfall_1_Sprint/sequences/seq_01/sets/waterCity/maya/renderman/waterfall_shading_0801043052/images/waterfall_shading_cameraShape1_DenoiseCrossFrame.0094" }
+      Task -title {Render Frame 95} -cmds {
+        Cmd {prman -t:0 -Progress -recover %r -checkpoint 5m -cwd "%D(/FARM/Projects/Waterfall_1_Sprint/sequences/seq_01/sets/waterCity/maya/)" "%D(renderman/waterfall_shading_0801043052/rib/0095/0095.rib)"} -service {local:PixarRender}
+      } -preview {sho "/FARM/Projects/Waterfall_1_Sprint/sequences/seq_01/sets/waterCity/maya/renderman/waterfall_shading_0801043052/images/waterfall_shading.0095.exr" "/FARM/Projects/Waterfall_1_Sprint/sequences/seq_01/sets/waterCity/maya/renderman/waterfall_shading_0801043052/images/waterfall_shading_cameraShape1_DenoiseCrossFrame.0095" }
+      Task -title {Render Frame 96} -cmds {
+        Cmd {prman -t:0 -Progress -recover %r -checkpoint 5m -cwd "%D(/FARM/Projects/Waterfall_1_Sprint/sequences/seq_01/sets/waterCity/maya/)" "%D(renderman/waterfall_shading_0801043052/rib/0096/0096.rib)"} -service {local:PixarRender}
+      } -preview {sho "/FARM/Projects/Waterfall_1_Sprint/sequences/seq_01/sets/waterCity/maya/renderman/waterfall_shading_0801043052/images/waterfall_shading.0096.exr" "/FARM/Projects/Waterfall_1_Sprint/sequences/seq_01/sets/waterCity/maya/renderman/waterfall_shading_0801043052/images/waterfall_shading_cameraShape1_DenoiseCrossFrame.0096" }
+      Task -title {Render Frame 97} -cmds {
+        Cmd {prman -t:0 -Progress -recover %r -checkpoint 5m -cwd "%D(/FARM/Projects/Waterfall_1_Sprint/sequences/seq_01/sets/waterCity/maya/)" "%D(renderman/waterfall_shading_0801043052/rib/0097/0097.rib)"} -service {local:PixarRender}
+      } -preview {sho "/FARM/Projects/Waterfall_1_Sprint/sequences/seq_01/sets/waterCity/maya/renderman/waterfall_shading_0801043052/images/waterfall_shading.0097.exr" "/FARM/Projects/Waterfall_1_Sprint/sequences/seq_01/sets/waterCity/maya/renderman/waterfall_shading_0801043052/images/waterfall_shading_cameraShape1_DenoiseCrossFrame.0097" }
+      Task -title {Render Frame 98} -cmds {
+        Cmd {prman -t:0 -Progress -recover %r -checkpoint 5m -cwd "%D(/FARM/Projects/Waterfall_1_Sprint/sequences/seq_01/sets/waterCity/maya/)" "%D(renderman/waterfall_shading_0801043052/rib/0098/0098.rib)"} -service {local:PixarRender}
+      } -preview {sho "/FARM/Projects/Waterfall_1_Sprint/sequences/seq_01/sets/waterCity/maya/renderman/waterfall_shading_0801043052/images/waterfall_shading.0098.exr" "/FARM/Projects/Waterfall_1_Sprint/sequences/seq_01/sets/waterCity/maya/renderman/waterfall_shading_0801043052/images/waterfall_shading_cameraShape1_DenoiseCrossFrame.0098" }
+      Task -title {Render Frame 99} -cmds {
+        Cmd {prman -t:0 -Progress -recover %r -checkpoint 5m -cwd "%D(/FARM/Projects/Waterfall_1_Sprint/sequences/seq_01/sets/waterCity/maya/)" "%D(renderman/waterfall_shading_0801043052/rib/0099/0099.rib)"} -service {local:PixarRender}
+      } -preview {sho "/FARM/Projects/Waterfall_1_Sprint/sequences/seq_01/sets/waterCity/maya/renderman/waterfall_shading_0801043052/images/waterfall_shading.0099.exr" "/FARM/Projects/Waterfall_1_Sprint/sequences/seq_01/sets/waterCity/maya/renderman/waterfall_shading_0801043052/images/waterfall_shading_cameraShape1_DenoiseCrossFrame.0099" }
+      Task -title {Render Frame 100} -cmds {
+        Cmd {prman -t:0 -Progress -recover %r -checkpoint 5m -cwd "%D(/FARM/Projects/Waterfall_1_Sprint/sequences/seq_01/sets/waterCity/maya/)" "%D(renderman/waterfall_shading_0801043052/rib/0100/0100.rib)"} -service {local:PixarRender}
+      } -preview {sho "/FARM/Projects/Waterfall_1_Sprint/sequences/seq_01/sets/waterCity/maya/renderman/waterfall_shading_0801043052/images/waterfall_shading.0100.exr" "/FARM/Projects/Waterfall_1_Sprint/sequences/seq_01/sets/waterCity/maya/renderman/waterfall_shading_0801043052/images/waterfall_shading_cameraShape1_DenoiseCrossFrame.0100" }
+
+      }
+    }
+    }
+
+    Task -title { Postflight} -serialsubtasks 1 -subtasks {
+      Task -title {Render Postflight } -cmds {
+        Cmd {prman -t:0 -Progress -recover %r -checkpoint 5m -cwd "%D(/FARM/Projects/Waterfall_1_Sprint/sequences/seq_01/sets/waterCity/maya/)" "%D(renderman/waterfall_shading_0801043052/rib/job/post.rib)"} -service {local:PixarRender}
+      }    }
+
+  } -cleanup {
+    Cmd {Alfred} -msg {File delete "%D(/FARM/Projects/Waterfall_1_Sprint/sequences/seq_01/sets/waterCity/maya//scenes/_waterfall_shading_pid14670_0801043111.ma)"}   }
+}

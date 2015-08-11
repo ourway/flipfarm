@@ -136,7 +136,7 @@ def execute(cmd, task, directory='.', target=None):
                     }
                 print json.dumps(log, indent=4, sort_keys=True)
                 tasklog(tuuid, log)
-                if typ == 'ERROR' and code not in []: #TODO
+                if typ in ['ERROR', 'SEVERE'] and code not in []: #TODO
                     updateTaskInfo(tuuid, status='failed', failed_on=now())
                     p.kill()
                     return

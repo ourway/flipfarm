@@ -1,0 +1,59 @@
+##AlfredToDo 3.0
+
+Job -title {proj8_amirmohamad_light_03_61-70} -comment {#Created for lnw16 by RenderMan for Maya 20.1 (@1509300 Jul 21 2015)} -dirmaps {
+    {{mayabatch} {maya} NFS}
+} -envkey {rms-20.1-maya-2015} -pbias 1 -crews {} -tags {} -service {} -whendone {} -whenerror {}  -serialsubtasks 1 -subtasks {
+  Task -title {Job} -serialsubtasks 1 -subtasks {
+
+    Task -title { Preflight} -serialsubtasks 1 -subtasks {
+      Task -title {Render Preflight } -cmds {
+        Cmd {prman -t:0 -Progress -recover %r -checkpoint 5m -cwd "%D(/FARM/Projects/proj3_01jan15)" "%D(sequanses/seq_01/shot_01_01/maya/renderman/proj8_amirmohamad_light_03_61-70/rib/job/job.rib)"} -service {local:PixarRender}
+      } -preview {sho "/FARM/Projects/proj3_01jan15/sequanses/seq_01/shot_01_01/maya/renderman/proj8_amirmohamad_light_03_61-70/images/proj8_amirmohamad_light_03.job.exr" "/FARM/Projects/proj3_01jan15/sequanses/seq_01/shot_01_01/maya/renderman/proj8_amirmohamad_light_03_61-70/images/proj8_amirmohamad_light_03_perspShape_DenoiseCrossFrame.job" }    }
+
+    Task -title { Frames 61-70} -serialsubtasks 0 -subtasks {
+
+    Task -title { Frames 61-70} -serialsubtasks 1 -subtasks {
+      Task -title {Render  61-70} -serialsubtasks 0 -subtasks {
+      Task -title {Render Frame 61} -cmds {
+        Cmd {prman -t:0 -Progress -recover %r -checkpoint 5m -cwd "%D(/FARM/Projects/proj3_01jan15)" "%D(sequanses/seq_01/shot_01_01/maya/renderman/proj8_amirmohamad_light_03_61-70/rib/0061/0061.rib)"} -service {local:PixarRender}
+      } -preview {sho "/FARM/Projects/proj3_01jan15/sequanses/seq_01/shot_01_01/maya/renderman/proj8_amirmohamad_light_03_61-70/images/proj8_amirmohamad_light_03.0061.exr" "/FARM/Projects/proj3_01jan15/sequanses/seq_01/shot_01_01/maya/renderman/proj8_amirmohamad_light_03_61-70/images/proj8_amirmohamad_light_03_perspShape_DenoiseCrossFrame.0061" }
+      Task -title {Render Frame 62} -cmds {
+        Cmd {prman -t:0 -Progress -recover %r -checkpoint 5m -cwd "%D(/FARM/Projects/proj3_01jan15)" "%D(sequanses/seq_01/shot_01_01/maya/renderman/proj8_amirmohamad_light_03_61-70/rib/0062/0062.rib)"} -service {local:PixarRender}
+      } -preview {sho "/FARM/Projects/proj3_01jan15/sequanses/seq_01/shot_01_01/maya/renderman/proj8_amirmohamad_light_03_61-70/images/proj8_amirmohamad_light_03.0062.exr" "/FARM/Projects/proj3_01jan15/sequanses/seq_01/shot_01_01/maya/renderman/proj8_amirmohamad_light_03_61-70/images/proj8_amirmohamad_light_03_perspShape_DenoiseCrossFrame.0062" }
+      Task -title {Render Frame 63} -cmds {
+        Cmd {prman -t:0 -Progress -recover %r -checkpoint 5m -cwd "%D(/FARM/Projects/proj3_01jan15)" "%D(sequanses/seq_01/shot_01_01/maya/renderman/proj8_amirmohamad_light_03_61-70/rib/0063/0063.rib)"} -service {local:PixarRender}
+      } -preview {sho "/FARM/Projects/proj3_01jan15/sequanses/seq_01/shot_01_01/maya/renderman/proj8_amirmohamad_light_03_61-70/images/proj8_amirmohamad_light_03.0063.exr" "/FARM/Projects/proj3_01jan15/sequanses/seq_01/shot_01_01/maya/renderman/proj8_amirmohamad_light_03_61-70/images/proj8_amirmohamad_light_03_perspShape_DenoiseCrossFrame.0063" }
+      Task -title {Render Frame 64} -cmds {
+        Cmd {prman -t:0 -Progress -recover %r -checkpoint 5m -cwd "%D(/FARM/Projects/proj3_01jan15)" "%D(sequanses/seq_01/shot_01_01/maya/renderman/proj8_amirmohamad_light_03_61-70/rib/0064/0064.rib)"} -service {local:PixarRender}
+      } -preview {sho "/FARM/Projects/proj3_01jan15/sequanses/seq_01/shot_01_01/maya/renderman/proj8_amirmohamad_light_03_61-70/images/proj8_amirmohamad_light_03.0064.exr" "/FARM/Projects/proj3_01jan15/sequanses/seq_01/shot_01_01/maya/renderman/proj8_amirmohamad_light_03_61-70/images/proj8_amirmohamad_light_03_perspShape_DenoiseCrossFrame.0064" }
+      Task -title {Render Frame 65} -cmds {
+        Cmd {prman -t:0 -Progress -recover %r -checkpoint 5m -cwd "%D(/FARM/Projects/proj3_01jan15)" "%D(sequanses/seq_01/shot_01_01/maya/renderman/proj8_amirmohamad_light_03_61-70/rib/0065/0065.rib)"} -service {local:PixarRender}
+      } -preview {sho "/FARM/Projects/proj3_01jan15/sequanses/seq_01/shot_01_01/maya/renderman/proj8_amirmohamad_light_03_61-70/images/proj8_amirmohamad_light_03.0065.exr" "/FARM/Projects/proj3_01jan15/sequanses/seq_01/shot_01_01/maya/renderman/proj8_amirmohamad_light_03_61-70/images/proj8_amirmohamad_light_03_perspShape_DenoiseCrossFrame.0065" }
+      Task -title {Render Frame 66} -cmds {
+        Cmd {prman -t:0 -Progress -recover %r -checkpoint 5m -cwd "%D(/FARM/Projects/proj3_01jan15)" "%D(sequanses/seq_01/shot_01_01/maya/renderman/proj8_amirmohamad_light_03_61-70/rib/0066/0066.rib)"} -service {local:PixarRender}
+      } -preview {sho "/FARM/Projects/proj3_01jan15/sequanses/seq_01/shot_01_01/maya/renderman/proj8_amirmohamad_light_03_61-70/images/proj8_amirmohamad_light_03.0066.exr" "/FARM/Projects/proj3_01jan15/sequanses/seq_01/shot_01_01/maya/renderman/proj8_amirmohamad_light_03_61-70/images/proj8_amirmohamad_light_03_perspShape_DenoiseCrossFrame.0066" }
+      Task -title {Render Frame 67} -cmds {
+        Cmd {prman -t:0 -Progress -recover %r -checkpoint 5m -cwd "%D(/FARM/Projects/proj3_01jan15)" "%D(sequanses/seq_01/shot_01_01/maya/renderman/proj8_amirmohamad_light_03_61-70/rib/0067/0067.rib)"} -service {local:PixarRender}
+      } -preview {sho "/FARM/Projects/proj3_01jan15/sequanses/seq_01/shot_01_01/maya/renderman/proj8_amirmohamad_light_03_61-70/images/proj8_amirmohamad_light_03.0067.exr" "/FARM/Projects/proj3_01jan15/sequanses/seq_01/shot_01_01/maya/renderman/proj8_amirmohamad_light_03_61-70/images/proj8_amirmohamad_light_03_perspShape_DenoiseCrossFrame.0067" }
+      Task -title {Render Frame 68} -cmds {
+        Cmd {prman -t:0 -Progress -recover %r -checkpoint 5m -cwd "%D(/FARM/Projects/proj3_01jan15)" "%D(sequanses/seq_01/shot_01_01/maya/renderman/proj8_amirmohamad_light_03_61-70/rib/0068/0068.rib)"} -service {local:PixarRender}
+      } -preview {sho "/FARM/Projects/proj3_01jan15/sequanses/seq_01/shot_01_01/maya/renderman/proj8_amirmohamad_light_03_61-70/images/proj8_amirmohamad_light_03.0068.exr" "/FARM/Projects/proj3_01jan15/sequanses/seq_01/shot_01_01/maya/renderman/proj8_amirmohamad_light_03_61-70/images/proj8_amirmohamad_light_03_perspShape_DenoiseCrossFrame.0068" }
+      Task -title {Render Frame 69} -cmds {
+        Cmd {prman -t:0 -Progress -recover %r -checkpoint 5m -cwd "%D(/FARM/Projects/proj3_01jan15)" "%D(sequanses/seq_01/shot_01_01/maya/renderman/proj8_amirmohamad_light_03_61-70/rib/0069/0069.rib)"} -service {local:PixarRender}
+      } -preview {sho "/FARM/Projects/proj3_01jan15/sequanses/seq_01/shot_01_01/maya/renderman/proj8_amirmohamad_light_03_61-70/images/proj8_amirmohamad_light_03.0069.exr" "/FARM/Projects/proj3_01jan15/sequanses/seq_01/shot_01_01/maya/renderman/proj8_amirmohamad_light_03_61-70/images/proj8_amirmohamad_light_03_perspShape_DenoiseCrossFrame.0069" }
+      Task -title {Render Frame 70} -cmds {
+        Cmd {prman -t:0 -Progress -recover %r -checkpoint 5m -cwd "%D(/FARM/Projects/proj3_01jan15)" "%D(sequanses/seq_01/shot_01_01/maya/renderman/proj8_amirmohamad_light_03_61-70/rib/0070/0070.rib)"} -service {local:PixarRender}
+      } -preview {sho "/FARM/Projects/proj3_01jan15/sequanses/seq_01/shot_01_01/maya/renderman/proj8_amirmohamad_light_03_61-70/images/proj8_amirmohamad_light_03.0070.exr" "/FARM/Projects/proj3_01jan15/sequanses/seq_01/shot_01_01/maya/renderman/proj8_amirmohamad_light_03_61-70/images/proj8_amirmohamad_light_03_perspShape_DenoiseCrossFrame.0070" }
+
+      }
+    }
+    }
+
+    Task -title { Postflight} -serialsubtasks 1 -subtasks {
+      Task -title {Render Postflight } -cmds {
+        Cmd {prman -t:0 -Progress -recover %r -checkpoint 5m -cwd "%D(/FARM/Projects/proj3_01jan15)" "%D(sequanses/seq_01/shot_01_01/maya/renderman/proj8_amirmohamad_light_03_61-70/rib/job/post.rib)"} -service {local:PixarRender}
+      }    }
+
+  } -cleanup {
+    Cmd {Alfred} -msg {File delete "%D(/FARM/Projects/proj3_01jan15/sequanses/seq_01/shot_01_01/maya//scenes/_proj8_amirmohamad_light_03_pid13554_0811070833.ma)"}   }
+}

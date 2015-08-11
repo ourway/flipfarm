@@ -3,11 +3,22 @@
 <div class="panel panel-default">
 <div class="panel-heading">
         <h4>Render Farm Nodes Status</h4>
+
+<form role="form">
+                    <div class="checkbox checkbox-info checkbox-inline">
+                        <input type="checkbox" id="detchb" ng-model="options.farm.detail" value="" name="detchb" ng-checked="false">
+                        <label for="detchb"> Details</label>
+                    </div>
+
+
+
+</form>
+
 </div>
 <div class="panel-body">
 
 
-                <div class="col-md-4" ng-repeat="slave in options.slaves">
+    <div class="col-md-3" ng-repeat="slave in options.slaves">
                     <div class="panel panel-pricing"
                         ng-class="{'panel-danger':slave.info.worker==false, 'panel-success':slave.info.worker==true}">
 
@@ -16,16 +27,16 @@
                                 <i ng-if="slave.info.os=='linux2'" class="fa fa-linux"></i>
                             <h4>
 
-                                {{slave.info.identity.slice(0, 15)}}</h4>
+                                {{slave.info.identity.slice(0, 15) || '?????'}}</h4>
                                 {{slave.info.ip}}
                         </div>
-                        <div class="panel-body text-center">
+                        <div class="panel-body text-center" ng-show="options.farm.detail">
                                 <small><i>{{slave.info.qmark*(slave.info.cores || slave.info.cpu_count)}}</i></small>
                         </div>
-                        <ul class="list-group">
+                        <ul class="list-group" style="height:250px" ng-show="options.farm.detail" >
                                 <li class="list-group-item"><i class="fa fa-circle"></i>
                                         <b>{{slave.info.cores || slave.info.cpu_count}}</b> Cores
-
+                                        <div> 
                  <div ng-repeat="cpu in slave.info.cpu.percpu track by $index">
                 <div class="progress" style="opacity:0.75;height:8px;background:#fff">
                 <div class="progress-bar"
@@ -33,6 +44,7 @@
                         role="progressbar" aria-valuenow="{{cpu}}"
                   aria-valuemin="0" aria-valuemax="100" style="width:{{cpu}}%">
                   </div>
+                </div>
                 </div>
                 </div>
 

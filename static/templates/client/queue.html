@@ -154,7 +154,7 @@
                     </td>
                     <td>
 
-                        <i class="fa fa-desktop"></i> {{_task.slave}}
+                        <i class="fa fa-desktop"></i> {{_task.slave_name || _task.slave}}
     <a href="#" class="text-danger" ng-show="_task.status=='on progress'" ng-click="killProcess(_task._id.$oid, _task.pid)">
     <i class="fa fa-times-circle-o fa-spin"></i></a>
                     </td>
@@ -189,10 +189,17 @@
 
                 <td>
                     <span class="label label-default"  style="cursor:default" title="{{log.brief}}"
-                        ng-class="{'label-danger':log.type=='ERROR', 'label-warning':log.type=='WARNING'}"
-                    ng-repeat="log in _task.logs">
-                        {{log.code}}
-                    <a style="cursor:help;color:white;" title="{{log.description}}"><b>?</b></a>
+                        ng-class="{'label-danger':log.type=='ERROR' || log.type=='SEVERE', 'label-warning':log.type=='WARNING'}"
+                    ng-repeat="log in _task.logs.slice(0,5)">
+                        
+                    <a style="cursor:help;color:white;" 
+                        title="{{log.type}}: {{log.code}}
+***
+{{log.description}}
+***
+                        ">
+                        
+                        <b>{{log.type.slice(0,1)}}</b></a>
                     </span>
                 </td>
 

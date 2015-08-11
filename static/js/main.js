@@ -7,7 +7,7 @@
 /*global vex*/
 /*global JsonHuman*/
 
-humane.timeout = 3000; // default: 2500
+humane.timeout = 5000; // default: 2500
 //humane.waitForMove = true; // default: false
 
 console.log('Pooyamehr Studio');
@@ -316,7 +316,6 @@ ngApp.controller('clientCtrl', function($scope, $http, $interval, $timeout) {
                                 }
                 });
         };
-        $scope.getSlaves();
         $scope.getJobDetailFunc = function(jobId, click){
 
             var jr = $http.post('/api/jobDetail', {'_id':jobId});
@@ -341,7 +340,7 @@ ngApp.controller('clientCtrl', function($scope, $http, $interval, $timeout) {
 
                 $scope.getJobDetailFunc(jobId);
 
-                }, 1000);
+                }, $scope.baseInterval*2);
             console.log($scope.jobDetailIntervalId);
 
         };
@@ -352,12 +351,12 @@ ngApp.controller('clientCtrl', function($scope, $http, $interval, $timeout) {
             $http.post('/api/shoImage', {'target_path':path});
 
         };
-        $timeout(function(){
-                $scope.workerPing();}, $scope.baseInterval);
+        $scope.workerPing();
+        $scope.getSlaves();
         $interval(function(){
                 $scope.workerPing();
                 $scope.getSlaves();
-        }, $scope.baseInterval+1);
+        }, $scope.baseInterval*2);
         $scope.shoXMLStatc = function(dir, taskName){
             var tname = taskName.replace(/ /g, '_');
             var url = '/api/serveStatic?path='+dir+'/'+'.flipfarmPrmanStats-'+tname+'.xml';
