@@ -12,6 +12,11 @@ CELERYBEAT_SCHEDULE = {
         'task': 'clientAgent.getLatestTasks',
         'schedule': timedelta(seconds=5),
         #'args': (1,2),
+    },
+    'ping': {
+        'task': 'clientAgent.ping',
+        'schedule': timedelta(seconds=2),
+        #'args': (1,2),
     }
 }
 

@@ -187,7 +187,7 @@ ngApp.controller('clientCtrl', function($scope, $http, $interval, $timeout) {
         $scope.ping();
         $scope.getJobs();
         $interval(function(){
-                $scope.ping();
+                //$scope.ping();  ## now worker pings server every few seconds
                 $scope.getJobs();
         }, $scope.baseInterval);
         $scope.uploadFilesChanged = function(e){

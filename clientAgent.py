@@ -1,8 +1,8 @@
 
 import os, sys
 from subprocess import Popen, PIPE
-from utils.general import readConfig, now
-from utils.client_tools import getServerUrl, connectToServer, getImageInfo
+from utils.general import readConfig, now, getSystemInfo, getBenchmark
+from utils.client_tools import getServerUrl, connectToServer, getImageInfo, getRenderTools
 import psutil
 import datetime
 import time
@@ -12,11 +12,33 @@ import json
 from requests import HTTPError, ConnectionError
 from datetime import timedelta
 import re
+from copy import copy
+import anydbm
 
 
 CONFIG = readConfig()
 
 ### celery setup
+print '*'*80
+print ' Welcome to Flip/Farm'
+ldbpath = 'lcache.db'
+db = anydbm.open(ldbpath, 'c')
+if not db.keys():
+    print "    Seems it's first time you are running Flipfarm worker"
+    slaveName = raw_input('    Please Enter a name for this machine: ')
+    print '    Now let me benchmark "%s" for speed and performance. please wait ...' % slaveName.title()
+    qmark = getBenchmark()
+    db['slaveName'] = slaveName.title()
+    db['qmark'] = str(qmark)
+
+
+slaveName = db['slaveName']
+qmark = int(db['qmark'])
+db.close()
+
+
+print '\tWelcome %s!'%slaveName
+print '*'*80
 
 
 
@@ -175,6 +197,22 @@ def execute(cmd, task, directory='.', target=None):
         'command':cmd,
         'task':task,
     }
+
+
+
+@ca.task(name='clientAgent.ping')
+def ping():
+    ''' This method pings server'''
+    systemInfo = getSystemInfo()
+    '''Now lets read browser database info which is send to us'''
+    payload = copy(systemInfo)
+    payload['render_tools'] = getRenderTools()
+    payload['os'] = sys.platform
+    payload['identity'] = slaveName
+    payload['qmark'] = qmark
+    data = connectToServer('/api/ping', payload)
+    if data:
+        return 'PING'
 
 
 
