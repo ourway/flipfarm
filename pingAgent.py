@@ -51,12 +51,12 @@ CELERY_RESULT_BACKEND = 'redis://{host}:6379/11'.format(host=redis_host)
 
 
 from celery import Celery
-ca = Celery('pingAgent', broker=BROKER_URL, backend=CELERY_RESULT_BACKEND)
-ca.config_from_object('pingAgentConfig')
+pa = Celery('pingAgent', broker=BROKER_URL, backend=CELERY_RESULT_BACKEND)
+pa.config_from_object('pingAgentConfig')
 
 
 
-@ca.task(name='pingAgent.ping')
+@pa.task(name='pingAgent.ping')
 def ping():
     ''' This method pings server'''
     systemInfo = getSystemInfo()
@@ -71,7 +71,7 @@ def ping():
     if data:
         return 'PONG'
 
-@ca.task(name='clientAgent.getCommand')
+@pa.task(name='clientAgent.getCommand')
 def runCommand(cmd):
     ''' gets a command and runs it on client '''
     import os
@@ -90,10 +90,10 @@ if __name__ == '__main__':
     argv = [
         'worker',
         '--loglevel=INFO',
-        '--hostname=%s'% (MAC*10),
+        '--hostname=%s'% (MAC),
         '--pidfile=pingAgent.pid',
         '--beat'
 
 
     ]
-    ca.worker_main(argv)
+    pa.worker_main(argv)

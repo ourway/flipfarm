@@ -44,6 +44,7 @@ import time
 from random import choice
 from itertools import cycle
 from clientAgent import execute, ca
+from pingAgent import pa
 
 CONFIG = readConfig()
 
@@ -292,16 +293,17 @@ def getTaskStatus(_id):
 
 def getSlaveInfo(client=None):
     """Get slaves information"""
-    inspect = ca.control.inspect()
+    inspect = pa.control.inspect()
     result = []
     pings = inspect.ping()
     if pings:
         for each in pings:
-            _mac = int(each.split('@')[-1])
+            _mac = each.split('@')[-1]
+            print _mac
             slave = mongo.db.slaves.find_one({'info.MAC':_mac})
             result.append(slave)
 
-    return result
+    return ujson.loads(dumps(result))
 
 def getJobDetail(_id):
     '''Get job detail for show in a modal'''
@@ -324,7 +326,7 @@ def getWorkerPing(client):
     slave = mongo.db.slaves.find_one({'ip':client})
     if slave:
         _mac = slave['info'].get('MAC')
-        inspect = ca.control.inspect(destination=['celery@%s'%_mac])
+        inspect = pa.control.inspect(destination=['celery@%s'%_mac])
         return inspect.ping()
 
 
@@ -332,5 +334,5 @@ def getWorkerStats(client):
     slave = mongo.db.slaves.find_one({'ip':client})
     if slave:
         _mac = slave['info'].get('MAC')
-        inspect = ca.control.inspect(destination=['celery@%s'%_mac])
+        inspect = pa.control.inspect(destination=['celery@%s'%_mac])
         return inspect.stats()

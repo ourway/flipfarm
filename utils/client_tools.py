@@ -33,7 +33,7 @@ import re
 import getpass
 from uuid import getnode as get_mac
 
-MAC = get_mac()
+MAC = str(get_mac())[:16]
 user=getpass.getuser()
 
 

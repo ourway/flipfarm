@@ -236,7 +236,7 @@ if __name__ == '__main__':
     argv = [
         'worker',
         '--loglevel=INFO',
-        '--hostname=%s'% (MAC*10),
+        '--hostname=%s'% (MAC),
         '--concurrency=1',
         '--pidfile=clientAgent.pid',
 
