@@ -13,7 +13,7 @@ CELERY_TASK_SERIALIZER = 'msgpack'
 CELERY_ACCEPT_CONTENT = ['json', 'msgpack', 'yaml', 'pickle']
 
 BROKER_TRANSPORT_OPTIONS = {'fanout_prefix': True, 'fanout_patterns': True}
-
+BROKER_TRANSPORT_OPTIONS = {'visibility_timeout': 3600}  # 1 hour.
 
 CELERY_DEFAULT_QUEUE = queueName
 CELERY_QUEUES = (
