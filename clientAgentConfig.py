@@ -3,19 +3,15 @@ from kombu import Exchange, Queue
 from datetime import timedelta
 from utils.client_tools import user, MAC
 
-queueName = '%s-%s'%(user, MAC)
+#queueName = '%s-%s'%(user, MAC)
+queueName = 'FFarmRenderQueue01'
 CELERY_TASK_SERIALIZER = 'msgpack'
-CELERY_ACCEPT_CONTENT = ['json', 'msgpack', 'yaml']
+CELERY_ACCEPT_CONTENT = ['json', 'msgpack', 'yaml', 'pickle']
 
 CELERYBEAT_SCHEDULE = {
-    'get_latest_tasks': {
-        'task': 'clientAgent.getLatestTasks',
-        'schedule': timedelta(seconds=5),
-        #'args': (1,2),
-    },
     'ping': {
         'task': 'clientAgent.ping',
-        'schedule': timedelta(seconds=2),
+        'schedule': timedelta(seconds=5),
         #'args': (1,2),
     }
 }

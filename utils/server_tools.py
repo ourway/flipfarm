@@ -43,6 +43,7 @@ import ujson
 import time
 from random import choice
 from itertools import cycle
+from clientAgent import execute, ca
 
 CONFIG = readConfig()
 
@@ -61,6 +62,24 @@ def getRenderCommand(category):
         return command
 
 
+def addTaskToQueue(taskId):
+    data = mongo.db.tasks.find_one({'_id':taskId})
+    '''Revoke the task if it's available'''
+    if data.get('ctid'):
+        ca.AsyncResult(data.get('ctid')).revoke()
+
+    proccess = data.get('proccess')
+    raw_cmd = proccess.get('command')
+    command = raw_cmd.format(threads=0,
+                             cwd=proccess.get('cwd'), task=data.get('name').replace(' ', '_'),
+                             filepath=proccess.get('filepath'))
+    tname = '%s-%s'%(data.get('_id'), data.get('name'))
+    tname=tname.replace(' ', '_')
+    ctid = execute.delay(command, tname, proccess.get('cwd'), proccess.get('target'))
+    data['ctid'] = str(ctid)
+    mongo.db.tasks.update({'_id':taskId}, data)
+    return ctid
+
 def createNewTasks(_id):
     """Create new tasks on database based on this new job"""
     job = mongo.db.jobs.find_one({'_id': _id})
@@ -69,7 +88,7 @@ def createNewTasks(_id):
         data = {
             'name': task.get('name'),
             'datetime': now(),
-            'status': 'future',
+            'status': 'ready',
             'owner': job.get('owner'),
             'priority': job.get('priority'),
             'is_active': True,
@@ -79,6 +98,7 @@ def createNewTasks(_id):
             'finished_on': None,
             'paused_on': None,
             'logs': [],
+            'ctid':None,
             'target_info':{},
             'cancelled_on': None,
             'progress': 0,
@@ -92,28 +112,21 @@ def createNewTasks(_id):
             }
         }
         newTask = mongo.db.tasks.insert(data)
-        print newTask
+        ctid = addTaskToQueue(newTask)
+        #updateTaskInfo(str(task['_id']['$oid']), status='ready', ctid=str(ctid))
+    job['status'] = 'ready'
+    mongo.db.jobs.update({'_id': _id}, job)
 
     return
 
 
-def getJobStatus(tasks):
+def getJobStatus(job):
     """Calculate Job Status"""
+    tasks = mongo.db.tasks.find({'job': job.get('_id'), 'status':{'$ne':'completed'}}).count()
     if not tasks:
         return 'Completed'
-    result = 'Likely'
-    for st in ['failed', 'likely','paused', 'cancelled', 'waiting', 'future']:
-        if all([s.get('status') == st for s in tasks]):
-            return st.title()
-
-
-    ''' On progress tasks are those whom status are on progress, started but not finsihed'''
-    if any([s for s in tasks if ((s.get('status') == 'on progress') and \
-                                 s.get('started_on') and not s.get('finished'))]):
-        return 'On Progress'
-
-    return 'Waiting'
-
+    else:
+        return job.get('status').title()
 
 def getClientJobsInformation(client):
     """Lists active client jobs."""
@@ -131,7 +144,7 @@ def getClientJobsInformation(client):
     result = [{
         'name': j.get('name'),
         'datetime': j.get('datetime'),
-        'status': getJobStatus(list(mongo.db.tasks.find({'job': j.get('_id'), 'status':{'$ne':'completed'}}))),
+        'status': getJobStatus(j),
         'priority': j.get('priority'),
         'progress': sum([t.get('progress') for t in mongo.db.tasks.find({'job': j.get('_id')})]) /
         (mongo.db.tasks.find({'job': j.get('_id')}).count() or -1),
@@ -274,6 +287,10 @@ def cancelJob(_id):
         task processes
     """
     job = mongo.db.jobs.find_one({'_id':_id})
+    tasks = mongo.db.tasks.find({'job':_id})
+    for each in tasks:
+        _t = ca.AsyncResult(each.get('ctid'))
+        _t.revoke()
     job['status'] = 'cancelled'
     """Set status of job to cancelled"""
     mongo.db.jobs.update({'_id':_id}, job)
@@ -295,19 +312,24 @@ def tryAgainJob(_id):
         It means schanging all tasks status to future and reset slave info to None.
     """
     job = mongo.db.jobs.find_one({'_id':_id, 'status':{'$ne':'completed'}})
-    job['status'] = 'future'
-    """Set status of job to future"""
-    mongo.db.jobs.update({'_id':_id}, job)
+
     """Bulk update tasks"""
     bulk = mongo.db.tasks.initialize_unordered_bulk_op()
-    bulk.find({'job':_id, 'status':{'$ne':'completed'} }).update({
+    looking_for = {'job':_id, 'status':{'$ne':'completed'} }
+    tasks = mongo.db.tasks.find(looking_for)
+    for each in tasks:
+        addTaskToQueue(each.get('_id'))
+
+    bulk.find(looking_for).update({
                                 '$set': {
-                                    'status': "future",
+                                    'status': "ready",
                                     'restarted_on':now(),
                                     'slave':None,
                                 }})
     bulk.execute()
-
+    job['status'] = 'ready'
+    """Set status of job to future"""
+    mongo.db.jobs.update({'_id':_id}, job)
     return {'info':'success'}
 
 
@@ -316,12 +338,16 @@ def pauseJob(_id):
     Pausing a job means changing all ready tasks tasks status to pause.
     """
     job = mongo.db.jobs.find_one({'_id':_id})
+    tasks = mongo.db.tasks.find({'job':_id})
+    for each in tasks:
+        _t = ca.AsyncResult(each.get('ctid'))
+        _t.revoke()
     job['status'] = 'paused'
     """Set status of job to paused"""
     mongo.db.jobs.update({'_id':_id}, job)
     """Bulk update tasks"""
     bulk = mongo.db.tasks.initialize_unordered_bulk_op()
-    bulk.find({'job':_id, 'status':'ready' }).update({
+    bulk.find({'job':_id, 'status':{'$ne':'completed'}}).update({
                                 '$set': {
                                     'status': "paused",
                                     'paused_on':now(),
@@ -335,25 +361,7 @@ def resumeJob(_id, client):
     """resume the job.
     resuming a job means changing all tasks status to future.
     """
-    job = mongo.db.jobs.find_one({'_id':_id})
-    """Set status of job to future"""
-    job['status'] = 'future'
-    """find slave"""
-    slave = mongo.db.slaves.find_one({'ip':client})
-    mongo.db.jobs.update({'_id':_id}, job)
-    """Bulk update tasks"""
-    bulk = mongo.db.tasks.initialize_unordered_bulk_op()
-    bulk.find({'job':_id, 'status':{'$ne':'completed'} }).update({
-                                '$set': {
-                                    'status': "future",
-                                    'paused_on':now(),
-                                    'slave': None,
-                                }})
-    bulk.execute()
-
-    dispatchTasks(slave)
-
-    return {'info':'success'}
+    return tryAgainJob(_id)
 
 
 def archiveJob(_id):

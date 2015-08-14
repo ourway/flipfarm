@@ -103,15 +103,8 @@ CPU Usage
                                         <tr class="active">
                                                 <td><b>Speed</b></td>
                                                 <td><span class=""><code
-                                                ng-show="options.qmark">{{options.qmark*clientInfo.cpu_count}}</code>
-                                                <button title="Reload benchmarking"
-                                                        ng-click="updateBenchmark(true)"
-                                                        class="pull-right btn btn-default btn-sm"
-                                                        ng-class="{'btn-warning':!options.qmark}"
-                                                        ><em class="fa"
-                                                                ng-class="{'fa-cog fa-spin':!options.qmark, 'fa-recycle':options.qmark}"
+                                                ng-show="clientInfo.qmark">{{clientInfo.qmark*clientInfo.cpu_count}}</code>
 
-                                                        ></em></button>
                                                 </span>
                                                 </td>
                                         </tr>

@@ -123,9 +123,6 @@ ngApp.controller('clientCtrl', function($scope, $http, $interval, $timeout) {
         $scope.server_status = 'warning';
         $scope.options = {};
         $scope.options.domain = 'client';
-        $scope.options.identity = localStorage.getItem('identity');
-        $scope.options.email = localStorage.getItem('email');
-        $scope.options.cores = localStorage.getItem('cores');
         $scope.options.queue = [];
         $scope.options.workerStats=[];
         $scope.options.disabledRow=function(_status){
@@ -149,30 +146,13 @@ ngApp.controller('clientCtrl', function($scope, $http, $interval, $timeout) {
                         }
                 });
         };
-        $scope.updateBenchmark = function(reload){
-                $scope.options.qmark = localStorage.getItem('qmark');
-                if (!$scope.options.qmark || reload){
-                $scope.options.qmark = null;
-                var br = $http.get('/api/benchmark');
-                br.success(function(data){
-                        $scope.options.qmark = data.qmark;
-                        localStorage.setItem('qmark', data.qmark);
-                });
-        }
-        };
 
-        $scope.updateBenchmark();
         $scope.options.newJob = {'category':'Alfred'};
         $scope.ping = function(){
-                var pr = $http.post('/api/pingServer', {qmark:parseInt($scope.options.qmark),
-                                                        identity:$scope.options.identity,
-                                                        email:$scope.options.email,
-                                                        worker:$scope.options.workerPing,
-                                                        cores:parseInt($scope.options.cores),
-                                                        });
-                pr.success(function(result){
-                        $scope.clientInfo = result.clientInfo;
-                        if (result.message==='PONG'){
+                var pr = $http.get('/api/clientInfo')
+                        pr.success(function(result){
+                        $scope.clientInfo = result.info;
+                        if (result){
                                 $scope.server_status = 'success';
                         }
                         else{
@@ -187,7 +167,7 @@ ngApp.controller('clientCtrl', function($scope, $http, $interval, $timeout) {
         $scope.ping();
         $scope.getJobs();
         $interval(function(){
-                //$scope.ping();  ## now worker pings server every few seconds
+                $scope.ping();// now worker pings server every few seconds;
                 $scope.getJobs();
         }, $scope.baseInterval);
         $scope.uploadFilesChanged = function(e){
@@ -197,13 +177,14 @@ ngApp.controller('clientCtrl', function($scope, $http, $interval, $timeout) {
                 var fd = new FormData();
                             fd.append("upload", file);
                             fd.append("category", $scope.options.newJob.category);
-                            $http.post('/api/upload', fd, {
+                            $http.post('/api/addJob', fd, {
                                 withCredentials: true,
                                 headers: {'Content-Type': undefined },
                                 transformRequest: angular.identity
                             }).success(function(result){
                                 var framesCount = _.size(result.data.tasks);
                                 humane.log('<span class="text-success"><i class="fa fa-check"></i> '+$scope.options.newJob.category + ' job including <b>' + framesCount + ' render tasks</b> added to queue.</span>');
+                                $scope.getJobs();
                             }).error(function(){
                                 humane.log('An error cccured! Please try again.');
                             });//.success().error();
@@ -228,6 +209,7 @@ ngApp.controller('clientCtrl', function($scope, $http, $interval, $timeout) {
                 var cr = $http.post('/api/cancelJob', {'id':jobId});
                 cr.success(function(){
                         humane.log('Job Cancelled.');
+                        $scope.getJobs();
                 });
         };
 
@@ -235,6 +217,7 @@ ngApp.controller('clientCtrl', function($scope, $http, $interval, $timeout) {
                 var cr = $http.post('/api/pauseJob', {'id':jobId});
                 cr.success(function(){
                         humane.log('Job Paused.');
+                        $scope.getJobs();
                 });
         };
 
@@ -242,12 +225,14 @@ ngApp.controller('clientCtrl', function($scope, $http, $interval, $timeout) {
                 var cr = $http.post('/api/archiveJob', {'id':jobId});
                 cr.success(function(){
                         humane.log('Job archived.');
+                        $scope.getJobs();
                 });
         };
         $scope.resumeJob = function(jobId){
                 var cr = $http.post('/api/resumeJob', {'id':jobId});
                 cr.success(function(){
                         humane.log('Job queued again.');
+                        $scope.getJobs();
                 });
         };
 
@@ -255,6 +240,7 @@ ngApp.controller('clientCtrl', function($scope, $http, $interval, $timeout) {
                 var cr = $http.post('/api/tryAgainJob', {'id':jobId});
                 cr.success(function(){
                         humane.log('Job will be sent to dispatch server.');
+                        $scope.getJobs();
                 });
         };
 
@@ -263,6 +249,7 @@ ngApp.controller('clientCtrl', function($scope, $http, $interval, $timeout) {
                     {'_id':taskId, 'pid':taskPid});
                 cr.success(function(){
                         humane.log('Task process killed successfully');
+                        $scope.getJobs();
                 });
         };
 
@@ -283,18 +270,7 @@ ngApp.controller('clientCtrl', function($scope, $http, $interval, $timeout) {
         };
 
 
-        $scope.workerPing = function(){
-                        var wp = $http.get('/api/workerPing');
-                        wp.success(function(result){
-                                if (!result.down){
-                                        $scope.options.workerPing=true;
-                                }
-                                else{
-                                        $scope.options.workerPing=false;
 
-                                }
-                });
-        };
 
         $scope.workerStats = function(){
                         var wp = $http.get('/api/workerStats');
@@ -351,10 +327,8 @@ ngApp.controller('clientCtrl', function($scope, $http, $interval, $timeout) {
             $http.post('/api/shoImage', {'target_path':path});
 
         };
-        $scope.workerPing();
         $scope.getSlaves();
         $interval(function(){
-                $scope.workerPing();
                 $scope.getSlaves();
         }, $scope.baseInterval*2);
         $scope.shoXMLStatc = function(dir, taskName){

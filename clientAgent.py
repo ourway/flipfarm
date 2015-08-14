@@ -19,17 +19,17 @@ import anydbm
 CONFIG = readConfig()
 
 ### celery setup
-print '*'*80
-print ' Welcome to Flip/Farm'
 ldbpath = 'lcache.db'
 db = anydbm.open(ldbpath, 'c')
 if not db.keys():
+    print '*'*80
     print "    Seems it's first time you are running Flipfarm worker"
     slaveName = raw_input('    Please Enter a name for this machine: ')
     print '    Now let me benchmark "%s" for speed and performance. please wait ...' % slaveName.title()
     qmark = getBenchmark()
     db['slaveName'] = slaveName.title()
     db['qmark'] = str(qmark)
+    print '*'*80
 
 
 slaveName = db['slaveName']
@@ -37,8 +37,6 @@ qmark = int(db['qmark'])
 db.close()
 
 
-print '\tWelcome %s!'%slaveName
-print '*'*80
 
 
 
@@ -57,11 +55,11 @@ ca.config_from_object('clientAgentConfig')
 
 def updateTaskInfo(task_id, **kw):
     payload = {'_id':task_id, 'data':kw}
-    return connectToServer('/api/updateTask', payload)
+    return connectToServer('/api/updateTask', data=payload)
 
 def tasklog(task_id, log):
     payload = {'_id':task_id, 'log':log}
-    return connectToServer('/api/tasklog', payload)
+    return connectToServer('/api/tasklog', data=payload)
 
 
 def parse_prman_output(line):
@@ -81,7 +79,7 @@ def parse_prman_output(line):
 def getTaskStatus(task_id):
     '''Get latest task status from server'''
     payload = {'_id':task_id}
-    return connectToServer('/api/taskStatus', payload)
+    return connectToServer('/api/taskStatus', data=payload)
 
 
 @ca.task(name='clientAgent.execute')
@@ -96,17 +94,7 @@ def execute(cmd, task, directory='.', target=None):
     stime = time.time()
     tuuid = task.split('-')[0]
     '''chack task status and make sure its good to continue'''
-    lst = getTaskStatus(tuuid)
-    if lst in ['completed', 'cancelled', 'paused']:
-        log = {
-            'code':'FF002',
-            'typ':'INFO',
-            'description': 'Task is %s, but was in queue, so flipfarm cancelled running process.'%lst,
-            'brief': 'Task process abort'
-        }
-        print '\tTask %s is %s'%(task, lst)
-        tasklog(tuuid, log)
-        return
+
 
     updateTaskInfo(tuuid, progress=0, started_on=now())
 
@@ -115,7 +103,7 @@ def execute(cmd, task, directory='.', target=None):
         updateTaskInfo(tuuid, status='failed', failed_on=now())
         log = {
             'code':'FF001',
-            'typ':'ERROR',
+            'type':'ERROR',
             'description': 'FlipFarm: Directory "%s" not found'%directory,
             'brief': 'Directory not found'
         }
@@ -196,6 +184,7 @@ def execute(cmd, task, directory='.', target=None):
         'end':etime,
         'command':cmd,
         'task':task,
+        'slave':slaveName
     }
 
 
@@ -210,37 +199,11 @@ def ping():
     payload['os'] = sys.platform
     payload['identity'] = slaveName
     payload['qmark'] = qmark
-    data = connectToServer('/api/ping', payload)
+    data = connectToServer('/api/ping', data=ujson.dumps(payload), packit=False)
     if data:
-        return 'PING'
+        return 'PONG'
 
 
-
-@ca.task(name='clientAgent.getLatestTasks')
-def getLatestTasks():
-    '''get list of tasks from server'''
-    data = connectToServer('/api/fetchQueuedTasks')
-    if not data:
-        return
-    data = ujson.loads(data)
-    tasks =  data.get('tasks')
-    if not tasks:
-        return
-    else:
-        print 'got %s tasks.' % len(tasks)
-    for task in tasks:
-        proccess = task.get('proccess')
-        if not proccess:
-            continue
-        raw_cmd = proccess.get('command')
-        command = raw_cmd.format(threads=data.get('slave').get('info').get('cores') or \
-                                 data.get('slave').get('info').get('cpu_count'),
-                                 cwd=proccess.get('cwd'), task=task.get('name').replace(' ', '_'),
-                                 filepath=proccess.get('filepath'))
-        tname = '%s-%s'%(task.get('_id').get('$oid'), task.get('name'))
-        tname=tname.replace(' ', '_')
-        ctid = execute.delay(command, tname, proccess.get('cwd'), proccess.get('target'))
-        updateTaskInfo(str(task['_id']['$oid']), status='ready', ctid=str(ctid))
 
 
 

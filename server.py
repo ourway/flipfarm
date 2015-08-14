@@ -30,7 +30,7 @@ from flask.ext.basicauth import BasicAuth
 from bson.json_util import dumps
 from bson.objectid import ObjectId
 import ujson
-from utils import general, server_tools
+from utils import general, server_tools, client_tools
 from utils.parsers import alfred
 from models.db import mongo
 import hashlib
@@ -56,8 +56,16 @@ basic_auth = BasicAuth(app)
 
 @app.route("/server")
 @basic_auth.required
-def index():
+def server():
     return 'Server'
+
+@app.route("/client")
+def client():
+    body = render_template('client.tpl')
+    title = 'Client Dashboard'
+    data = render_template('index.tpl', body=body, title=title,
+                           version=__version__)
+    return data
 
 
 @app.route('/api/ping', methods=['POST'])
@@ -66,17 +74,25 @@ def ping():
     client = server_tools.getClientIp(request)
 
     '''Find if it's client's first ping'''
-    clientNewRawData = request.data
+    clientNewRawData = ujson.loads(request.data)
+
     if clientNewRawData:
-        clientNewInfo = copy(general.unpack(clientNewRawData))
+        clientNewInfo = copy(clientNewRawData)
         clientNewInfo['ip'] = client
         if clientNewInfo:
             data = {'ip':client, 'info':clientNewInfo,
                     'last_ping':general.now()}
             slave = mongo.db.slaves.update({'ip':client}, data,
                                            upsert=True)  ## update if find or insert new
-    return general.pack({'message':'PONG', 'clientInfo':clientNewInfo,
+    return ujson.dumps({'message':'PONG', 'clientInfo':clientNewInfo,
                          'last_ping':general.now()})
+
+
+@app.route('/api/clientInfo', methods=['GET'])
+def clientInfo():
+    client = server_tools.getClientIp(request)
+    slave = mongo.db.slaves.find_one({'ip':client})
+    return dumps(slave)
 
 
 
@@ -84,7 +100,12 @@ def ping():
 @app.route('/api/addJob', methods=['POST'])
 def addJob():
     """Gets user uploded job description and add it to jobs"""
-    data = general.unpack(request.data)
+    category = request.values.get('category')
+    if request.method == 'POST' and 'upload' in request.files:
+
+        f = request.files['upload']
+        data = {'job':f.read(), 'category':'Alfred',
+                   'filename':f.filename, 'category':category}
     job = alfred.parse(data.get('job'))
     #client = request.remote_addr
     client = server_tools.getClientIp(request)
@@ -97,6 +118,7 @@ def addJob():
             'md5': jobHash,
             'bucket_size': 1,
             'tags':[],
+            'queue':[],
             'status':'future',
             'datetime':general.now(),
             'owner': client,
@@ -108,7 +130,7 @@ def addJob():
         #new = mongo.db.jobs.update({'md5':jobHash}, newJob, upsert=True)
         new = mongo.db.jobs.insert(newJob)
         server_tools.createNewTasks(new)
-        return general.pack(ujson.loads(dumps(newJob)))
+        return dumps(newJob)
 
 
 @app.route('/api/dbtest/<entery>', methods=['GET', 'POST'])
@@ -130,7 +152,7 @@ def getJobsInfo():
     #client = request.remote_addr
     client = server_tools.getClientIp(request)
     jobs = server_tools.getClientJobsInformation(client)
-    return general.pack(jobs)
+    return ujson.dumps(jobs)
 
 @app.route('/api/fetchQueuedTasks')
 def fetchQueuedTasks():
@@ -139,7 +161,7 @@ def fetchQueuedTasks():
     client = server_tools.getClientIp(request)
     #client = request.remote_addr
     data = server_tools.getQueuedTasksForClient(client)
-    return general.pack(data)
+    return ujson.dumps(data)
 
 
 @app.route('/api/updateTask', methods=['POST'])
@@ -157,68 +179,72 @@ def updateTask():
         if data[i]:
             task[i]=data[i]
 
-
     mongo.db.tasks.update({'_id':tid}, task)
+    if task.get('status') == 'on progress':
+        job = mongo.db.jobs.find_one({'_id':task.get('job')})
+        job['status'] = 'on progress'
+        mongo.db.jobs.update({'_id':job.get('_id')}, job)
     return general.pack('OK')
 
 
 @app.route('/api/tasklog', methods=['POST'])
 def tasklog():
-	data = general.unpack(request.data)
-	tid =  ObjectId(data.get('_id'))
-	log = data.get('log')
-	log['datetime']=general.now()
-	task = mongo.db.tasks.find_one({'_id':tid})
-	if not task:
-		abort(404)
-	task['logs'].append(log)
-	mongo.db.tasks.update({'_id':tid}, task)
-	return general.pack('OK')
+    '''client sends this data'''
+    data = general.unpack(request.data)
+    tid =  ObjectId(data.get('_id'))
+    log = data.get('log')
+    log['datetime']=general.now()
+    task = mongo.db.tasks.find_one({'_id':tid})
+    if not task:
+            abort(404)
+    task['logs'].append(log)
+    mongo.db.tasks.update({'_id':tid}, task)
+    return general.pack('OK')
 
 
 @app.route('/api/cancelJob', methods=['POST'])
 def cancelJob():
-    data = general.unpack(request.data)
+    data = ujson.loads(request.data)
     jobId = data.get('id')  ## get job is in string format
     _id = ObjectId(jobId)
     result = server_tools.cancelJob(_id)
-    return general.pack(result)
+    return ujson.dumps(result)
 
 
 @app.route('/api/pauseJob', methods=['POST'])
 def pauseJob():
-    data = general.unpack(request.data)
+    data = ujson.loads(request.data)
     jobId = data.get('id')  ## get job is in string format
     _id = ObjectId(jobId)
     result = server_tools.pauseJob(_id)
-    return general.pack(result)
+    return ujson.dumps(result)
 
 @app.route('/api/archiveJob', methods=['POST'])
 def archiveJob():
-    data = general.unpack(request.data)
+    data = ujson.loads(request.data)
     jobId = data.get('id')  ## get job is in string format
     _id = ObjectId(jobId)
     result = server_tools.archiveJob(_id)
-    return general.pack(result)
+    return ujson.dumps(result)
 
 @app.route('/api/resumeJob', methods=['POST'])
 def resumeJob():
     #client = request.remote_addr
     client = server_tools.getClientIp(request)
-    data = general.unpack(request.data)
+    data = ujson.loads(request.data)
     jobId = data.get('id')  ## get job is in string format
     _id = ObjectId(jobId)
     result = server_tools.resumeJob(_id, client)
-    return general.pack(result)
+    return ujson.dumps(result)
 
 
 @app.route('/api/tryAgainJob', methods=['POST'])
 def tryAgainJob():
-    data = general.unpack(request.data)
+    data = ujson.loads(request.data)
     jobId = data.get('id')  ## get job is in string format
     _id = ObjectId(jobId)
     result = server_tools.tryAgainJob(_id)
-    return general.pack(result)
+    return ujson.dumps(result)
 
 
 
@@ -228,7 +254,7 @@ def tryAgainJob():
 @app.route('/api/slaves', methods=['GET'])
 def slaves():
     '''Get slaves info for farm stats of client'''
-    return general.pack(server_tools.getSlaveInfo())
+    return server_tools.getSlaveInfo()
 
 @app.route('/api/taskStatus', methods=['POST'])
 def taskStatus():
@@ -242,17 +268,17 @@ def taskStatus():
 @app.route('/api/jobDetail', methods=['POST'])
 def jobDetail():
     '''Get task status'''
-    data = general.unpack(request.data)
+    data = ujson.loads(request.data)
     job_id = data.get('_id')  ## get job is in string format
     _id = ObjectId(job_id)
-    return general.pack(server_tools.getJobDetail(_id))
+    return ujson.dumps(server_tools.getJobDetail(_id))
 
 if __name__ == "__main__":
 
     def run_debug():
         app.run(
             host='0.0.0.0',
-            port=9001,
+            port=9000,
             debug=True,
         )
 
@@ -262,13 +288,13 @@ if __name__ == "__main__":
         from tornado.ioloop import IOLoop
 
         http_server = HTTPServer(WSGIContainer(app))
-        http_server.listen(9001)
+        http_server.listen(9000)
         IOLoop.instance().start()
 
     def run_gevent():
         from gevent.wsgi import WSGIServer
 
-        http_server = WSGIServer(('0.0.0.0', 9001), app)
+        http_server = WSGIServer(('0.0.0.0', 9000), app)
         http_server.serve_forever()
 
     #run_tornado()

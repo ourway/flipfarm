@@ -47,40 +47,48 @@ def getServerUrl():
     return url
 
 
-def get(url):
+def get(url, unpackit):
     '''Simple get using requests'''
     try:
         r = requests.get(url)
         if r.status_code <300:
-            return unpack(r.content)
+            if unpackit:
+                return unpack(r.content)
+            else:
+                return r.content
         else:
             abort(r.status_code)
     except ConnectionError:
         return
 
 
-def post(url, data):
+def post(url, data, packit):
     '''Simple post using requests'''
-    data = pack(data)
+    if packit:
+        data = pack(data)
+
     try:
         r = requests.post(url, data)
         if r.status_code <300:
-            return unpack(r.content)
+            if packit:
+                return unpack(r.content)
+            else:
+                return r.content
         else:
             abort(r.status_code)
     except ConnectionError:
         return
 
 
-def connectToServer(path, data=None):
+def connectToServer(path, data=None, packit=True):
     '''Connects to server to fetch some data'''
     serverUrl = getServerUrl()
     url = serverUrl + path
     result = None
     if data:
-        result = post(url, data)
+        result = post(url, data, packit)
     else:
-        result = get(url)
+        result = get(url, packit)
     if result:
         return result
     else:
