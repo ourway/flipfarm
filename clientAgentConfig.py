@@ -4,7 +4,7 @@ from datetime import timedelta
 from utils.client_tools import user, MAC
 from utils.general import readConfig
 
-pools = readConfig().get('pools')
+pools = readConfig().get('pools', [])
 
 MAC = '%s-client'%MAC
 #queueName = '%s-%s'%(user, MAC)
