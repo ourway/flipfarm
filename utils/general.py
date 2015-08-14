@@ -32,6 +32,7 @@ from utils.opensource.qmark import qmark
 
 USER = getpass.getuser()
 
+
 def getVersion():
     """Reads VERSION file in flipfarm root directory and returns"""
     with open('VERSION') as f:
@@ -47,14 +48,15 @@ def readConfig():
 
 def pack(data):
     """Packs data using msgpack.packb"""
-    if data!=None:
+    if data != None:
         return msgpack.packb(data)
     else:
         return msgpack.packb('')
 
+
 def unpack(data):
     """Unpacks data using msgpack.unpackb"""
-    if data!=None:
+    if data != None:
         return msgpack.unpackb(data)
     else:
         return ''
@@ -80,6 +82,7 @@ def getCPUInfo():
         'percpu': psutil.cpu_percent(percpu=1),
         'overall': psutil.cpu_percent(),
     }
+
 
 def getDiskInfo():
     """Gets disk usage information"""
@@ -113,6 +116,7 @@ def getUUID():
     data = base64.encodestring(uuid.uuid4().get_bytes()).strip()[:-5]
     return data.replace('/', '').replace('+', '').replace('-', '')
 
+
 def getBenchmark():
     """benchmarks system based on qmark opensource module"""
     return qmark()
@@ -122,10 +126,10 @@ def now():
     """ get current time in unix time """
     return int(datetime.now().strftime('%s'))
 
+
 def chunks(l, n):
     """Yield successive n-sized chunks from l.
     http://stackoverflow.com/questions/312443/how-do-you-split-a-list-into-evenly-sized-chunks-in-python
     """
     for i in xrange(0, len(l), n):
-        yield l[i:i+n]
-
+        yield l[i:i + n]

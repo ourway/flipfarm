@@ -22,6 +22,7 @@ Clean code is much better than Cleaner comments!
 
 import re
 
+
 def parse(alfredJob):
     '''Regex parser
         based on: http://regexr.com/3bg9a
@@ -29,12 +30,12 @@ def parse(alfredJob):
     #pat = r'Task \-title \{Render ([\w ]+)\} [\w \- \{ \n : %]+"%D\(([\w:/\-]+)\)"[ ]+"%D\(([\w\d . /]+)\)"[\} \- \n \w \{:]+sho[ \n]+"([\w :\d/\.\-]+)"'
     pat = r'Task \-title \{(.*)}[\w \- \{ \n : % \.]*"%D\((.*)\)"[ ]*"%D\((.*)\)"\} [\n \- \w\d\{:\}]*sho [\n]*"([\w\d \. \/ \-]+)"'
     data = re.findall(re.compile(pat), alfredJob)
-    #namePat = re.compile(r'[-+]?\d+[\.]?\d*')  ## extract digits
+    # namePat = re.compile(r'[-+]?\d+[\.]?\d*')  ## extract digits
     result = {'tasks': [{
-                            'name':'%s-%s'%(str(data.index(i)+1).zfill(4), i[0]),
-                            'cwd':i[1],
-                            'filepath':i[2], ## command will act upon this file
-                            'target':i[3]  ## command will produce this file
-                        } for i in data]
-            }
+        'name': '%s-%s' % (str(data.index(i) + 1).zfill(4), i[0]),
+        'cwd':i[1],
+        'filepath':i[2],  # command will act upon this file
+        'target':i[3]  # command will produce this file
+    } for i in data]
+    }
     return result

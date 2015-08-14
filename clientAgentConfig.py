@@ -6,7 +6,7 @@ from utils.general import readConfig
 
 pools = readConfig().get('pools', [])
 
-MAC = '%s-client'%MAC
+MAC = '%s-client' % MAC
 #queueName = '%s-%s'%(user, MAC)
 queueName = 'FFarmRenderQueue01'
 CELERY_TASK_SERIALIZER = 'msgpack'
@@ -17,7 +17,7 @@ BROKER_TRANSPORT_OPTIONS = {'visibility_timeout': 3600}  # 1 hour.
 
 CELERY_DEFAULT_QUEUE = queueName
 CELERY_QUEUES = (
-            Queue(queueName, Exchange(queueName), routing_key=queueName),
+    Queue(queueName, Exchange(queueName), routing_key=queueName),
 )
 
 for each in pools:

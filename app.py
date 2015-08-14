@@ -53,11 +53,11 @@ app.config['BASIC_AUTH_PASSWORD'] = password
 basic_auth = BasicAuth(app)
 
 
-
 @app.route("/server")
 @basic_auth.required
 def server():
     return 'Server'
+
 
 @app.route("/client")
 def client():
@@ -80,21 +80,19 @@ def ping():
         clientNewInfo = copy(clientNewRawData)
         clientNewInfo['ip'] = client
         if clientNewInfo:
-            data = {'ip':client, 'info':clientNewInfo,
-                    'last_ping':general.now()}
-            slave = mongo.db.slaves.update({'ip':client}, data,
-                                           upsert=True)  ## update if find or insert new
-    return ujson.dumps({'message':'PONG', 'clientInfo':clientNewInfo,
-                         'last_ping':general.now()})
+            data = {'ip': client, 'info': clientNewInfo,
+                    'last_ping': general.now()}
+            slave = mongo.db.slaves.update({'ip': client}, data,
+                                           upsert=True)  # update if find or insert new
+    return ujson.dumps({'message': 'PONG', 'clientInfo': clientNewInfo,
+                        'last_ping': general.now()})
 
 
 @app.route('/api/clientInfo', methods=['GET'])
 def clientInfo():
     client = server_tools.getClientIp(request)
-    slave = mongo.db.slaves.find_one({'ip':client})
+    slave = mongo.db.slaves.find_one({'ip': client})
     return dumps(slave)
-
-
 
 
 @app.route('/api/addJob', methods=['POST'])
@@ -104,28 +102,29 @@ def addJob():
     if request.method == 'POST' and 'upload' in request.files:
 
         f = request.files['upload']
-        data = {'job':f.read(), 'category':'Alfred',
-                   'filename':f.filename, 'category':category}
+        data = {'job': f.read(), 'category': 'Alfred',
+                'filename': f.filename, 'category': category}
     job = alfred.parse(data.get('job'))
     #client = request.remote_addr
     client = server_tools.getClientIp(request)
-    jobHash = hashlib.md5(data.get('job')).hexdigest()  ## hash of actual uploaded file
+    # hash of actual uploaded file
+    jobHash = hashlib.md5(data.get('job')).hexdigest()
     if job:
         newJob = {
-            'name':data.get('filename'),
-            'category':data.get('category'),
-            'data':job,
+            'name': data.get('filename'),
+            'category': data.get('category'),
+            'data': job,
             'md5': jobHash,
             'bucket_size': 1,
-            'tags':[],
-            'queue':[],
-            'status':'future',
-            'datetime':general.now(),
+            'tags': [],
+            'queue': [],
+            'status': 'future',
+            'datetime': general.now(),
             'owner': client,
-            'priority':500,
-            'is_active':True,
-            'self':False,
-            'progress':0,
+            'priority': 500,
+            'is_active': True,
+            'self': False,
+            'progress': 0,
         }
         #new = mongo.db.jobs.update({'md5':jobHash}, newJob, upsert=True)
         new = mongo.db.jobs.insert(newJob)
@@ -146,6 +145,7 @@ def dbtest(entery):
         data = mongo.db.dbtest.find({'key': entery})
         return dumps(data)
 
+
 @app.route('/api/getJobsInfo')
 def getJobsInfo():
     """List jobs information for client"""
@@ -153,6 +153,7 @@ def getJobsInfo():
     client = server_tools.getClientIp(request)
     jobs = server_tools.getClientJobsInformation(client)
     return ujson.dumps(jobs)
+
 
 @app.route('/api/fetchQueuedTasks')
 def fetchQueuedTasks():
@@ -169,23 +170,23 @@ def updateTask():
     client = server_tools.getClientIp(request)
     data = general.unpack(request.data)
 
-    tid =  ObjectId(data.get('_id'))
-    data =  data.get('data')
-    task = mongo.db.tasks.find_one({'_id':tid})
+    tid = ObjectId(data.get('_id'))
+    data = data.get('data')
+    task = mongo.db.tasks.find_one({'_id': tid})
     if not task:
         abort(404)
 
     task['last_activity'] = general.now()
     for i in data:
         if data[i]:
-            task[i]=data[i]
+            task[i] = data[i]
 
     task['slave'] = client
-    mongo.db.tasks.update({'_id':tid}, task)
+    mongo.db.tasks.update({'_id': tid}, task)
     if task.get('status') == 'on progress':
-        job = mongo.db.jobs.find_one({'_id':task.get('job')})
+        job = mongo.db.jobs.find_one({'_id': task.get('job')})
         job['status'] = 'on progress'
-        mongo.db.jobs.update({'_id':job.get('_id')}, job)
+        mongo.db.jobs.update({'_id': job.get('_id')}, job)
     return general.pack('OK')
 
 
@@ -193,21 +194,21 @@ def updateTask():
 def tasklog():
     '''client sends this data'''
     data = general.unpack(request.data)
-    tid =  ObjectId(data.get('_id'))
+    tid = ObjectId(data.get('_id'))
     log = data.get('log')
-    log['datetime']=general.now()
-    task = mongo.db.tasks.find_one({'_id':tid})
+    log['datetime'] = general.now()
+    task = mongo.db.tasks.find_one({'_id': tid})
     if not task:
-            abort(404)
+        abort(404)
     task['logs'].append(log)
-    mongo.db.tasks.update({'_id':tid}, task)
+    mongo.db.tasks.update({'_id': tid}, task)
     return general.pack('OK')
 
 
 @app.route('/api/cancelJob', methods=['POST'])
 def cancelJob():
     data = ujson.loads(request.data)
-    jobId = data.get('id')  ## get job is in string format
+    jobId = data.get('id')  # get job is in string format
     _id = ObjectId(jobId)
     result = server_tools.cancelJob(_id)
     return ujson.dumps(result)
@@ -216,25 +217,27 @@ def cancelJob():
 @app.route('/api/pauseJob', methods=['POST'])
 def pauseJob():
     data = ujson.loads(request.data)
-    jobId = data.get('id')  ## get job is in string format
+    jobId = data.get('id')  # get job is in string format
     _id = ObjectId(jobId)
     result = server_tools.pauseJob(_id)
     return ujson.dumps(result)
 
+
 @app.route('/api/archiveJob', methods=['POST'])
 def archiveJob():
     data = ujson.loads(request.data)
-    jobId = data.get('id')  ## get job is in string format
+    jobId = data.get('id')  # get job is in string format
     _id = ObjectId(jobId)
     result = server_tools.archiveJob(_id)
     return ujson.dumps(result)
+
 
 @app.route('/api/resumeJob', methods=['POST'])
 def resumeJob():
     #client = request.remote_addr
     client = server_tools.getClientIp(request)
     data = ujson.loads(request.data)
-    jobId = data.get('id')  ## get job is in string format
+    jobId = data.get('id')  # get job is in string format
     _id = ObjectId(jobId)
     result = server_tools.resumeJob(_id, client)
     return ujson.dumps(result)
@@ -243,7 +246,7 @@ def resumeJob():
 @app.route('/api/tryAgainJob', methods=['POST'])
 def tryAgainJob():
     data = ujson.loads(request.data)
-    jobId = data.get('id')  ## get job is in string format
+    jobId = data.get('id')  # get job is in string format
     _id = ObjectId(jobId)
     result = server_tools.tryAgainJob(_id)
     return ujson.dumps(result)
@@ -254,11 +257,12 @@ def slaves():
     '''Get slaves info for farm stats of client'''
     return ujson.dumps(server_tools.getSlaveInfo())
 
+
 @app.route('/api/taskStatus', methods=['POST'])
 def taskStatus():
     '''Get task status'''
     data = general.unpack(request.data)
-    task_id = data.get('_id')  ## get job is in string format
+    task_id = data.get('_id')  # get job is in string format
     _id = ObjectId(task_id)
     return general.pack(server_tools.getTaskStatus(_id))
 
@@ -267,7 +271,7 @@ def taskStatus():
 def jobDetail():
     '''Get task status'''
     data = ujson.loads(request.data)
-    job_id = data.get('_id')  ## get job is in string format
+    job_id = data.get('_id')  # get job is in string format
     _id = ObjectId(job_id)
     return ujson.dumps(server_tools.getJobDetail(_id))
 
@@ -284,12 +288,12 @@ def workerStats():
     return ujson.dumps(server_tools.getWorkerStats(client))
 
 
-
 @app.route('/api/killProcess', methods=['post'])
 def killProcess():
     data = ujson.loads(request.data)
     _id = ObjectId(data.get('_id'))
     return ujson.dumps(server_tools.killTaskprocess(_id))
+
 
 @app.route('/api/workerStats', methods=['get'])
 def showImage():
@@ -323,6 +327,6 @@ if __name__ == "__main__":
         http_server = WSGIServer(('0.0.0.0', 9000), app)
         http_server.serve_forever()
 
-    #run_tornado()
+    # run_tornado()
     run_debug()
-    #run_gevent()
+    # run_gevent()

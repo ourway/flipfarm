@@ -62,8 +62,6 @@ def Memoized(func):
     return _f
 
 
-
-
 def only_one(function=None, key="", timeout=None):
     """Enforce only one celery task at a time."""
 

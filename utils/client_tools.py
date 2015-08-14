@@ -34,7 +34,7 @@ import getpass
 from uuid import getnode as get_mac
 
 MAC = str(get_mac())[:16]
-user=getpass.getuser()
+user = getpass.getuser()
 
 
 @Memoized
@@ -51,7 +51,7 @@ def get(url, unpackit):
     '''Simple get using requests'''
     try:
         r = requests.get(url)
-        if r.status_code <300:
+        if r.status_code < 300:
             if unpackit:
                 return unpack(r.content)
             else:
@@ -69,7 +69,7 @@ def post(url, data, packit):
 
     try:
         r = requests.post(url, data)
-        if r.status_code <300:
+        if r.status_code < 300:
             if packit:
                 return unpack(r.content)
             else:
@@ -116,23 +116,23 @@ def getRenderTools():
     return list(result)
 
 
-
-
 def getImageInfo(path):
     """Get image information via pixar sho command"""
     cmd = 'sho -info {path}'.format(path=path)
     p = psutil.Popen(cmd.split(), stdout=PIPE, stderr=PIPE)
     _, output = p.communicate()
     result = {}
+
     def stripper(t):
         return (t[0].strip().lower().replace(' ', '_'),
                 t[1].strip().lower())
     if output:
         #result = dict(output)
         '''parse sho ou tput: http://www.regexr.com/3bhr0'''
-        pat = re.compile(r'([\w \-]+)  ([\(\w\d \)\[.\-\]\/]+)')  ## show output file
+        pat = re.compile(
+            r'([\w \-]+)  ([\(\w\d \)\[.\-\]\/]+)')  # show output file
         raw = re.findall(pat, output)
-        #for i in raw:
+        # for i in raw:
         #    print i
         #        result[i[0].split()] = i[1]
         return dict(map(stripper, raw))

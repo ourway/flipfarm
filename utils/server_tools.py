@@ -57,6 +57,7 @@ def getClientIp(request):
         ip = request.remote_addr
     return ip
 
+
 def getRenderCommand(category):
     if category == 'Alfred':
         command = 'prman -statsfile {cwd}/.flipfarmPrmanStats-{task}.xml -cwd {cwd} -t:{threads} -Progress {filepath}'
@@ -64,7 +65,7 @@ def getRenderCommand(category):
 
 
 def addTaskToQueue(taskId):
-    data = mongo.db.tasks.find_one({'_id':taskId})
+    data = mongo.db.tasks.find_one({'_id': taskId})
     '''Revoke the task if it's available'''
     if data.get('ctid'):
         ca.AsyncResult(data.get('ctid')).revoke()
@@ -74,15 +75,16 @@ def addTaskToQueue(taskId):
     command = raw_cmd.format(threads=1,
                              cwd=proccess.get('cwd'), task=data.get('name').replace(' ', '_'),
                              filepath=proccess.get('filepath'))
-    tname = '%s-%s'%(data.get('_id'), data.get('name'))
-    tname=tname.replace(' ', '_')
+    tname = '%s-%s' % (data.get('_id'), data.get('name'))
+    tname = tname.replace(' ', '_')
     ctid = execute.apply_async(args=[command, tname, proccess.get('cwd'), proccess.get('target')],
                                routing_key='FFarmRenderQueue01',
                                exchange='FFarmRenderQueue01',
                                queue='FFarmRenderQueue01')
     data['ctid'] = str(ctid)
-    mongo.db.tasks.update({'_id':taskId}, data)
+    mongo.db.tasks.update({'_id': taskId}, data)
     return ctid
+
 
 def createNewTasks(_id):
     """Create new tasks on database based on this new job"""
@@ -102,8 +104,8 @@ def createNewTasks(_id):
             'finished_on': None,
             'paused_on': None,
             'logs': [],
-            'ctid':None,
-            'target_info':{},
+            'ctid': None,
+            'target_info': {},
             'cancelled_on': None,
             'progress': 0,
             'job': job.get('_id'),
@@ -126,24 +128,24 @@ def createNewTasks(_id):
 
 def getJobStatus(job):
     """Calculate Job Status"""
-    tasks = mongo.db.tasks.find({'job': job.get('_id'), 'status':{'$ne':'completed'}}).count()
+    tasks = mongo.db.tasks.find(
+        {'job': job.get('_id'), 'status': {'$ne': 'completed'}}).count()
     if not tasks:
         return 'Completed'
     else:
         return job.get('status').title()
 
+
 def getClientJobsInformation(client):
     """Lists active client jobs."""
-    #getSlaveForDispatch()
+    # getSlaveForDispatch()
     #jobs = mongo.db.jobs.find({'owner': client, 'is_active': True})
     jobs = mongo.db.jobs.find({'is_active': True})
 
-
-
-        #        result = i.title()
-        # if any([s.get('status')=='on progress' for s in tasks]):
-        #    result = 'On Progress'
-        # return result
+    #        result = i.title()
+    # if any([s.get('status')=='on progress' for s in tasks]):
+    #    result = 'On Progress'
+    # return result
 
     result = [{
         'name': j.get('name'),
@@ -156,11 +158,9 @@ def getClientJobsInformation(client):
         'tasks_count': mongo.db.tasks.find({'job': j.get('_id'), 'is_active': True}).count(),
         'failed_count': mongo.db.tasks.find({'job': j.get('_id'), 'is_active': True, 'status': 'failed'}).count(),
         'completed_count': mongo.db.tasks.find({'job': j.get('_id'), 'is_active': True, 'status': 'completed'}).count(),
-        'active_task':'Frame 43',
+        'active_task': 'Frame 43',
     } for j in jobs]
     return result or {}
-
-
 
 
 def getQueuedTasksForClient(client):
@@ -187,75 +187,75 @@ def cancelJob(_id):
         Also probabaly we have to send kill dognal to active
         task processes
     """
-    job = mongo.db.jobs.find_one({'_id':_id})
-    tasks = mongo.db.tasks.find({'job':_id})
+    job = mongo.db.jobs.find_one({'_id': _id})
+    tasks = mongo.db.tasks.find({'job': _id})
     for each in tasks:
         _t = ca.AsyncResult(each.get('ctid'))
         _t.revoke()
     job['status'] = 'cancelled'
     """Set status of job to cancelled"""
-    mongo.db.jobs.update({'_id':_id}, job)
+    mongo.db.jobs.update({'_id': _id}, job)
     """Bulk update tasks"""
     bulk = mongo.db.tasks.initialize_unordered_bulk_op()
-    bulk.find({'job':_id, 'status':{'$ne':'completed'} }).update({
-                                '$set': {
-                                    'status': "cancelled",
-                                    'cancelled_on':now(),
-                                    'slave':None,
-                                }})
+    bulk.find({'job': _id, 'status': {'$ne': 'completed'}}).update({
+        '$set': {
+            'status': "cancelled",
+            'cancelled_on': now(),
+            'slave': None,
+        }})
     bulk.execute()
 
-    return {'info':'success'}
+    return {'info': 'success'}
 
 
 def tryAgainJob(_id):
     """Try Again a cancelled job.
         It means schanging all tasks status to future and reset slave info to None.
     """
-    job = mongo.db.jobs.find_one({'_id':_id, 'status':{'$ne':'completed'}})
+    job = mongo.db.jobs.find_one({'_id': _id, 'status': {'$ne': 'completed'}})
 
     """Bulk update tasks"""
     bulk = mongo.db.tasks.initialize_unordered_bulk_op()
-    looking_for = {'job':_id, 'status':{'$ne':'completed'} }
+    looking_for = {'job': _id, 'status': {'$ne': 'completed'}}
     tasks = mongo.db.tasks.find(looking_for)
     for each in tasks:
         addTaskToQueue(each.get('_id'))
 
     bulk.find(looking_for).update({
-                                '$set': {
-                                    'status': "ready",
-                                    'restarted_on':now(),
-                                    'slave':None,
-                                }})
+        '$set': {
+            'status': "ready",
+            'restarted_on': now(),
+            'slave': None,
+        }})
     bulk.execute()
     job['status'] = 'ready'
     """Set status of job to future"""
-    mongo.db.jobs.update({'_id':_id}, job)
-    return {'info':'success'}
+    mongo.db.jobs.update({'_id': _id}, job)
+    return {'info': 'success'}
 
 
 def pauseJob(_id):
     """Pause the job.
     Pausing a job means changing all ready tasks tasks status to pause.
     """
-    job = mongo.db.jobs.find_one({'_id':_id})
-    tasks = mongo.db.tasks.find({'job':_id})
+    job = mongo.db.jobs.find_one({'_id': _id})
+    tasks = mongo.db.tasks.find({'job': _id})
     for each in tasks:
         _t = ca.AsyncResult(each.get('ctid'))
         _t.revoke()
     job['status'] = 'paused'
     """Set status of job to paused"""
-    mongo.db.jobs.update({'_id':_id}, job)
+    mongo.db.jobs.update({'_id': _id}, job)
     """Bulk update tasks"""
     bulk = mongo.db.tasks.initialize_unordered_bulk_op()
-    bulk.find({'job':_id, 'status':{'$ne':'completed'}}).update({
-                                '$set': {
-                                    'status': "paused",
-                                    'paused_on':now(),
-                                }})
+    bulk.find({'job': _id, 'status': {'$ne': 'completed'}}).update({
+        '$set': {
+            'status': "paused",
+            'paused_on': now(),
+        }})
     bulk.execute()
 
-    return {'info':'success'}
+    return {'info': 'success'}
 
 
 def resumeJob(_id, client):
@@ -269,28 +269,30 @@ def archiveJob(_id):
     """archive the job.
     archiving a job means changing all tasks is_active to False.
     """
-    job = mongo.db.jobs.find_one({'_id':_id})
+    job = mongo.db.jobs.find_one({'_id': _id})
     """Set status of job to future"""
     job['status'] = 'archived'
     job['is_active'] = False
     """find slave"""
-    mongo.db.jobs.update({'_id':_id}, job)
+    mongo.db.jobs.update({'_id': _id}, job)
     """Bulk update tasks"""
     bulk = mongo.db.tasks.initialize_unordered_bulk_op()
-    bulk.find({'job':_id}).update({
-                                '$set': {
-                                    'archived':now(),
-                                    'is_active':False
-                                }})
+    bulk.find({'job': _id}).update({
+        '$set': {
+            'archived': now(),
+            'is_active': False
+        }})
     bulk.execute()
 
-    return {'info':'success'}
+    return {'info': 'success'}
+
 
 def getTaskStatus(_id):
     '''Get task status'''
-    task = mongo.db.tasks.find_one({'_id':_id})
+    task = mongo.db.tasks.find_one({'_id': _id})
     if task:
         return task.get('status', 'N/A')
+
 
 def getSlaveInfo(client=None):
     """Get slaves information"""
@@ -300,51 +302,54 @@ def getSlaveInfo(client=None):
     if pings:
         for each in pings:
             _mac = each.split('@')[-1]
-            slave = mongo.db.slaves.find_one({'info.MAC':_mac})
+            slave = mongo.db.slaves.find_one({'info.MAC': _mac})
             result.append(slave)
 
     return ujson.loads(dumps(result))
 
+
 def getJobDetail(_id):
     '''Get job detail for show in a modal'''
-    job = mongo.db.jobs.find_one({'_id':_id})
+    job = mongo.db.jobs.find_one({'_id': _id})
     output = {}
     output['jobInfo'] = ujson.loads(dumps(job))
-    tasks = list(mongo.db.tasks.find({'job':_id}))
+    tasks = list(mongo.db.tasks.find({'job': _id}))
     output['tasksInfo'] = ujson.loads(dumps(tasks))
     return output
 
+
 def cancelAllFromMyCeleryQueue(client):
     """thsi will discard all tasks from client celery queue"""
-    slave = mongo.db.slaves.find_one({'ip':client})
+    slave = mongo.db.slaves.find_one({'ip': client})
     if slave:
         _mac = slave['info'].get('MAC')
-        return ca.control.discard_all(destination=['celery@%s'%_mac])
+        return ca.control.discard_all(destination=['celery@%s' % _mac])
     #  return ca.control.cancel_consumer('celery')
 
+
 def getWorkerPing(client):
-    slave = mongo.db.slaves.find_one({'ip':client})
+    slave = mongo.db.slaves.find_one({'ip': client})
     if slave:
         _mac = slave['info'].get('MAC')
-        inspect = pa.control.inspect(destination=['celery@%s'%_mac])
+        inspect = pa.control.inspect(destination=['celery@%s' % _mac])
         return inspect.ping()
 
 
 def getWorkerStats(client):
-    slave = mongo.db.slaves.find_one({'ip':client})
+    slave = mongo.db.slaves.find_one({'ip': client})
     if slave:
         _mac = slave['info'].get('MAC')
-        inspect = pa.control.inspect(destination=['celery@%s'%_mac])
+        inspect = pa.control.inspect(destination=['celery@%s' % _mac])
         return inspect.stats()
 
 
 def killTaskprocess(_id):
-    task = mongo.db.tasks.find_one({'_id':_id})
+    task = mongo.db.tasks.find_one({'_id': _id})
     ctid = task.get('ctid')
     pid = task.get('pid')
     res = ca.AsyncResult(ctid)
     res.revoke(terminate=True)
     task['status'] = 'failed'
 
-    mongo.db.tasks.update({'_id':_id}, task)
-    return {'message':'OK'}
+    mongo.db.tasks.update({'_id': _id}, task)
+    return {'message': 'OK'}
