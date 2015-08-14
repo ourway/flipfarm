@@ -10,3 +10,6 @@ config.json
 min/
 *.state
 *.pid
+*.bak
+*.dir
+*.dat

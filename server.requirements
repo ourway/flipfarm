@@ -17,3 +17,4 @@ gunicorn
 redis
 msgpack-python
 flower
+fabtools
