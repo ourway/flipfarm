@@ -300,7 +300,6 @@ def getSlaveInfo(client=None):
     if pings:
         for each in pings:
             _mac = each.split('@')[-1]
-            print _mac
             slave = mongo.db.slaves.find_one({'info.MAC':_mac})
             result.append(slave)
 

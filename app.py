@@ -20,8 +20,8 @@ Clean code is much better than Cleaner comments!
 @author: F.Ashouri
 """
 
-#from gevent import monkey
-#monkey.patch_all()
+from gevent import monkey
+monkey.patch_all()
 
 from flask import Flask, request, abort, jsonify
 from flask.ext.mako import render_template
