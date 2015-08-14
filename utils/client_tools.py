@@ -115,23 +115,7 @@ def getRenderTools():
                 result.add(toolname)
     return list(result)
 
-def cancelAllFromMyCeleryQueue():
-    """thsi will discard all tasks from client celery queue"""
 
-    from clientAgent import ca  ## import ca here.
-    return ca.control.discard_all()
-    #  return ca.control.cancel_consumer('celery')
-
-def getWorkerPing():
-    from clientAgent import ca  ## import ca here.
-    inspect = ca.control.inspect(destination=['celery@%s'%user])
-    return inspect.ping()
-
-
-def getWorkerStats():
-    from clientAgent import ca  ## import ca here.
-    inspect = ca.control.inspect(destination=['celery@%s'%user])
-    return inspect.stats()
 
 
 def getImageInfo(path):

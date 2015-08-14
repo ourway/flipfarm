@@ -19,7 +19,10 @@ Clean code is much better than Cleaner comments!
 @desc: utils/decorators.py
 @author: F.Ashouri
 """
+
 import functools
+
+from models.db import REDIS_CLIENT
 
 
 def decorator(d):
@@ -57,3 +60,31 @@ def Memoized(func):
 
     _f.cache = cache
     return _f
+
+
+
+
+def only_one(function=None, key="", timeout=None):
+    """Enforce only one celery task at a time."""
+
+    def _dec(run_func):
+        """Decorator."""
+
+        def _caller(*args, **kwargs):
+            """Caller."""
+            ret_value = None
+            have_lock = False
+            lock = REDIS_CLIENT.lock(key, timeout=timeout)
+            try:
+                have_lock = lock.acquire(blocking=False)
+                if have_lock:
+                    ret_value = run_func(*args, **kwargs)
+            finally:
+                if have_lock:
+                    lock.release()
+
+            return ret_value
+
+        return _caller
+
+    return _dec(function) if function is not None else _dec

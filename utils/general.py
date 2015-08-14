@@ -20,7 +20,6 @@ Clean code is much better than Cleaner comments!
 @author: F.Ashouri
 """
 import os
-from utils.decorators import Memoized
 import requests
 from requests import ConnectionError
 import msgpack
@@ -33,7 +32,6 @@ from utils.opensource.qmark import qmark
 
 USER = getpass.getuser()
 
-@Memoized
 def getVersion():
     """Reads VERSION file in flipfarm root directory and returns"""
     with open('VERSION') as f:

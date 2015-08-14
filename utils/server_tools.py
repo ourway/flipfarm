@@ -75,7 +75,10 @@ def addTaskToQueue(taskId):
                              filepath=proccess.get('filepath'))
     tname = '%s-%s'%(data.get('_id'), data.get('name'))
     tname=tname.replace(' ', '_')
-    ctid = execute.delay(command, tname, proccess.get('cwd'), proccess.get('target'))
+    ctid = execute.apply_async(args=[command, tname, proccess.get('cwd'), proccess.get('target')],
+                               routing_key='FFarmRenderQueue01',
+                               exchange='FFarmRenderQueue01',
+                               queue='FFarmRenderQueue01')
     data['ctid'] = str(ctid)
     mongo.db.tasks.update({'_id':taskId}, data)
     return ctid
@@ -156,110 +159,6 @@ def getClientJobsInformation(client):
     return result or {}
 
 
-def getSlaveForDispatch():
-    '''
-    Find the best slave for dispatching process
-    example:
-        machine 1 benchmark is 1000 and has 25 active tasks
-        machine 2 benchmark is 4000 and has 80 active tasks
-        So:
-            freeness of machine 1 is: 25/1000 = .025
-            and freeness of machine 2 is: 80/4000 = .020
-
-            So:
-                machine 2 is better choice
-
-    '''
-    seconds_ago = now() - 60
-
-    '''Remove off slaves'''
-    looking_for = {
-        # $gt means greater than.  $lt means less than
-       'last_ping': {'$lt': seconds_ago},
-    }
-    bulk = mongo.db.tasks.initialize_unordered_bulk_op()
-    bulk.find(looking_for).update({
-                                '$set': {
-                                    'info.worker': False,
-                                }})
-    bulk.execute()
-
-    looking_for = {
-        'info.worker': True,
-    }
-    slaves = list(mongo.db.slaves.find(looking_for))
-    print len(slaves)
-
-   # freeness_list = [
-   #     (mongo.db.tasks.find({'is_active': True, 'slave':i.get('ip')}).count() or -1) /
-   #     (float(i.get('info').get('qmark', 0.000001)) * i.get('info').get('cpu_count') * 80)
-   #     for i in slaves]
-
-    #best_pos = freeness_list.index(min(freeness_list))
-    #bestChoice = slaves[best_pos]
-    #return bestChoice.get('ip')
-    #result = choice(slaves)
-    #print result.get('ip')
-    return cycle(slaves)
-
-def dispatchTasksJob(job, slave=None):
-        """now find available tasks"""
-        looking_for = {
-            'is_active': True,
-            'status': 'future',
-            'slave': None,
-            'job': job.get('_id')
-        }
-        tasks = mongo.db.tasks.find(looking_for)
-        '''Create buckets of tasks'''
-        buckets = chunks(list(tasks), job.get('bucket_size', 10))
-        active_slaves = {
-            'info.worker': True,
-        }
-        slaves = list(mongo.db.slaves.find(active_slaves))
-        print len(slaves)
-        for bucket in buckets:
-
-            NEW_slave = choice(slaves)
-            print '*'*80
-            print NEW_slave
-            print '*'*80
-
-            if not NEW_slave:
-                print 'No any active slaves'
-                return
-            '''Lets add bucket tasks to slave queue'''
-            '''update slave info on db'''
-            #mongo.db.slaves.update({'_id':slave.get('_id')}, slave)
-
-            for task in bucket:
-                if not hasattr(slave, 'queue'):
-                    NEW_slave['queue'] = []
-                NEW_slave['queue'].append(task.get('_id'))
-                """Lets update slave info"""
-                mongo.db.slaves.update({'_id': NEW_slave['_id']}, NEW_slave)
-                task['status'] = 'likely'
-                task['slave'] = NEW_slave.get('ip')
-                task['slave_name'] = NEW_slave.get('identity')
-                mongo.db.tasks.update({'_id': task['_id']}, task)
-            print '%s tasks submited to %s' % (len(bucket), NEW_slave.get('identity') or NEW_slave.get('ip'))
-
-        _d = copy(job)
-        _d['status'] = 'dispatched'
-        print mongo.db.jobs.update({'_id': job.get('_id')}, _d)
-
-def dispatchTasks(slave=None):
-    """Dispatch tasks every few seconds using an agent
-        If slave is something, then we force add the task to that slave.
-    """
-    """find none_finished jobs"""
-    looking_for = {
-        #'$and' : [{ 'status':{'$ne':'completed'} }, { 'status':{'$ne':'cancelled'}}, {'status'}],
-        'status': 'future',
-        'is_active': True
-    }
-    for job in mongo.db.jobs.find(looking_for):
-        dispatchTasksJob(job, slave)
 
 
 def getQueuedTasksForClient(client):
@@ -393,15 +292,16 @@ def getTaskStatus(_id):
 
 def getSlaveInfo(client=None):
     """Get slaves information"""
-    looking_for = {
-        #'$and' : [{ 'status':{'$ne':'completed'} }, { 'status':{'$ne':'cancelled'}}, {'status'}],
-        'last_ping': {'$gt':now()-15},
-    }
-    slaves = mongo.db.slaves.find(looking_for)
-        #for i in slaves:
-            #if  now() - i.get('last_ping')<20:
-            #    print i.get('ip')
-    return dumps(slaves or [])
+    inspect = ca.control.inspect()
+    result = []
+    pings = inspect.ping()
+    if pings:
+        for each in pings:
+            _mac = int(each.split('@')[-1])
+            slave = mongo.db.slaves.find_one({'info.MAC':_mac})
+            result.append(slave)
+
+    return result
 
 def getJobDetail(_id):
     '''Get job detail for show in a modal'''
@@ -411,3 +311,26 @@ def getJobDetail(_id):
     tasks = list(mongo.db.tasks.find({'job':_id}))
     output['tasksInfo'] = ujson.loads(dumps(tasks))
     return output
+
+def cancelAllFromMyCeleryQueue(client):
+    """thsi will discard all tasks from client celery queue"""
+    slave = mongo.db.slaves.find_one({'ip':client})
+    if slave:
+        _mac = slave['info'].get('MAC')
+        return ca.control.discard_all(destination=['celery@%s'%_mac])
+    #  return ca.control.cancel_consumer('celery')
+
+def getWorkerPing(client):
+    slave = mongo.db.slaves.find_one({'ip':client})
+    if slave:
+        _mac = slave['info'].get('MAC')
+        inspect = ca.control.inspect(destination=['celery@%s'%_mac])
+        return inspect.ping()
+
+
+def getWorkerStats(client):
+    slave = mongo.db.slaves.find_one({'ip':client})
+    if slave:
+        _mac = slave['info'].get('MAC')
+        inspect = ca.control.inspect(destination=['celery@%s'%_mac])
+        return inspect.stats()

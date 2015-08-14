@@ -109,7 +109,7 @@ ngApp.controller('mainCtrl', function($scope) {
 
 
 ngApp.controller('clientCtrl', function($scope, $http, $interval, $timeout) {
-        $scope.baseInterval = 5000;
+        $scope.baseInterval = 3000;
         $scope.prettyDate = prettyDate;
         $scope.syntaxHighlight = syntaxHighlight;
         $scope.moment = moment;
@@ -283,7 +283,7 @@ ngApp.controller('clientCtrl', function($scope, $http, $interval, $timeout) {
                                 }
                 });
         };
-
+        $scope.workerStats();
         $scope.getSlaves = function(){
                         var sr = $http.get('/api/slaves');
                         sr.success(function(result){

@@ -1,9 +1,14 @@
+#!.pyenv/bin/python
+
+#from gevent import monkey
+#monkey.patch_all()
 
 import os, sys
 from subprocess import Popen, PIPE
 from utils.general import readConfig, now, getSystemInfo, getBenchmark
-from utils.client_tools import getServerUrl, connectToServer, getImageInfo, getRenderTools
+from utils.client_tools import getServerUrl, connectToServer, getImageInfo, getRenderTools, MAC
 import psutil
+from utils.decorators import only_one
 import datetime
 import time
 import requests
@@ -14,6 +19,7 @@ from datetime import timedelta
 import re
 from copy import copy
 import anydbm
+
 
 
 CONFIG = readConfig()
@@ -83,6 +89,7 @@ def getTaskStatus(task_id):
 
 
 @ca.task(name='clientAgent.execute')
+#@only_one(key='happy1')
 def execute(cmd, task, directory='.', target=None):
     """
         Execute render and parse output and update task info
@@ -96,7 +103,7 @@ def execute(cmd, task, directory='.', target=None):
     '''chack task status and make sure its good to continue'''
 
 
-    updateTaskInfo(tuuid, progress=0, started_on=now())
+    updateTaskInfo(tuuid, progress=0, started_on=now(), slave_name=slaveName)
 
     '''Error handeling'''
     if not os.path.isdir(directory):
@@ -199,9 +206,17 @@ def ping():
     payload['os'] = sys.platform
     payload['identity'] = slaveName
     payload['qmark'] = qmark
+    payload['MAC'] = MAC
     data = connectToServer('/api/ping', data=ujson.dumps(payload), packit=False)
     if data:
         return 'PONG'
+
+@ca.task(name='clientAgent.getCommand')
+def runCommand(cmd):
+    ''' gets a command and runs it on client '''
+    import os
+    os.system(cmd)
+    print 'happy %s' % cmd
 
 
 
@@ -216,9 +231,15 @@ def simpleTest():
 
 
 if __name__ == '__main__':
-    pass
-    #directory ='/Users/farsheed/Downloads/ToyStory3'
-    #filename = 'sequences/seq_00/shot_00_00/renderman/Shot_00_00_0730011249/rib/0007/0007.rib'
-    #md = 'prman -Progress {f}'.format(f=filename)
-    #execute.delay(cmd, 'testdev2', directory)
-    #getTasks.delay()
+    '''Lets ping before start'''
+
+    argv = [
+        'worker',
+        '--loglevel=INFO',
+        '--hostname=%s'% (MAC*10),
+        '--concurrency=1',
+        '--pidfile=clientAgent.pid',
+
+
+    ]
+    ca.worker_main(argv)

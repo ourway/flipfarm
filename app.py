@@ -166,6 +166,7 @@ def fetchQueuedTasks():
 
 @app.route('/api/updateTask', methods=['POST'])
 def updateTask():
+    client = server_tools.getClientIp(request)
     data = general.unpack(request.data)
 
     tid =  ObjectId(data.get('_id'))
@@ -179,6 +180,7 @@ def updateTask():
         if data[i]:
             task[i]=data[i]
 
+    task['slave'] = client
     mongo.db.tasks.update({'_id':tid}, task)
     if task.get('status') == 'on progress':
         job = mongo.db.jobs.find_one({'_id':task.get('job')})
@@ -247,14 +249,10 @@ def tryAgainJob():
     return ujson.dumps(result)
 
 
-
-
-
-
 @app.route('/api/slaves', methods=['GET'])
 def slaves():
     '''Get slaves info for farm stats of client'''
-    return server_tools.getSlaveInfo()
+    return ujson.dumps(server_tools.getSlaveInfo())
 
 @app.route('/api/taskStatus', methods=['POST'])
 def taskStatus():
@@ -272,6 +270,27 @@ def jobDetail():
     job_id = data.get('_id')  ## get job is in string format
     _id = ObjectId(job_id)
     return ujson.dumps(server_tools.getJobDetail(_id))
+
+
+@app.route('/api/workerPing', methods=['get'])
+def workerPing():
+    client = server_tools.getClientIp(request)
+    return ujson.dumps(server_tools.getWorkerPing(client))
+
+
+@app.route('/api/workerStats', methods=['get'])
+def workerStats():
+    client = server_tools.getClientIp(request)
+    return ujson.dumps(server_tools.getWorkerStats(client))
+
+
+@app.route('/api/workerStats', methods=['get'])
+def showImage():
+    client = server_tools.getClientIp(request)
+    data = ujson.loads(request.data)
+    path = data.get(path)
+    return ujson.dumps(server_tools.shoImage(client, path))
+
 
 if __name__ == "__main__":
 

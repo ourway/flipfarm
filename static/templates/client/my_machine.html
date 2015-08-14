@@ -20,16 +20,10 @@
         ng-model="options.memory_limit" placeholder="(maximum: {{clientInfo.memory.real_mem_total}} Mb)">
 </div>
 
-<hr/>
-<h5>Worker</h5>
-<div class="input-group">
-  <span class="input-group-addon"><i class="fa fa-exchange fa-fw"></i> Worker</span>
-  <button class="btn btn-danger" ng-click="discardNow()">Discard every render</button>
-</div>
 
 <hr/>
 <h5>Statistics</h5>
-<div ng-show="options.workerPing">
+<div ng-show="options.workerStats">
   <button class="btn btn-info" ng-click="workerStats()">Get Worker Stats</button>
         <br/>
         <br/>

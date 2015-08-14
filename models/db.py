@@ -20,6 +20,14 @@ Clean code is much better than Cleaner comments!
 @author: F.Ashouri
 """
 
+__all__ = ['mongo', 'REDIS_CLIENT']
+
 from pymongo import MongoClient
 client = MongoClient()
 mongo = client.flipfarm_server_009
+
+import redis
+from utils.general import readConfig
+
+host = readConfig().get('server').get('host')
+REDIS_CLIENT = redis.Redis(host=host)
