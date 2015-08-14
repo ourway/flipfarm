@@ -48,6 +48,7 @@ db.close()
 redis_host = CONFIG.get('server').get('host')
 BROKER_URL = 'redis://{host}:6379/11'.format(host=redis_host)
 CELERY_RESULT_BACKEND = 'redis://{host}:6379/11'.format(host=redis_host)
+BROKER_TRANSPORT_OPTIONS = {'fanout_prefix': True}
 
 
 from celery import Celery
