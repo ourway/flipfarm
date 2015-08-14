@@ -16,6 +16,8 @@ CELERY_QUEUES = (
 )
 
 
+BROKER_TRANSPORT_OPTIONS = {'fanout_prefix': True, 'fanout_patterns': True}
+
 CELERYBEAT_SCHEDULE = {
     'ping': {
         'task': 'pingAgent.ping',
