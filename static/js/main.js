@@ -244,9 +244,10 @@ ngApp.controller('clientCtrl', function($scope, $http, $interval, $timeout) {
                 });
         };
 
-         $scope.killProcess = function(taskId, taskPid){
+         $scope.killProcess = function(taskId){
+                 console.log(taskId);
                 var cr = $http.post('/api/killProcess',
-                    {'_id':taskId, 'pid':taskPid});
+                    {'_id':taskId});
                 cr.success(function(){
                         humane.log('Task process killed successfully');
                         $scope.getJobs();

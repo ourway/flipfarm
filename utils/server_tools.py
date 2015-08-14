@@ -71,7 +71,7 @@ def addTaskToQueue(taskId):
 
     proccess = data.get('proccess')
     raw_cmd = proccess.get('command')
-    command = raw_cmd.format(threads=0,
+    command = raw_cmd.format(threads=1,
                              cwd=proccess.get('cwd'), task=data.get('name').replace(' ', '_'),
                              filepath=proccess.get('filepath'))
     tname = '%s-%s'%(data.get('_id'), data.get('name'))
@@ -155,6 +155,7 @@ def getClientJobsInformation(client):
         'id': str(j.get('_id')),
         'tasks_count': mongo.db.tasks.find({'job': j.get('_id'), 'is_active': True}).count(),
         'failed_count': mongo.db.tasks.find({'job': j.get('_id'), 'is_active': True, 'status': 'failed'}).count(),
+        'completed_count': mongo.db.tasks.find({'job': j.get('_id'), 'is_active': True, 'status': 'completed'}).count(),
         'active_task':'Frame 43',
     } for j in jobs]
     return result or {}
@@ -336,3 +337,15 @@ def getWorkerStats(client):
         _mac = slave['info'].get('MAC')
         inspect = pa.control.inspect(destination=['celery@%s'%_mac])
         return inspect.stats()
+
+
+def killTaskprocess(_id):
+    task = mongo.db.tasks.find_one({'_id':_id})
+    ctid = task.get('ctid')
+    pid = task.get('pid')
+    res = ca.AsyncResult(ctid)
+    res.revoke(terminate=True)
+    task['status'] = 'failed'
+
+    mongo.db.tasks.update({'_id':_id}, task)
+    return {'message':'OK'}

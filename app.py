@@ -284,6 +284,13 @@ def workerStats():
     return ujson.dumps(server_tools.getWorkerStats(client))
 
 
+
+@app.route('/api/killProcess', methods=['post'])
+def killProcess():
+    data = ujson.loads(request.data)
+    _id = ObjectId(data.get('_id'))
+    return ujson.dumps(server_tools.killTaskprocess(_id))
+
 @app.route('/api/workerStats', methods=['get'])
 def showImage():
     client = server_tools.getClientIp(request)

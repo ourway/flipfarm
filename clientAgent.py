@@ -161,7 +161,7 @@ def execute(cmd, task, directory='.', target=None):
             if progress:  ## update every 5 percent
                 updateTaskInfo(tuuid, status='on progress', progress=progress)
             if progress==100:  ## completed
-                updateTaskInfo(tuuid, status='completed', progress=100, finished=now())
+                updateTaskInfo(tuuid, status='completed', progress=100, finished_on=now())
         else:
             pass  ## for now
 

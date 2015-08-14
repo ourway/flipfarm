@@ -29,8 +29,9 @@ def parse(alfredJob):
     #pat = r'Task \-title \{Render ([\w ]+)\} [\w \- \{ \n : %]+"%D\(([\w:/\-]+)\)"[ ]+"%D\(([\w\d . /]+)\)"[\} \- \n \w \{:]+sho[ \n]+"([\w :\d/\.\-]+)"'
     pat = r'Task \-title \{(.*)}[\w \- \{ \n : % \.]*"%D\((.*)\)"[ ]*"%D\((.*)\)"\} [\n \- \w\d\{:\}]*sho [\n]*"([\w\d \. \/ \-]+)"'
     data = re.findall(re.compile(pat), alfredJob)
+    #namePat = re.compile(r'[-+]?\d+[\.]?\d*')  ## extract digits
     result = {'tasks': [{
-                            'name':i[0],
+                            'name':'%s-%s'%(str(data.index(i)+1).zfill(4), i[0]),
                             'cwd':i[1],
                             'filepath':i[2], ## command will act upon this file
                             'target':i[3]  ## command will produce this file

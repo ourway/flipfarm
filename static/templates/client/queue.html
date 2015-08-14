@@ -84,7 +84,9 @@
 
                                 </td>
                                 <td><span class="text-primary text-center"
-                                                style="font-family:monospace">{{job.tasks_count}}</span></td>
+                                          style="font-family:monospace">
+                                                <span ng-show="job.completed_count">
+                                                        <b class="text-success">{{job.completed_count}}</b>/<span>{{job.tasks_count}}</span></td>
                                 <td><span ng-show="job.failed_count" class="text-danger"
                                                      style="font-family:monospace"><b>{{job.failed_count}}</b></span></td>
 
@@ -148,15 +150,27 @@
             <div class="modal-body" style="padding:0px;">
                 <table
                 class="table tabled-responsive table-striped table-hover">
-                <tr ng-class="{'success':_task.status=='completed'}" ng-repeat="_task in selectedJob.tasksInfo | orderBy:'-progress' track by $index">
+                <tr ng-class="{'success':_task.status=='completed', 'warning':_task.status=='on progress'}" 
+                    ng-repeat="_task in selectedJob.tasksInfo | orderBy:'name' track by $index">
                     <td class="default">
-                        <span class="text-primary"><i class="fa fa-picture-o"></i> {{_task.name}}</span>
+                        <span class="text-primary"><i class="fa fa-picture-o"></i>
+                                <b ng-show="_task.status=='on progress'">{{_task.name}}</b>
+                                <span ng-hide="_task.status=='on progress'">{{_task.name}}</span>
+                        
+                        </span>
                     </td>
                     <td>
 
                         <i class="fa fa-desktop"></i> {{_task.slave_name || _task.slave}}
     <a href="#" class="text-danger" ng-show="_task.status=='on progress'" ng-click="killProcess(_task._id.$oid, _task.pid)">
     <i class="fa fa-times-circle-o fa-spin"></i></a>
+
+    <span ng-if="_task.started_on>0" class="text-info">
+            <i class="fa fa-clock-o"></i>
+            {{prettyDate(_task.started_on)}} ago</span>
+
+    <span ng-if="_task.started_on && _task.finished_on" class="text-success">
+            {{_task.finished_on - _task.started_on}} secs</span>
                     </td>
                     <td>
                         <div ng-show="_task.status=='completed'">
@@ -205,7 +219,7 @@
 
                     <td>
                         <span class="label"
-                        ng-class="{'label-success':_task.status=='completed', 'label-warning':_task.status=='paused', 'label-primary':_task.status=='on progress', 'label-danger':_task.status=='failed', 'label-default':_task.status=='ready'
+                              ng-class="{'label-success':_task.status=='completed', 'label-warning':_task.status=='paused', 'label-primary':_task.status=='on progress', 'label-danger':_task.status=='failed', 'label-default':_task.status=='ready' || _task.status=='cancelled'
                     }"
 
                         >{{_task.status}}</span>
