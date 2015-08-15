@@ -124,7 +124,7 @@ spew = False
 #       None to signal that Python should choose one on its own.
 #
 
-daemon = False
+daemon = True
 pidfile = 'app.pid'
 umask = 0
 user = None
@@ -143,9 +143,9 @@ tmp_upload_dir = None
 #       A string of "debug", "info", "warning", "error", "critical"
 #
 
-errorlog = '-'
+errorlog = 'logs/flipfarm-error.log'
 loglevel = 'info'
-accesslog = '-'
+accesslog = 'logs/flipfarm-access.log'
 
 #
 # Process naming
@@ -160,7 +160,7 @@ accesslog = '-'
 #       A string or None to choose a default of something like 'gunicorn'.
 #
 
-proc_name = 'flipfarm'
+#proc_name = 'flipfarm'
 
 #
 # Server hooks
