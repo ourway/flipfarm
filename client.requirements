@@ -1,0 +1,8 @@
+requests
+celery
+psutil
+ujson
+redis
+msgpack-python
+gevent
+pymongo
