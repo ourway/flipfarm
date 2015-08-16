@@ -72,10 +72,8 @@ def client():
 def ping():
     ''' This method pings server'''
     client = server_tools.getClientIp(request)
-
     '''Find if it's client's first ping'''
     clientNewRawData = ujson.loads(request.data)
-
     if clientNewRawData:
         clientNewInfo = copy(clientNewRawData)
         clientNewInfo['ip'] = client

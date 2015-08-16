@@ -124,7 +124,7 @@ spew = False
 #       None to signal that Python should choose one on its own.
 #
 
-daemon = True
+daemon = False
 pidfile = 'app.pid'
 umask = 0
 user = None

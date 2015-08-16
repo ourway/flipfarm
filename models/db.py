@@ -24,7 +24,7 @@ __all__ = ['mongo', 'REDIS_CLIENT']
 
 from pymongo import MongoClient
 client = MongoClient()
-mongo = client.flipfarm_server_009
+mongo = client.flipfarm_server_011
 
 import redis
 from utils.general import readConfig

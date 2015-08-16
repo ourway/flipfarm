@@ -72,7 +72,7 @@ def addTaskToQueue(taskId):
 
     proccess = data.get('proccess')
     raw_cmd = proccess.get('command')
-    command = raw_cmd.format(threads=1,
+    command = raw_cmd.format(threads=0,
                              cwd=proccess.get('cwd'), task=data.get('name').replace(' ', '_'),
                              filepath=proccess.get('filepath'))
     tname = '%s-%s' % (data.get('_id'), data.get('name'))
@@ -299,6 +299,7 @@ def getSlaveInfo(client=None):
     inspect = pa.control.inspect()
     result = []
     pings = inspect.ping()
+    print pings
     if pings:
         for each in pings:
             _mac = each.split('@')[-1]
