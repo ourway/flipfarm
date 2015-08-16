@@ -122,6 +122,8 @@ ngApp.controller('clientCtrl', function($scope, $http, $interval, $timeout) {
         $scope.isASCII = isASCII;
         $scope.server_status = 'warning';
         $scope.options = {};
+	$scope.options.farm = {};
+	$scope.options.farm.detail = true;
         $scope.options.domain = 'client';
         $scope.options.queue = [];
         $scope.options.workerStats=[];
