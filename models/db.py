@@ -22,12 +22,17 @@ Clean code is much better than Cleaner comments!
 
 __all__ = ['mongo', 'REDIS_CLIENT']
 
-from pymongo import MongoClient
-client = MongoClient()
-mongo = client.flipfarm_server_011
-
-import redis
 from utils.general import readConfig
+from pymongo import MongoClient
+import redis
 
-host = readConfig().get('server').get('host')
-REDIS_CLIENT = redis.Redis(host=host)
+CONFIG = readConfig()
+
+redis_host = CONFIG.get('server').get('redis_host')
+redis_port = CONFIG.get('server').get('redis_port')
+REDIS_CLIENT = redis.Redis(host=redis_host, port=int(redis_port))
+
+mongo_host = CONFIG.get('server').get('mongo_host')
+mongo_port = CONFIG.get('server').get('mongo_port')
+client = MongoClient(host=mongo_host, port=int(mongo_port))
+mongo = client.flipfarm_server_011

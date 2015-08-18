@@ -2,12 +2,22 @@
         "server":
                 {
                         "host":"127.0.0.1" ,
-                        "port":"9001" ,
-                        "protocol":"http"
+                        "port":"9000" ,
+                        "protocol":"http",
+                        "redis_host":"192.168.99.102",
+                        "redis_port":"32800",
+                        "mongo_host":"192.168.99.102",
+                        "mongo_port":"32802"
                 } ,
         "auth":{
                 "username":"admin",
                 "password":"admin"
-        }
+        },
+        "pools":[
+                "normal",
+                "site"
+        ]
+        
+
 
 }

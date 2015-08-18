@@ -42,9 +42,12 @@ qmark = int(db['qmark'])
 db.close()
 
 
-redis_host = CONFIG.get('server').get('host')
-BROKER_URL = 'redis://{host}:6379/11'.format(host=redis_host)
-CELERY_RESULT_BACKEND = 'redis://{host}:6379/11'.format(host=redis_host)
+redis_host = CONFIG.get('server').get('redis_host')
+redis_port = CONFIG.get('server').get('redis_port')
+BROKER_URL = 'redis://{host}:{port}/10'.format(host=redis_host,
+                                port=int(redis_port))
+CELERY_RESULT_BACKEND = 'redis://{host}:{port}/10'.\
+        format(host=redis_host, port=int(redis_port))
 
 
 from celery import Celery
