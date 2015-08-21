@@ -6,7 +6,7 @@ while [ -h "$SOURCE" ]; do
               [[ $SOURCE != /* ]] && SOURCE="$DIR/$SOURCE"
 done
 export FLIPFARM_ROOT="$( cd -P "$( dirname "$SOURCE" )" && pwd )"
-alias flipfarm="cd $FLIPFARM_ROOT;source .pyenv/bin/activate"
+alias flipfarm="cd $FLIPFARM_ROOT"
 alias "flipfarm-server"="flipfarm;gunicorn -c gu_config.py app:app"
 alias "flipfarm-worker"="flipfarm;python clientAgent.py"
 export MAC=`python -c "import uuid;print uuid.getnode();"`

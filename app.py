@@ -1,4 +1,4 @@
-#!.pyenv/bin/python
+#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
 __author__ = 'Farsheed Ashouri'
@@ -20,8 +20,8 @@ Clean code is much better than Cleaner comments!
 @author: F.Ashouri
 """
 
-from gevent import monkey
-monkey.patch_all()
+#from gevent import monkey
+#monkey.patch_all()
 
 from flask import Flask, request, abort, jsonify
 from flask.ext.mako import render_template
@@ -325,6 +325,11 @@ if __name__ == "__main__":
         http_server = WSGIServer(('0.0.0.0', 9000), app)
         http_server.serve_forever()
 
-    # run_tornado()
-    run_debug()
+    def run_bjoern():
+	import bjoern
+	bjoern.run(app, '0.0.0.0', 9000)
+
+    run_tornado()
+    #run_debug()
+    #run_bjoern()
     # run_gevent()
