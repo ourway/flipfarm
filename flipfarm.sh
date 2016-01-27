@@ -6,10 +6,10 @@ while [ -h "$SOURCE" ]; do
               [[ $SOURCE != /* ]] && SOURCE="$DIR/$SOURCE"
 done
 export FLIPFARM_ROOT="$( cd -P "$( dirname "$SOURCE" )" && pwd )"
-alias flipfarm="cd $FLIPFARM_ROOT;source .pyenv/bin/activate"
+alias flipfarm="cd $FLIPFARM_ROOT"
 alias "flipfarm-server"="flipfarm;gunicorn -c gu_config.py app:app"
 alias "flipfarm-worker"="flipfarm;python clientAgent.py"
 alias "flipfarm-pinger"="flipfarm;python pingAgent.py"
-export PATH=$FLIPFARM_ROOT/.pyenv/bin:$PATH
+#export PATH=$FLIPFARM_ROOT/.pyenv/bin:$PATH
 #--access-logfile logs/client.log
 # -f logs/clientAgent.log

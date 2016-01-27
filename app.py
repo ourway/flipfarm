@@ -1,4 +1,4 @@
-#!.pyenv/bin/python
+#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
 __author__ = 'Farsheed Ashouri'
@@ -35,6 +35,7 @@ from utils.parsers import alfred
 from models.db import mongo
 import hashlib
 from copy import copy
+from clientAgent import ca
 
 __version__ = general.getVersion()
 
@@ -185,6 +186,8 @@ def updateTask():
         job = mongo.db.jobs.find_one({'_id': task.get('job')})
         job['status'] = 'on progress'
         mongo.db.jobs.update({'_id': job.get('_id')}, job)
+    if task['progress'] == 100:
+	ca.AsyncResult(task.get('ctid')).revoke()
     return general.pack('OK')
 
 
@@ -262,8 +265,8 @@ def taskStatus():
     data = general.unpack(request.data)
     task_id = data.get('_id')  # get job is in string format
     _id = ObjectId(task_id)
-    return general.pack(server_tools.getTaskStatus(_id))
-
+    result = server_tools.getTaskStatus(_id)
+    return general.pack(result)
 
 @app.route('/api/jobDetail', methods=['POST'])
 def jobDetail():

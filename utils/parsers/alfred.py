@@ -28,7 +28,7 @@ def parse(alfredJob):
         based on: http://regexr.com/3bg9a
     '''
     #pat = r'Task \-title \{Render ([\w ]+)\} [\w \- \{ \n : %]+"%D\(([\w:/\-]+)\)"[ ]+"%D\(([\w\d . /]+)\)"[\} \- \n \w \{:]+sho[ \n]+"([\w :\d/\.\-]+)"'
-    pat = r'Task \-title \{(.*)}[\w \- \{ \n : % \.]*"%D\((.*)\)"[ ]*"%D\((.*)\)"\} [\n \- \w\d\{:\}]*sho [\n]*"([\w\d \. \/ \-]+)"'
+    pat = r'Task \-title \{(.*)}[\w \- &  \{ \n : % \.]*"%D\((.*)\)"[& ]*"%D\((.*)\)"\} [\n \- & \w\d\{:\}]*sho [\n]*"([\w\d \. \/ & \-]+)"'
     data = re.findall(re.compile(pat), alfredJob)
     # namePat = re.compile(r'[-+]?\d+[\.]?\d*')  ## extract digits
     result = {'tasks': [{

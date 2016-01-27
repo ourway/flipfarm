@@ -291,12 +291,12 @@ def getTaskStatus(_id):
     '''Get task status'''
     task = mongo.db.tasks.find_one({'_id': _id})
     if task:
-        return task.get('status', 'N/A')
+        return task
 
 
 def getSlaveInfo(client=None):
     """Get slaves information"""
-    inspect = pa.control.inspect()
+    inspect = ca.control.inspect()
     result = []
     pings = inspect.ping()
     print pings
