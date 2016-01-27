@@ -328,6 +328,11 @@ if __name__ == "__main__":
         http_server = WSGIServer(('0.0.0.0', 9000), app)
         http_server.serve_forever()
 
-    # run_tornado()
+    def run_bjoern():
+	import bjoern
+	bjoern.run(app, '0.0.0.0', 9000)
+
+    #run_tornado()
     run_debug()
+    #run_bjoern()
     # run_gevent()

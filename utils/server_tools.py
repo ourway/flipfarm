@@ -299,7 +299,6 @@ def getSlaveInfo(client=None):
     inspect = ca.control.inspect()
     result = []
     pings = inspect.ping()
-    print pings
     if pings:
         for each in pings:
             _mac = each.split('@')[-1]
@@ -340,7 +339,7 @@ def getWorkerStats(client):
     slave = mongo.db.slaves.find_one({'ip': client})
     if slave:
         _mac = slave['info'].get('MAC')
-        inspect = pa.control.inspect(destination=['celery@%s' % _mac])
+        inspect = ca.control.inspect(destination=['celery@%s' % _mac])
         return inspect.stats()
 
 
